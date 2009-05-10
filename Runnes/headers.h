@@ -34,6 +34,8 @@ typedef unsigned char byte;
 #include "GL/efx-creative.h"
 #include "GL/EFX-Util.h"
 #include "GL/xram.h"
+#include "Framework/Framework.h"
+#include "Framework/Vorbis/vorbisfile.h"
 
 //#include "GL/glut.h"
 //#pragma comment(lib, "lib/glut32.lib")

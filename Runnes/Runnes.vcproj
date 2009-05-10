@@ -293,6 +293,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Ogg"
+				>
+				<File
+					RelativePath=".\framework\Ogg\ogg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\framework\Ogg\os_types.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Vorbis"
+				>
+				<File
+					RelativePath=".\framework\Vorbis\codec.h"
+					>
+				</File>
+				<File
+					RelativePath=".\framework\Vorbis\vorbisfile.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Generated Files"
