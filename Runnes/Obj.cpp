@@ -15,7 +15,6 @@
 //#include "main.h"
 #include "Obj.h"
 
-
 ///////////////////////////////// IMPORT OBJ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
 /////	This function loads a .obj file into a specified model by a .obj file name
@@ -35,8 +34,7 @@ bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 	// Check to make sure we have a valid file pointer
 	if(!m_FilePointer) {
 		// Create an error message for the attempted file
-		sprintf(strMessage, "Unable to find or open the file: %s", strFileName);
-//	MessageBox(NULL, strMessage, "Error", MB_OK);
+		printf("Unable to find or open the file: %s", strFileName);
 		return false;
 	}
 
@@ -233,7 +231,7 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 	t3DObject newObject = {0};
 	int textureOffset = 0, vertexOffset = 0;
 	int i = 0;
-
+	
 	// If we get here then we just finished reading in an object
 	// and need to increase the object count.
 	pModel->numOfObjects++;

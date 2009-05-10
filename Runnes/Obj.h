@@ -18,7 +18,7 @@ using namespace std;
 class CLoadObj {
 
 public:
-	
+	//CLoadObj();
 	// This will be the only function that needs to be called by you.
 	// Just pass in your model that will hold the information and the file name.
 	bool ImportObj(t3DModel *pModel, char *strFileName);
@@ -47,6 +47,11 @@ public:
 	// If we just want a color, pass in NULL for strFile.
 	void AddMaterial(t3DModel *pModel, char *strName, char *strFile, 
 					 int r = 255,      int g = 255,   int b = 255);
+	// This tells us if the current object has texture coordinates
+	bool m_bObjectHasUV;
+
+	// This tells us if we just read in face data so we can keep track of multiple objects
+	bool m_bJustReadAFace;
 
 private:
 
@@ -62,11 +67,6 @@ private:
 	// This is an STL (Standard Template Library) vector that holds a list of UV Coordinates
 	vector<CVector2>  m_pTextureCoords;
 
-	// This tells us if the current object has texture coordinates
-	bool m_bObjectHasUV;
-
-	// This tells us if we just read in face data so we can keep track of multiple objects
-	bool m_bJustReadAFace;
 };
 
 
