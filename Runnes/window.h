@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include "headers.h"
+#include "audio.h"
 #include <QtGui>
 #include <QGLWidget>
 typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
@@ -16,7 +17,7 @@ t3DModel g_3DModel;										// This holds the 3D Model info that we load in
 float g_RotateX;							// This is the current value at which the model is rotated
 float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 
-
+	Audio audio;
 	Window(QWidget *parent);
 	~Window();
     QTime m_time;
@@ -35,6 +36,7 @@ float g_RotationSpeed ;							// This is the speed that our model rotates.  (-sp
 		  wglSwapIntervalEXT(interval);
 	  }
 	}
+
 protected:
     QTimer *m_timer;
     int sec;

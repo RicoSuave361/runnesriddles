@@ -20,6 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,6 +43,7 @@
 				PreprocessorDefinitions="UNICODE,WIN32,QT_THREAD_SUPPORT,QT_NO_DEBUG,NDEBUG,QT_CORE_LIB,QT_OPENGL_LIB,QT_GUI_LIB"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3"
 				DebugInformationFormat="0"
 			/>
 			<Tool
@@ -55,11 +57,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=" qtmain.lib QtCore4.lib QtOpenGL4.lib opengl32.lib glu32.lib QtGui4.lib"
+				AdditionalDependencies="qtmaind.lib QtCored4.lib QtOpenGLd4.lib opengl32.lib glu32.lib QtGuid4.lib winmm.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="false"
 				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -91,6 +96,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -114,6 +120,7 @@
 				PreprocessorDefinitions="UNICODE,WIN32,QT_THREAD_SUPPORT,QT_CORE_LIB,QT_OPENGL_LIB,QT_GUI_LIB"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -127,11 +134,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=" qtmaind.lib QtCored4.lib QtOpenGLd4.lib opengl32.lib glu32.lib QtGuid4.lib"
+				AdditionalDependencies="qtmaind.lib QtCored4.lib QtOpenGLd4.lib opengl32.lib glu32.lib QtGuid4.lib winmm.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -198,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Vector.h"
 				>
 			</File>
@@ -229,23 +243,62 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="qrc;*"
-			UniqueIdentifier="{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}"
-			ParseFiles="false"
+			Name="Audio"
 			>
+			<File
+				RelativePath=".\Audio.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Audio.h"
+				>
+			</File>
+			<Filter
+				Name="Framework"
+				>
+				<File
+					RelativePath=".\Framework\aldlist.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\aldlist.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\CWaves.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\CWaves.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\Framework.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\Framework.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\LoadOAL.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Framework\LoadOAL.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Runnes.rc"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Generated Files"
 			Filter="moc;h;cpp"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			SourceControlFiles="false"
-			>
-		</Filter>
-		<Filter
-			Name="Form Files"
-			Filter="ui"
-			UniqueIdentifier="{99349809-55BA-4b9d-BF79-8FDBB0286EB3}"
 			>
 		</Filter>
 	</Files>
