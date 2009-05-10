@@ -1,15 +1,16 @@
 #include "window.h"
 
 Window::Window(QWidget *parent)
-	: QGLWidget(parent)
+	: QGLWidget(parent),wglSwapIntervalEXT(0)
 {
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
 	m_timer = new QTimer(this);
-    m_timer->setInterval(15);
+    m_timer->setInterval(1);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     m_timer->start();
 	m_time.start();
+	sec=0;
 }
 
 Window::~Window()
@@ -20,7 +21,7 @@ Window::~Window()
 
 void Window::initializeGL()
 {
-
+	setVSync(0);
 }
 
 void Window::paintGL()
@@ -29,7 +30,13 @@ void Window::paintGL()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	
+	++fps;
+	if(m_time.currentTime().second()!=sec){
+		double ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
+		sec=m_time.currentTime().second();
+		setWindowTitle(QString("FPS: ")+QString::number(ratio));
+		fps=0;
+	}
 
 }
 void Window::resizeGL(int width, int height)
