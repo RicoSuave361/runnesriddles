@@ -3,15 +3,22 @@
 Window::Window(QWidget *parent)
 	: QGLWidget(parent),wglSwapIntervalEXT(0)
 {
+	// Inicializar Widget
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	// Auto llamadas cada 1ms al updateGL
 	m_timer = new QTimer(this);
     m_timer->setInterval(1);
     connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     m_timer->start();
+
+	// Inicializar Tiempo para FPS
 	m_time=QTime::currentTime();
 	sec=0;
 	fps=0;
+
+	// Inicializar carga de OBJs
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
@@ -40,8 +47,8 @@ void Window::initializeGL()
 {
 	setVSync(0);
 	
-	bool load=g_LoadObj.ImportObj(&g_3DModel, "foot.obj");	
-	g_LoadObj.AddMaterial(&g_3DModel, "Bone", "Bone.bmp", 255, 255, 255);
+	bool load=g_LoadObj.ImportObj(&g_3DModel, "Box.obj");	
+	g_LoadObj.AddMaterial(&g_3DModel, "texture1", "texture1.bmp", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
 	{

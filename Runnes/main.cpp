@@ -12,10 +12,9 @@
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	printf("Iniciando...");
+	printf("Iniciando...\n");
 	Window w(NULL);
 	w.show();
-	//while(true) w.update();
 	//w.showFullScreen();
 	return a.exec();
 }
