@@ -260,11 +260,11 @@
 		/>
 		<Global
 			Name="QtVersion"
-			Value="Qt"
+			Value="4.5.1"
 		/>
 		<Global
 			Name="QtVersion Win32"
-			Value="$(DefaultQtVersion)"
+			Value="4.5.1"
 		/>
 		<Global
 			Name="RccDir"
