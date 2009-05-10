@@ -27,6 +27,7 @@
 #include <ksmedia.h>
 
 #pragma pack(push, 4)
+#pragma warning(disable:4996)
 
 typedef struct
 {
