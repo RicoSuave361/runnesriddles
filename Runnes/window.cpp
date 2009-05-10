@@ -47,8 +47,8 @@ void Window::initializeGL()
 {
 	setVSync(0);
 	
-	bool load=g_LoadObj.ImportObj(&g_3DModel, "Box.obj");	
-	g_LoadObj.AddMaterial(&g_3DModel, "texture1", "texture1.bmp", 255, 255, 255);
+	bool load=g_LoadObj.ImportObj(&g_3DModel, "octopus.obj");	
+	g_LoadObj.AddMaterial(&g_3DModel, "Bone", "Bone.bmp", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
 	{
@@ -93,6 +93,8 @@ void Window::paintGL()
 	gluLookAt(0, 1.5f, 12,0, 0.5f, 0,0, 1, 0);	
 	glRotatef(g_RotateX, 0, 1.0f, 0);						// Rotate the object around the Y-Axis
 	g_RotateX = (m_time.msecsTo(QTime::currentTime())/10)*g_RotationSpeed;							// Increase the speed of rotation
+
+    glScalef(0.3f,0.3f,0.3f);
 
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
