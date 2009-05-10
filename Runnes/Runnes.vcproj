@@ -260,7 +260,7 @@
 		/>
 		<Global
 			Name="QtVersion"
-			Value="$(DefaultQtVersion)"
+			Value="Qt"
 		/>
 		<Global
 			Name="QtVersion Win32"
