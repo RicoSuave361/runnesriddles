@@ -28,9 +28,19 @@ typedef unsigned char byte;
 #include "GL/glew.h"
 #include "GL/gl.h"
 #include "GL/glu.h"
+#include "GL/al.h"
+#include "GL/alc.h"
+#include "GL/efx.h"
+#include "GL/efx-creative.h"
+#include "GL/EFX-Util.h"
+#include "GL/xram.h"
+
 //#include "GL/glut.h"
-//#pragma comment(lib, "glut32.lib")
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glew32.lib")
+//#pragma comment(lib, "lib/glut32.lib")
+
+#pragma comment(lib, "lib/opengl32.lib")
+#pragma comment(lib, "lib/glew32.lib")
+#pragma comment(lib, "lib/OpenAL32.lib")
+#pragma comment(lib, "lib/EFX-Util.lib")
 
 #endif

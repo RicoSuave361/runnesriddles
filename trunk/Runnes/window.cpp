@@ -47,17 +47,18 @@ void Window::initializeGL()
 {
 	setVSync(0);
 	
-	bool load=g_LoadObj.ImportObj(&g_3DModel, "oct2.obj");	
-	g_LoadObj.AddMaterial(&g_3DModel, "Bone", "text2.jpg", 255, 255, 255);
+	bool load=g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
+	load=g_LoadObj.ImportObj(&g_3DModel, "Models/oct2.obj");
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
+	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/text2.jpg", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
 	{
 		// Check if the current material has a file name
 		if(strlen(g_3DModel.pMaterials[i].strFile) > 0) {
 			QImage img(g_3DModel.pMaterials[i].strFile);
 			g_Texture[i]=bindTexture(img, GL_TEXTURE_2D);
-			// Create a texture map from the material's file name
-			//CreateTexture(g_Texture, g_3DModel.pMaterials[i].strFile, i);
 		}
 		
 		// Assign the material ID to the current material
@@ -68,8 +69,7 @@ void Window::initializeGL()
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_TEXTURE_2D);							// Enables Texture Mapping
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-
-
+	audio.Play("Footsteps.wav");
 }
 
 void Window::paintGL()
