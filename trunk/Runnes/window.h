@@ -4,10 +4,7 @@
 #include "headers.h"
 #include <QtGui>
 #include <QGLWidget>
-
 typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
-
-
 
 class Window : public QGLWidget
 {
