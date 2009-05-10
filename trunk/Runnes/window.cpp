@@ -69,7 +69,7 @@ void Window::initializeGL()
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_TEXTURE_2D);							// Enables Texture Mapping
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	audio.Play("Footsteps.wav");
+	audio.Play("Footsteps.wav");	
 }
 
 void Window::paintGL()
@@ -81,7 +81,7 @@ void Window::paintGL()
 
 	/////////////// Calcular FPS //////////////
 	++fps;
-	if(m_time.currentTime().second()!=sec){
+	if(m_time.currentTime().second()!=sec && fps>0){
 		double ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
 		sec=m_time.currentTime().second();
 		setWindowTitle(QString("FPS: ")+QString::number(ratio));

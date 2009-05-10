@@ -38,10 +38,3 @@ void Audio::Play(const char* dir){
     alSourcePlay( uiSource );
 	ALFWprintf("Play: %s\n", ALFWaddMediaPath(dir));
 }
-void Audio::Pause(){
-}
-void Audio::Stop(){
-
-}
-
-//void Audio::Encolar(QString src){}
