@@ -4,6 +4,8 @@ Window::Window(QWidget *parent)
 	: QGLWidget(parent),wglSwapIntervalEXT(0)
 {
 	// Inicializar Widget
+	mouse=new QCursor(QPixmap("textures/transparent.png"));
+	setCursor(*mouse); //Mouse transparente
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -26,7 +28,6 @@ Window::Window(QWidget *parent)
 	g_3DModel.numOfObjects=0;
 	g_LoadObj.m_bObjectHasUV=false;
 	g_LoadObj.m_bJustReadAFace=false;
-	
 }
 
 Window::~Window()
@@ -46,7 +47,6 @@ void Window::resizeGL(int width, int height)
 void Window::initializeGL()
 {
 	setVSync(0);
-	
 	bool load=g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
 	load=g_LoadObj.ImportObj(&g_3DModel, "Models/oct2.obj");
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
@@ -74,6 +74,8 @@ void Window::initializeGL()
 
 void Window::paintGL()
 {       
+	
+	
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -180,18 +182,24 @@ void Window::paintGL()
 
 }
 void Window::mousePressEvent(QMouseEvent *event)
-{
-	
+{	
 }
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
-
+	QCursor::setPos(width()/2 + geometry().left(), height()/2 + geometry().top());
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
 	if(event->key()==Qt::Key_Escape){
 		exit(0);
+	}
+	if(event->key()==Qt::Key_0){
+		if(this->isFullScreen()){
+			showNormal();
+		}else{
+			showFullScreen();
+		}
 	}
 }
 
