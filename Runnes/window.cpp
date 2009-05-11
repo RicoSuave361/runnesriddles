@@ -4,8 +4,7 @@ Window::Window(QWidget *parent)
 	: QGLWidget(parent),wglSwapIntervalEXT(0)
 {
 	// Inicializar Widget
-	mouse=new QCursor(QPixmap("textures/transparent.png"));
-	setCursor(*mouse); //Mouse transparente
+	setCursor(Qt::CrossCursor);
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -80,11 +79,13 @@ void Window::paintGL()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+	debugDisplay=QString("FPS: ")+QString::number(ratio);
 
+	renderText(10,10,debugDisplay);
 	/////////////// Calcular FPS //////////////
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
-		double ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
+		ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
 		sec=m_time.currentTime().second();
 		setWindowTitle(QString("FPS: ")+QString::number(ratio));
 		fps=0;
@@ -186,19 +187,23 @@ void Window::mousePressEvent(QMouseEvent *event)
 }
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
+	mX=event->x();
+	mY=event->y();
 	QCursor::setPos(width()/2 + geometry().left(), height()/2 + geometry().top());
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
 	if(event->key()==Qt::Key_Escape){
-		exit(0);
+		close();
 	}
 	if(event->key()==Qt::Key_0){
 		if(this->isFullScreen()){
 			showNormal();
+			setCursor(Qt::CrossCursor);
 		}else{
 			showFullScreen();
+			setCursor(QCursor(QPixmap("textures/transparent.png"))); //Mouse transparente
 		}
 	}
 }

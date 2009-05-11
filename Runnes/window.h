@@ -43,8 +43,11 @@ public:
 
 protected:
     QTimer *m_timer;
+	QString debugDisplay;
     int sec;
 	int fps;
+	double ratio;
+	int mX,mY;
 	void initializeGL();
 	void paintGL();
 	void mousePressEvent(QMouseEvent *event);
