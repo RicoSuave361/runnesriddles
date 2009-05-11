@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 	printf("Iniciando...\n");
 	Window w(NULL);
 	w.show();
-	//w.showFullScreen();
+	w.setMouseTracking(true); // Detectar MouseMove
+	w.setVisible(true);
 	return a.exec();
 }
