@@ -54,10 +54,10 @@ void Window::initializeGL()
 	
 		//	showFullScreen();
 	setVSync(1);
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
-	g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
-	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
-	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/t2.jpg", 255, 255, 255);
+	g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
+	//g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/t2.jpg", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
