@@ -9,12 +9,14 @@
 #include <algorithm>
 
 #pragma warning(disable:4996)
+#pragma warning(disable:4244)
 
 using namespace std;					// Start off with the standard namespace
 
 #include "vector.h"
 #include "3d.h"
 #include "obj.h"
+#include "camera.h"
 
 typedef unsigned char byte;
 #define SCREEN_WIDTH  640				// We want our screen width 640 pixels
@@ -22,7 +24,6 @@ typedef unsigned char byte;
 #define SCREEN_DEPTH  16					// We want 16 bits per pixel
 #define MAX_PATH      260
 #define MAX_TEXTURES  100				// The maximum amount of textures to load
-#define SCREEN_DEPTH 16	
 
 // Include OpenGL Library
 #include "GL/glew.h"
