@@ -47,7 +47,8 @@ protected:
     int sec;
 	int fps;
 	double ratio;
-	int mX,mY;
+	int mX,mY, lastX, lastY;
+	CCamera camera;
 	void initializeGL();
 	void paintGL();
 	void mousePressEvent(QMouseEvent *event);

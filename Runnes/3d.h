@@ -47,6 +47,7 @@ struct t3DObject
 // We use STL's (Standard Template Library) vector class to ease our link list burdens. :)
 struct t3DModel 
 {
+	t3DModel():numOfObjects(0),numOfMaterials(0){}
 	int numOfObjects;					// The number of objects in the model
 	int numOfMaterials;					// The number of materials for the model
 	vector<tMaterialInfo> pMaterials;	// The list of material information (Textures and colors)

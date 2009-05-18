@@ -26,6 +26,7 @@ void Audio::Play(const char* dir){
 	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(dir), uiBuffer))
 	{
 		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(dir));
+		return;
 	}
 
 	// Generate a Source to playback the Buffer

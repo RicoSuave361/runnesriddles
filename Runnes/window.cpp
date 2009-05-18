@@ -1,5 +1,6 @@
 #include "window.h"
 
+
 Window::Window(QWidget *parent)
 	: QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -19,14 +20,19 @@ Window::Window(QWidget *parent)
 	sec=0;
 	fps=0;
 
+	//Inicializar camara
+	camera.eye = CVector3(0.0f,7.0f,15.0f);
+	camera.up = CVector3(0.0f,1.0f,0.0f);
+	camera.center = CVector3(0.0f,5.5f,0.0f);
+	lastX=0;
+	lastY=0;
+
 	// Inicializar carga de OBJs
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
-	g_3DModel.numOfMaterials=0;
-	g_3DModel.numOfObjects=0;
-	g_LoadObj.m_bObjectHasUV=false;
-	g_LoadObj.m_bJustReadAFace=false;
+
+
 }
 
 Window::~Window()
@@ -39,19 +45,21 @@ void Window::resizeGL(int width, int height)
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, 1.33, 0.0001f, 30.0f);
+	gluPerspective(45.0f, (float)width/(float)height, 0.1f, 300.0f);
 }
 
 
 void Window::initializeGL()
 {
-	setVSync(0);
-	bool load=g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
-	load=g_LoadObj.ImportObj(&g_3DModel, "Models/oct2.obj");
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
-	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/text2.jpg", 255, 255, 255);
+	
+		//	showFullScreen();
+	setVSync(1);
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
+	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);
+	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/t2.jpg", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
+	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
 	{
 		// Check if the current material has a file name
@@ -62,24 +70,37 @@ void Window::initializeGL()
 		
 		// Assign the material ID to the current material
 		g_3DModel.pMaterials[i].texureId = i;
-	}	
+	}
+
 	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_TEXTURE_2D);							// Enables Texture Mapping
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+	glEnable(GL_CULL_FACE);
+	//glEnable(GL_NORMALIZE);
+	glCullFace(GL_BACK);
+	//glPolygonOffset(1.0f,0.0);
+	//glEnable(GL_POLYGON_OFFSET_FILL);
+	/*glEnable (GL_FOG);
+	float c[3]={0.0f,0.0f,0.0f};
+	glFogi (GL_FOG_MODE, GL_EXP2); 
+	glFogfv (GL_FOG_COLOR, c); 
+	glFogf(GL_FOG_START,1.0);               
+	glFogf(GL_FOG_END,50.0);                  
+	glHint (GL_FOG_HINT, GL_NICEST);
+	glFogf (GL_FOG_DENSITY,  0.3f);*/
 	audio.Play("Footsteps.wav");	
 }
 
 void Window::paintGL()
-{       
-	
-	
+{ 
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	debugDisplay=QString("FPS: ")+QString::number(ratio);
+
+	debugDisplay=QString("FPS: ")+QString::number(ratio)+QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
 
 	renderText(10,10,debugDisplay);
 	/////////////// Calcular FPS //////////////
@@ -92,13 +113,15 @@ void Window::paintGL()
 	}
 	//////////////////////////////////////////
 
-
-	gluLookAt(0, 1.5f, 12,0, 0.5f, 0,0, 1, 0);	
-	glRotatef(g_RotateX, 0, 1.0f, 0);						// Rotate the object around the Y-Axis
-	g_RotateX = (m_time.msecsTo(QTime::currentTime())/10)*g_RotationSpeed;							// Increase the speed of rotation
+	
+	gluLookAt(camera.eye.x, camera.eye.y, camera.eye.z, camera.center.x, camera.center.y, camera.center.z, camera.up.x, camera.up.y, camera.up.z);	
+	glPushMatrix();
+	//glRotatef(g_RotateX, 0, 1.0f, 0);						// Rotate the object around the Y-Axis
+	//g_RotateX = (m_time.msecsTo(QTime::currentTime())/10)*g_RotationSpeed;							// Increase the speed of rotation
 
     //glScalef(5.3f,5.3f,5.3f);
 
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
 		// Make sure we have valid objects just in case. (size() is in the vector class)
@@ -180,6 +203,7 @@ void Window::paintGL()
 		glEnd();								// End the drawing
 	}
 
+	glPopMatrix();
 
 }
 void Window::mousePressEvent(QMouseEvent *event)
@@ -190,6 +214,20 @@ void Window::mouseMoveEvent(QMouseEvent *event)
 	mX=event->x();
 	mY=event->y();
 	QCursor::setPos(width()/2 + geometry().left(), height()/2 + geometry().top());
+	
+	
+	lastX=width()/2 /* + geometry().left() */- mX;
+	lastY=height()/2/* + geometry().top() */- mY;
+	
+	if(lastX==0 && lastY==0) return; 
+
+	printf("%d %d\n",lastX,lastY);
+	camera.Rotate(lastX,-lastY);
+	//camera.Rotate(lastX*8,0);
+	//camera.Rotate(0,lastY*8);
+
+	//lastX=event->x();
+	//lastY=event->y();
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
@@ -197,10 +235,24 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(event->key()==Qt::Key_Escape){
 		close();
 	}
+	if(event->key()==Qt::Key_A){
+		camera.StrafeCamera(0.5f);
+	}
+	if(event->key()==Qt::Key_S){
+		camera.MoveCamera(0.5f);
+	}
+	if(event->key()==Qt::Key_D){
+		camera.StrafeCamera(-0.5f);
+	}
+	if(event->key()==Qt::Key_W){
+		camera.MoveCamera(-0.5f);
+	}
+
+
 	if(event->key()==Qt::Key_0){
 		if(this->isFullScreen()){
 			showNormal();
-			setCursor(Qt::CrossCursor);
+		//	setCursor(Qt::CrossCursor);
 		}else{
 			showFullScreen();
 			setCursor(QCursor(QPixmap("textures/transparent.png"))); //Mouse transparente

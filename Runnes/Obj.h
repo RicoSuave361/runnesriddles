@@ -18,7 +18,7 @@ using namespace std;
 class CLoadObj {
 
 public:
-	//CLoadObj();
+	CLoadObj():m_bObjectHasUV(false),m_bJustReadAFace(false){};
 	// This will be the only function that needs to be called by you.
 	// Just pass in your model that will hold the information and the file name.
 	bool ImportObj(t3DModel *pModel, char *strFileName);
