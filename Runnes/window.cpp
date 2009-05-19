@@ -86,8 +86,6 @@ void Window::initializeGL()
 		g_3DModel.pMaterials[i].texureId = i;
 	}
 
-	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
-	glEnable(GL_LIGHTING);								// Turn on lighting
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glEnable(GL_CULL_FACE);								// Enables Backface Culling
@@ -97,16 +95,11 @@ void Window::initializeGL()
 	//Audio
 	audio.Play("Footsteps.wav");	//play audio cue
 
+	setVisible(true);
 }
 
 void Window::paintGL()
 { 
-	//Display FPS
-	debugDisplay=QString("FPS: ")+QString::number(ratio)+
-		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
-		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
-		QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
-	renderText(10,10,debugDisplay);
 
 	//FPS counter
 	++fps;
@@ -126,12 +119,15 @@ void Window::paintGL()
 
 	// Camara
 	camera.Look();	
-
+	glDisable(GL_LIGHTING);
 	//Show SkyBox
 	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
 
 	
+	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
+	glEnable(GL_LIGHTING);								// Turn on lighting
+
 
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
@@ -215,6 +211,14 @@ void Window::paintGL()
 
 		glEnd();								// End the drawing
 	}
+
+
+	//Display FPS
+	debugDisplay=QString("FPS: ")+QString::number(ratio)+
+		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
+		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
+		QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
+	renderText(10,10,debugDisplay);
 }
 void Window::mousePressEvent(QMouseEvent *event)
 {	
@@ -234,7 +238,7 @@ void Window::mouseMoveEvent(QMouseEvent *event)
 	if(lastX==0 && lastY==0) 
 		return; 
 
-	printf("%d %d\n",lastX,lastY);
+//	printf("%d %d\n",lastX,lastY);
 	camera.Rotate(lastX,-lastY);
 	
 }
