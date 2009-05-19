@@ -4,17 +4,9 @@
 #include "headers.h"
 #include "3d.h"
 
-using namespace std;	
-// This class can be used to load a .Obj file.  You will need the grab the
-// structures in main.h as well if you want to use this, or create your own.
-// I added a couple functions at the end of this class to help with the material
-// problem that a .obj file has.  Obj files do not save material information, like
-// the color, material name or the texture map file assigned to it.  Though the .obj
-// file format isn't the best used for games, I thought I would help out a little.
-// To be honest, it would be better to just add the information to the .obj and
-// modify my code to read it in.  For instance, put a : c 255 0 255   for the color.
+using namespace std;
 
-// This is our class for loading .obj files
+// This class can be used to load a .Obj file.
 class CLoadObj {
 
 public:
@@ -58,36 +50,14 @@ private:
 	// This holds our file pointer for reading in the file
 	FILE *m_FilePointer;
 
-	// This is an STL (Standard Template Library) vector that holds a list of vertices
+	//vector that holds a list of vertices
 	vector<CVector3>  m_pVertices;
 
-	// This is an STL (Standard Template Library) vector that holds a list of faces
+	//vector that holds a list of faces
 	vector<tFace> m_pFaces;
 
-	// This is an STL (Standard Template Library) vector that holds a list of UV Coordinates
+	//vector that holds a list of UV Coordinates
 	vector<CVector2>  m_pTextureCoords;
-
 };
 
-
 #endif
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//
-// * QUICK NOTES * 
-//
-// This tutorial shows how to load an .obj file.  These files are ASCII text files
-// that contain very few information about the models, but are great for importing/exporting
-// into almost every 3D software package as well as being easy to read in.
-// 
-// This header file holds the class information for CLoadObj.
-// 
-// 
-// Ben Humphrey (DigiBen)
-// Game Programmer
-// DigiBen@GameTutorials.com
-// Co-Web Host of www.GameTutorials.com
-//
-//
-

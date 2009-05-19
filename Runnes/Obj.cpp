@@ -1,25 +1,7 @@
-//***********************************************************************//
-//																		 //
-//		- "Talk to me like I'm a 3 year old!" Programming Lessons -		 //
-//                                                                       //
-//		$Author:		DigiBen		digiben@gametutorials.com			 //
-//																		 //
-//		$Program:		Obj Loader										 //
-//																		 //
-//		$Description:	Demonstrates how to load a .Obj file format		 //
-//																		 //
-//		$Date:			10/11/01										 //
-//																		 //
-//***********************************************************************//
-
 //#include "main.h"
 #include "Obj.h"
 
-///////////////////////////////// IMPORT OBJ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function loads a .obj file into a specified model by a .obj file name
-/////
-///////////////////////////////// IMPORT OBJ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+//This function loads a .obj file into a specified model by a .obj file name
 
 bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 {
@@ -52,12 +34,7 @@ bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 }
 
 
-///////////////////////////////// READ OBJ FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function is the main loop for reading in the .obj file
-/////
-///////////////////////////////// READ OBJ FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//This function is the main loop for reading in the .obj file
 void CLoadObj::ReadObjFile(t3DModel *pModel)
 {
 	char strLine[255]		= {0};
@@ -113,12 +90,7 @@ void CLoadObj::ReadObjFile(t3DModel *pModel)
 }
 
 
-///////////////////////////////// READ VERTEX INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function reads in the vertex information ("v" vertex : "vt" UVCoord)
-/////
-///////////////////////////////// READ VERTEX INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function reads in the vertex information ("v" vertex : "vt" UVCoord)
 void CLoadObj::ReadVertexInfo()
 {
 	CVector3 vNewVertex;
@@ -163,13 +135,7 @@ void CLoadObj::ReadVertexInfo()
 	}
 }
 
-
-///////////////////////////////// READ FACE INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function reads in the face information ("f")
-/////
-///////////////////////////////// READ FACE INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function reads in the face information ("f")
 void CLoadObj::ReadFaceInfo()
 {
 	tFace newFace			= {0};
@@ -219,13 +185,7 @@ void CLoadObj::ReadFaceInfo()
 	m_bJustReadAFace = true;
 }
 
-
-///////////////////////////////// FILL IN OBJECT INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function is called after an object is read in to fill in the model structure
-/////
-///////////////////////////////// FILL IN OBJECT INFO \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function is called after an object is read in to fill in the model structure
 void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 {
 	t3DObject newObject = {0};
@@ -347,13 +307,7 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 	m_bJustReadAFace = false;
 }
 
-
-///////////////////////////////// SET OBJECT MATERIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function assigns a material to a specific object in our array of objects
-/////
-///////////////////////////////// SET OBJECT MATERIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function assigns a material to a specific object in our array of objects
 void CLoadObj::SetObjectMaterial(t3DModel *pModel, int whichObject, int materialID)
 {
 	// Make sure we have a valid model or else quit the function
@@ -367,12 +321,7 @@ void CLoadObj::SetObjectMaterial(t3DModel *pModel, int whichObject, int material
 }
 
 
-///////////////////////////////// ADD MATERIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function adds a material to our model manually since .obj has no such info
-/////
-///////////////////////////////// ADD MATERIAL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function adds a material to our model manually since .obj has no such info
 void CLoadObj::AddMaterial(t3DModel *pModel, char *strName, char *strFile, 
 									int r,			  int g,		 int b)
 {
@@ -450,6 +399,7 @@ CVector3 DivideVectorByScaler(CVector3 vVector1, float Scaler)
 CVector3 Cross(CVector3 vVector1, CVector3 vVector2)
 {
 	CVector3 vCross;								// The vector to hold the cross product
+
 												// Get the X value
 	vCross.x = ((vVector1.y * vVector2.z) - (vVector1.z * vVector2.y));
 												// Get the Y value
@@ -474,12 +424,7 @@ CVector3 Normalize(CVector3 vNormal)
 	return vNormal;								// Return the normal
 }
 
-///////////////////////////////// COMPUTER NORMALS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function computes the normals and vertex normals of the objects
-/////
-///////////////////////////////// COMPUTER NORMALS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
+//	This function computes the normals and vertex normals of the objects
 void CLoadObj::ComputeNormals(t3DModel *pModel)
 {
 	CVector3 vVector1, vVector2, vNormal, vPoly[3];
@@ -565,38 +510,6 @@ void CLoadObj::ComputeNormals(t3DModel *pModel)
 
 
 /////////////////////////////////////////////////////////////////////////////////
-//
-// * QUICK NOTES * 
-//
-// This tutorial shows how to load an .obj file.  These files are ASCII text files
-// that contain very few information about the models, but are great for importing/exporting
-// into almost every 3D software package as well as being easy to read in.
-// 
-// I hope this code isn't too intimidating if you are looking at a model loader for
-// the first time.  I would recommend this tutorial before our .3DS tutorial because
-// it's easier to read in text files instead of binary files.
-// 
-// Let me mention that the math functions above are not so important and don't
-// need to be in this file.  I wanted to show how to calculate vertex normals so your
-// models would have some excellent lighting.  You most likely have functions already
-// that do the basics so I encourage you to just use those.  This will cut down the code
-// significantly.
-// 
-// * What's An STL (Standard Template Library) Vector? *
-// Let me quickly explain the STL vector for those of you who are not familiar with them.
-// To use a vector you must include <vector> and use the std namespace: using namespace std;
-// A vector is an array based link list.  It allows you to dynamically add and remove nodes.
-// This is a template class so it can be a list of ANY type.  To create a vector of type
-// "int" you would say:  vector<int> myIntList;
-// Now you can add a integer to the dynamic array by saying: myIntList.push_back(10);
-// or you can say:  myIntList.push_back(num);.  The more you push back, the larger
-// your array gets.  You can index the vector like an array.  myIntList[0] = 0;
-// To get rid of a node you use the pop_back() function.  To clear the vector use clear().
-// It frees itself so you don't need to worry about it, except if you have data
-// structures that need information freed from inside them, like our objects.
-//
-// Let me go over the format of the .obj file:
-// 
 // First, no .obj file format is going to be the same.  When you import/export
 // .obj files anywhere, each application has their own way of saving it.  Some
 // save normals, some save extra comments, some save object names, etc...  That is
@@ -638,11 +551,3 @@ void CLoadObj::ComputeNormals(t3DModel *pModel)
 //
 // I will eventually add this to a 3D Loading Library along with the other formats.
 // Let us know if this helps you out!
-//
-// 
-// Ben Humphrey (DigiBen)
-// Game Programmer
-// DigiBen@GameTutorials.com
-// Co-Web Host of www.GameTutorials.com
-//
-//

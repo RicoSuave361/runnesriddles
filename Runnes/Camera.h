@@ -6,6 +6,7 @@ class CCamera
 public:
 	CCamera(void);
 	~CCamera(void);
+
 	void normalizeAngle(int *angle);
 	void Rotate(int dx, int dy);
 	void RotateView(float angle, float x, float y, float z);
@@ -14,10 +15,11 @@ public:
 	float lastRotX;
 	float currentRotX;
 
-	CVector3 center; // posicion de la camara
-	CVector3 up; // vector up de la cam
-	CVector3 eye; // punto de vision
-CVector3 m_vStrafe;
+	CVector3 center;	//Camera's position
+	CVector3 up;		//Camera's Up Vector
+	CVector3 eye;		//Camera's target
+	CVector3 m_vStrafe;
+	
 	int angleX;
 	int angleY;
 	int angleZ;
