@@ -20,6 +20,7 @@ public:
 
 	Audio audio;									//Audio Initialize
 	SkyBox *sky;										//SkyBox Initialize
+	CXBOXController playerController;
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
