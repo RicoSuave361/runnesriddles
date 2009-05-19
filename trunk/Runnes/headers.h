@@ -1,9 +1,9 @@
 #ifndef _MY_HEADER
 #define _MY_HEADER
 
-#include <iostream>						// Include our c++ standard header
-#include <fstream>						// Include this to use ifstream
-#include <string>						// Include this to use the string class
+#include <iostream>	
+#include <fstream>
+#include <string>
 #include <vector>	
 #include <math.h>
 #include <algorithm>
@@ -11,7 +11,7 @@
 #pragma warning(disable:4996)
 #pragma warning(disable:4244)
 
-using namespace std;					// Start off with the standard namespace
+using namespace std;
 
 #include "vector.h"
 #include "3d.h"
@@ -19,9 +19,9 @@ using namespace std;					// Start off with the standard namespace
 #include "camera.h"
 
 typedef unsigned char byte;
-#define SCREEN_WIDTH  640				// We want our screen width 640 pixels
-#define SCREEN_HEIGHT 480				// We want our screen height 480 pixels
-#define SCREEN_DEPTH  16					// We want 16 bits per pixel
+#define SCREEN_WIDTH  1024				//Window width
+#define SCREEN_HEIGHT 768				//Window height
+#define SCREEN_DEPTH  32				//Color Depth
 #define MAX_PATH      260
 #define MAX_TEXTURES  100				// The maximum amount of textures to load
 

@@ -19,7 +19,6 @@ void CCamera::Rotate(int dx, int dy)
 	m_vStrafe = CVector3::Cross(eye - center, up);
 	m_vStrafe.Normalize();
 	
-	
 	float angleY = 0.0f;
 	float angleZ = 0.0f;
 	if( (dx==0) && (dy==0) ) return;

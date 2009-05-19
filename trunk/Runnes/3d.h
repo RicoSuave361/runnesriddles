@@ -10,14 +10,12 @@ struct tFace
 	int coordIndex[3];			// indicies for the tex coords to texture this face
 };
 
-// This holds the information for a material.  It may be a texture map of a color.
-// Some of these are not used, but I left them because you will want to eventually
-// read in the UV tile ratio and the UV tile offset for some models.
+//Material info
 struct tMaterialInfo
 {
 	char  strName[255];			// The texture name
 	char  strFile[255];			// The texture file name (If this is set it's a texture map)
-	unsigned char  color[3];				// The color of the object (R, G, B)
+	unsigned char  color[3];	// The color of the object (R, G, B)
 	int   texureId;				// the texture ID
 	float uTile;				// u tiling of texture  (Currently not used)
 	float vTile;				// v tiling of texture	(Currently not used)
@@ -25,10 +23,7 @@ struct tMaterialInfo
 	float vOffset;				// v offset of texture	(Currently not used)
 } ;
 
-// This holds all the information for our model/scene. 
-// You should eventually turn into a robust class that 
-// has loading/drawing/querying functions like:
-// LoadModel(...); DrawObject(...); DrawModel(...); DestroyModel(...);
+//Object information, objects into OBJ
 struct t3DObject 
 {
 	int  numOfVerts;			// The number of verts in the model
@@ -43,8 +38,7 @@ struct t3DObject
 	tFace *pFaces;				// The faces information of the object
 };
 
-// This holds our model information.  This should also turn into a robust class.
-// We use STL's (Standard Template Library) vector class to ease our link list burdens. :)
+//Model information, OBJ Container (Model will can have one or more objects)
 struct t3DModel 
 {
 	t3DModel():numOfObjects(0),numOfMaterials(0){}
