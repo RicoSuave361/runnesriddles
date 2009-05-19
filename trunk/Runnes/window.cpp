@@ -108,7 +108,7 @@ void Window::paintGL()
 			//	playerController.Vibrate(65535, 0);
 			//}
 
-			//DPAD Events
+			//DPAD Move
 			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 			{
 				camera.StrafeCamera(-0.8f);
@@ -129,35 +129,22 @@ void Window::paintGL()
 				camera.MoveCamera(0.8f);
 			}
 
-			
-			//Analog Left Stick Events
-			if(playerController.GetState().Gamepad.sThumbLX > 10000)
+			//Analog Left Stick Move
+			if(playerController.GetState().Gamepad.sThumbLX < -10000 || playerController.GetState().Gamepad.sThumbLX > 10000 || playerController.GetState().Gamepad.sThumbLY < -10000 || playerController.GetState().Gamepad.sThumbLY > 10000)
 			{
-				camera.StrafeCamera(-0.8f);
+				posX=(float)playerController.GetState().Gamepad.sThumbLX * 0.000027f;
+				posZ=(float)playerController.GetState().Gamepad.sThumbLY * 0.000027f;
+				
+				camera.StrafeCamera(-posX);
+				camera.MoveCamera(-posZ);
 			}
 
-			if(playerController.GetState().Gamepad.sThumbLX < -10000)
-			{
-
-				camera.StrafeCamera(0.8f);
-			}
-
-			if(playerController.GetState().Gamepad.sThumbLY > 10000)
-			{
-				camera.MoveCamera(-0.8f);
-			}
-
-			if(playerController.GetState().Gamepad.sThumbLY < -10000)
-			{
-				camera.MoveCamera(0.8f);
-			}
-
-
+			//Analog Right Stick Move
 			if(playerController.GetState().Gamepad.sThumbRX < -10000 || playerController.GetState().Gamepad.sThumbRX > 10000 || playerController.GetState().Gamepad.sThumbRY < -10000 || playerController.GetState().Gamepad.sThumbRY > 10000)
 			{
-				mX=playerController.GetState().Gamepad.sThumbRX/2000;
-				mY=playerController.GetState().Gamepad.sThumbRY/2000;
-				camera.Rotate(-mX, -mY);
+				viewX=(float)playerController.GetState().Gamepad.sThumbRX * 0.0006f;
+				viewY=(float)playerController.GetState().Gamepad.sThumbRY * 0.0006f;
+				camera.Rotate(-viewX, -viewY);
 			}
 	}
 
@@ -308,16 +295,16 @@ void Window::keyPressEvent(QKeyEvent *event)
 		close();
 	}
 	if(event->key()==Qt::Key_A){
-		camera.StrafeCamera(0.8f);
+		camera.StrafeCamera(1.8f);
 	}
 	if(event->key()==Qt::Key_S){
-		camera.MoveCamera(0.8f);
+		camera.MoveCamera(1.8f);
 	}
 	if(event->key()==Qt::Key_D){
-		camera.StrafeCamera(-0.8f);
+		camera.StrafeCamera(-1.8f);
 	}
 	if(event->key()==Qt::Key_W){
-		camera.MoveCamera(-0.8f);
+		camera.MoveCamera(-1.8f);
 	}
 
 
