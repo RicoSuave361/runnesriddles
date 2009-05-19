@@ -61,6 +61,8 @@ protected:
 	int fps;
 	double ratio;
 	int mX,mY, lastX, lastY;
+	float posX, posZ;
+	float viewX, viewY;
 	CCamera camera;
 	void initializeGL();
 	void paintGL();
