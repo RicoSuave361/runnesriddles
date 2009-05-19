@@ -41,9 +41,13 @@ typedef unsigned char byte;
 #include "include/efx-creative.h"
 #include "include/EFX-Util.h"
 #include "include/xram.h"
-#include "include/CXBOXController.h"
 #include "include/Framework/Framework.h"
 #include "include/Framework/Vorbis/vorbisfile.h"
+#include "include/XInput.h"
+#include "include/CXBOXController.h"
+
+// Now, the XInput Library
+// NOTE: COMMENT THIS OUT IF YOU ARE NOT USING A COMPILER THAT SUPPORTS THIS METHOD OF LINKING LIBRARIES
 
 //#include "GL/glut.h"
 //#pragma comment(lib, "lib/glut32.lib")
@@ -52,5 +56,6 @@ typedef unsigned char byte;
 #pragma comment(lib, "lib/glew32.lib")
 #pragma comment(lib, "lib/OpenAL32.lib")
 #pragma comment(lib, "lib/EFX-Util.lib")
+#pragma comment(lib, "lib/XInput.lib")
 
 #endif
