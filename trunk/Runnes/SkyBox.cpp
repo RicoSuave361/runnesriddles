@@ -56,7 +56,7 @@ void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, 
 
 	// Start drawing the side as a QUAD
 	glBegin(GL_QUADS);	
-	
+		glNormal3f(0.0,0.0,-1.0);
 		// Assign the texture coordinates and vertices for the FRONT Side
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y,			z + length);
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y + height, z + length);
@@ -68,8 +68,8 @@ void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, 
 	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[BOTTOM_ID]);
 
 	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-	
+	glBegin(GL_QUADS);				
+		glNormal3f(0.0,1.0,0.0);
 		// Assign the texture coordinates and vertices for the BOTTOM Side
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y,			z);
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y,			z + length);
@@ -81,8 +81,8 @@ void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, 
 	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[TOP_ID]);
 	
 	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-		
+	glBegin(GL_QUADS);				
+		glNormal3f(0.0,-1.0,0.0);		
 		// Assign the texture coordinates and vertices for the TOP Side
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length); 
@@ -96,7 +96,7 @@ void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, 
 	
 	// Start drawing the side as a QUAD
 	glBegin(GL_QUADS);		
-		
+		glNormal3f(1.0,0.0,0.0);
 		// Assign the texture coordinates and vertices for the LEFT Side
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y + height,	z);	
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,			y + height,	z + length); 
@@ -110,7 +110,7 @@ void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, 
 
 	// Start drawing the side as a QUAD
 	glBegin(GL_QUADS);		
-
+		glNormal3f(-1.0,0.0,0.0);
 		// Assign the texture coordinates and vertices for the RIGHT Side
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y,			z);
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y,			z + length);
