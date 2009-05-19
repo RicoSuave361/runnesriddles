@@ -140,7 +140,6 @@ void Window::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-
 	// Camara
 	camera.Look();	
 	glDisable(GL_LIGHTING);
@@ -241,7 +240,9 @@ void Window::paintGL()
 	debugDisplay=QString("FPS: ")+QString::number(ratio)+
 		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
 		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
-		QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
+		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
+		QString(" GameTime: ")+QString::number(GAMETIME);
+		
 	renderText(10,10,debugDisplay);
 }
 void Window::mousePressEvent(QMouseEvent *event)

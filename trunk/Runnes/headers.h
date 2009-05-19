@@ -30,6 +30,8 @@ typedef unsigned char byte;
 #define TOP_ID			3									// The texture ID for the top side of the cube
 #define LEFT_ID			4									// The texture ID for the left side of the cube
 #define RIGHT_ID		5									// The texture ID for the right side of the cube
+#define GAMETIME		m_time.msecsTo(QTime::currentTime())
+
 
 // Include OpenGL Library
 #include "include/glew.h"
