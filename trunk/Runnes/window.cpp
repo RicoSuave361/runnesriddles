@@ -97,10 +97,26 @@ void Window::initializeGL()
 	else 
 		printf("Player1 Controller XBOX not Connected...\n");
 	setVisible(true);
+
+	glewInit();//shader
+	if (glewIsSupported("GL_VERSION_2_0"))
+		printf("Ready for OpenGL 2.0\n");
+	else 
+	{
+		printf("OpenGL 2.0 not supported\n");
+		exit(1);
+	}
+	initShader(); 
+	//applyShader();	
+	for(int i=0; i<5; i++)
+		glUniform1i(getUniLoc(p, "activeLight[i]"), 0);
+ 
+
 }
 
 void Window::paintGL()
 { 
+unapplyShader();
 	if(playerController.IsConnected())
 	{
 			//if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
@@ -168,12 +184,29 @@ void Window::paintGL()
 	camera.Look();	
 	glDisable(GL_LIGHTING);
 	//Show SkyBox
-	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
+	//sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
 
 	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
+applyShader();
+	glUniform1i(getUniLoc(p, "activeLight[0]"),1);
+	float white[]={1.0f,1.0f,1.0f,1.0f};
+	float zero[]={0.0f,0.0f,0.0f,1.0f};
+	float lightPos1[] = {0.0f, 1.50f, 0.0f, 0.0f};
+	float fAmbiental1[] = {0.8f, 0.8f, 0.8f, 1.0f};
+	float colorDiffuse1[] = {0.9f, 0.1f, 0.1f, 1.0f};
+	float fSpecular2[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos1);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbiental1);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecular2);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffuse1);
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, fAmbiental1);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, white);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 20);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
@@ -255,7 +288,7 @@ void Window::paintGL()
 
 		glEnd();								// End the drawing
 	}
-
+unapplyShader();
 
 	//Display FPS
 	debugDisplay=QString("FPS: ")+QString::number(ratio)+
