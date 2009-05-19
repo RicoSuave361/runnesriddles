@@ -53,8 +53,6 @@ void Window::resizeGL(int width, int height)
 }
 
 
-
-
 void Window::initializeGL()
 {
 	//showFullScreen();
@@ -105,26 +103,65 @@ void Window::paintGL()
 { 
 	if(playerController.IsConnected())
 	{
-			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+			//if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+			//{
+			//	playerController.Vibrate(65535, 0);
+			//}
+
+			//DPAD Events
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 			{
-				playerController.Vibrate(65535, 0);
+				camera.StrafeCamera(-0.8f);
 			}
 
-			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 			{
-				playerController.Vibrate(0, 65535);
+				camera.StrafeCamera(0.8f);
 			}
 
-			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_X)
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
 			{
-				playerController.Vibrate(65535, 65535);
+				camera.MoveCamera(-0.8f);
 			}
 
-			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
 			{
-				playerController.Vibrate();
+				camera.MoveCamera(0.8f);
+			}
+
+			
+			//Analog Left Stick Events
+			if(playerController.GetState().Gamepad.sThumbLX > 10000)
+			{
+				camera.StrafeCamera(-0.8f);
+			}
+
+			if(playerController.GetState().Gamepad.sThumbLX < -10000)
+			{
+
+				camera.StrafeCamera(0.8f);
+			}
+
+			if(playerController.GetState().Gamepad.sThumbLY > 10000)
+			{
+				camera.MoveCamera(-0.8f);
+			}
+
+			if(playerController.GetState().Gamepad.sThumbLY < -10000)
+			{
+				camera.MoveCamera(0.8f);
+			}
+
+
+			if(playerController.GetState().Gamepad.sThumbRX < -10000 || playerController.GetState().Gamepad.sThumbRX > 10000 || playerController.GetState().Gamepad.sThumbRY < -10000 || playerController.GetState().Gamepad.sThumbRY > 10000)
+			{
+				mX=playerController.GetState().Gamepad.sThumbRX/2000;
+				mY=playerController.GetState().Gamepad.sThumbRY/2000;
+				camera.Rotate(-mX, -mY);
 			}
 	}
+
+
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
@@ -147,11 +184,8 @@ void Window::paintGL()
 	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
 
-	
 	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
-
-
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
@@ -263,7 +297,7 @@ void Window::mouseMoveEvent(QMouseEvent *event)
 	if(lastX==0 && lastY==0) 
 		return; 
 
-//	printf("%d %d\n",lastX,lastY);
+	//printf("%d %d\n",mX,mY);
 	camera.Rotate(lastX,-lastY);
 	
 }
