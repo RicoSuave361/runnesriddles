@@ -54,6 +54,116 @@ public:
 	  }
 	}
 
+	char *textFileRead(char *fn) 
+		{
+			FILE *fp;
+			char *content = NULL;
+
+			int count=0;
+
+			if (fn != NULL) 
+			{
+				fp = fopen(fn,"r");
+
+				if (fp != NULL) 
+				{
+					fseek(fp, 0, SEEK_END);
+					count = ftell(fp);
+					rewind(fp);
+
+					if (count > 0) 
+					{
+						content = (char *)malloc(sizeof(char) * (count+1));
+						count = fread(content,sizeof(char),count,fp);
+						content[count] = '\0';
+					}
+					fclose(fp);
+				}
+			}
+			return content;
+		}
+
+		int textFileWrite(char *fn, char *s) 
+		{
+			FILE *fp;
+			int status = 0;
+
+			if (fn != NULL) 
+			{
+				fp = fopen(fn,"w");
+
+				if (fp != NULL) 
+				{
+					if (fwrite(s,sizeof(char),strlen(s),fp) == strlen(s))
+						status = 1;
+					fclose(fp);
+				}else printf("filed open %s\n",fn);
+			}
+			return(status);
+		}
+
+		GLint getUniLoc(GLuint program, const GLchar *name)
+		{
+			GLint loc;
+			loc = glGetUniformLocation(program, name);
+
+			return loc;
+		}
+
+		void initShader(void)
+		{
+			char *vs = NULL,*fs = NULL,*fs2 = NULL;
+			
+			//creacion del shader
+			v = glCreateShader(GL_VERTEX_SHADER);
+			f = glCreateShader(GL_FRAGMENT_SHADER);
+			
+			char cwd[]="./glsl/phong.vert";
+				//=_getcwd(NULL,0);
+			//strcat( cwd, "./glsl/phong.vert");
+
+			char cwd2[]="./glsl/phong.frag";
+				//_getcwd(NULL,0);
+			//strcat( cwd2, "./glsl/phong.frag");
+
+			vs =  textFileRead(cwd);
+			fs = textFileRead(cwd2);
+
+			const char * ff = fs;	
+			const char * vv = vs;
+
+			//carga el codigo al shader creado
+			glShaderSource(v, 1, &vv,NULL);
+			glShaderSource(f, 1, &ff,NULL);
+			
+			free(vs);
+			free(fs);
+			
+			//compila el shader
+			glCompileShader(v);
+			glCompileShader(f);
+
+			//crea el programa
+			p = glCreateProgram();
+
+			//adjunta el shader al programa creado
+			glAttachShader(p,f);
+			glAttachShader(p,v);
+
+			//se enlaza el programa
+			glLinkProgram(p);
+		}
+
+		void applyShader(void)
+		{
+			glUseProgram(p);
+		}
+
+		void unapplyShader(void)
+		{
+			glUseProgram(0);
+		}
+
 protected:
     QTimer *m_timer;
 	QString debugDisplay;
@@ -64,6 +174,7 @@ protected:
 	float posX, posZ;
 	float viewX, viewY;
 	CCamera camera;
+	GLuint v,f,f2,p;
 	void initializeGL();
 	void paintGL();
 	void mousePressEvent(QMouseEvent *event);
