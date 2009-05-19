@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;.\GeneratedFiles\$(ConfigurationName)&quot;;&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtOpenGL&quot;;.\;.\GeneratedFiles;&quot;$(QTDIR)\include\QtGui&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;.\GeneratedFiles\$(ConfigurationName)&quot;;&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtOpenGL&quot;;.\;.\GeneratedFiles;&quot;$(QTDIR)\include\QtGui&quot;;.\include"
 				PreprocessorDefinitions="UNICODE,WIN32,QT_THREAD_SUPPORT,QT_NO_DEBUG,NDEBUG,QT_CORE_LIB,QT_OPENGL_LIB,QT_GUI_LIB"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="false"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;.\GeneratedFiles\$(ConfigurationName)&quot;;&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtOpenGL&quot;;.\;.\GeneratedFiles;&quot;$(QTDIR)\include\QtGui&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;.\GeneratedFiles\$(ConfigurationName)&quot;;&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtOpenGL&quot;;.\;.\GeneratedFiles;&quot;$(QTDIR)\include\QtGui&quot;;.\include"
 				PreprocessorDefinitions="UNICODE,WIN32,QT_THREAD_SUPPORT,QT_CORE_LIB,QT_OPENGL_LIB,QT_GUI_LIB"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="false"
@@ -179,6 +179,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Audio.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Camera.cpp"
 				>
 			</File>
@@ -188,10 +192,6 @@
 			</File>
 			<File
 				RelativePath=".\Matrix.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Obj.cpp"
 				>
 			</File>
 			<File
@@ -209,7 +209,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\3d.h"
+				RelativePath=".\Audio.h"
 				>
 			</File>
 			<File
@@ -222,10 +222,6 @@
 			</File>
 			<File
 				RelativePath=".\Matrix.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Obj.h"
 				>
 			</File>
 			<File
@@ -264,87 +260,87 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Audio"
-			>
-			<File
-				RelativePath=".\Audio.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Audio.h"
-				>
-			</File>
-			<Filter
-				Name="Framework"
-				>
-				<File
-					RelativePath=".\Framework\aldlist.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\aldlist.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\CWaves.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\CWaves.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\Framework.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\Framework.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\LoadOAL.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Framework\LoadOAL.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Runnes.rc"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Ogg"
-				>
-				<File
-					RelativePath=".\framework\Ogg\ogg.h"
-					>
-				</File>
-				<File
-					RelativePath=".\framework\Ogg\os_types.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Vorbis"
-				>
-				<File
-					RelativePath=".\framework\Vorbis\codec.h"
-					>
-				</File>
-				<File
-					RelativePath=".\framework\Vorbis\vorbisfile.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Generated Files"
 			Filter="moc;h;cpp"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			SourceControlFiles="false"
 			>
+		</Filter>
+		<Filter
+			Name="Includes"
+			>
+			<File
+				RelativePath=".\include\3d.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\CXBOXController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\CXBOXController.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Obj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Obj.h"
+				>
+			</File>
+			<Filter
+				Name="Audio"
+				>
+				<File
+					RelativePath=".\include\framework\aldlist.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\aldlist.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Vorbis\codec.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\CWaves.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\CWaves.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Framework.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Framework.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\LoadOAL.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\LoadOAL.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Ogg\ogg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Ogg\os_types.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\framework\Vorbis\vorbisfile.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -94,13 +94,37 @@ void Window::initializeGL()
 	
 	//Audio
 	audio.Play("Footsteps.wav");	//play audio cue
-
+	if(playerController.IsConnected())
+		printf("Player1 Controller XBOX is Connected...\n");
+	else 
+		printf("Player1 Controller XBOX not Connected...\n");
 	setVisible(true);
 }
 
 void Window::paintGL()
 { 
+	if(playerController.IsConnected())
+	{
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
+			{
+				playerController.Vibrate(65535, 0);
+			}
 
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
+			{
+				playerController.Vibrate(0, 65535);
+			}
+
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_X)
+			{
+				playerController.Vibrate(65535, 65535);
+			}
+
+			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)
+			{
+				playerController.Vibrate();
+			}
+	}
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){

@@ -14,8 +14,8 @@
 using namespace std;
 
 #include "vector.h"
-#include "3d.h"
-#include "obj.h"
+#include "include/3d.h"
+#include "include/obj.h"
 #include "camera.h"
 
 typedef unsigned char byte;
@@ -32,17 +32,18 @@ typedef unsigned char byte;
 #define RIGHT_ID		5									// The texture ID for the right side of the cube
 
 // Include OpenGL Library
-#include "GL/glew.h"
-#include "GL/gl.h"
-#include "GL/glu.h"
-#include "GL/al.h"
-#include "GL/alc.h"
-#include "GL/efx.h"
-#include "GL/efx-creative.h"
-#include "GL/EFX-Util.h"
-#include "GL/xram.h"
-#include "Framework/Framework.h"
-#include "Framework/Vorbis/vorbisfile.h"
+#include "include/glew.h"
+#include "include/gl.h"
+#include "include/glu.h"
+#include "include/al.h"
+#include "include/alc.h"
+#include "include/efx.h"
+#include "include/efx-creative.h"
+#include "include/EFX-Util.h"
+#include "include/xram.h"
+#include "include/CXBOXController.h"
+#include "include/Framework/Framework.h"
+#include "include/Framework/Vorbis/vorbisfile.h"
 
 //#include "GL/glut.h"
 //#pragma comment(lib, "lib/glut32.lib")
