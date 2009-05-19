@@ -7,16 +7,6 @@
 #include <gl\glu.h>										// Header File For The GLu32 Library
 #include <gl\glaux.h>
 
-UINT g_Texture[MAX_TEXTURES] = {0};						// This holds the texture info, referenced by an ID
-UINT g_TextureSkyBox[MAX_TEXTURES] = {0};						// This holds the texture info, referenced by an ID
-
-#define BACK_ID		0								// The texture ID for the back side of the cube
-#define FRONT_ID	1									// The texture ID for the front side of the cube
-#define BOTTOM_ID	2									// The texture ID for the bottom side of the cube
-#define TOP_ID		3									// The texture ID for the top side of the cube
-#define LEFT_ID		4									// The texture ID for the left side of the cube
-#define RIGHT_ID	5									// The texture ID for the right side of the cube
-
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -38,9 +28,9 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	fps=0;
 
 	//Inicializar camara
-	camera.eye = CVector3(0.0f,7.0f,15.0f);
+	/*camera.eye = CVector3(0.0f,7.0f,15.0f);
 	camera.up = CVector3(0.0f,1.0f,0.0f);
-	camera.center = CVector3(0.0f,5.5f,0.0f);
+	camera.center = CVector3(0.0f,5.5f,0.0f);*/
 	lastX=0;
 	lastY=0;
 
@@ -48,6 +38,9 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
+	camera.PositionCamera(	0 , 1.5f, 12,
+							0 , 0.5f, 0,
+							0 , 1   , 0);
 }
 
 Window::~Window()
@@ -62,106 +55,7 @@ void Window::resizeGL(int width, int height)
 	gluPerspective(45.0f, (float)width/(float)height, 0.1f, 1000.0f);
 }
 
-void Window::CreateSkyBoxTexture(UINT textureArray[], LPSTR strFileName, int textureID)
-{
-	QImage img(strFileName);			// Load the bitmap and store the data
 
-	g_TextureSkyBox[textureID]=bindTexture(img, GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-}
-
-
-void Window::CreateSkyBox(float x, float y, float z, float width, float height, float length)
-{
-	// Bind the BACK texture of the sky map to the BACK side of the cube
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[BACK_ID]);
-
-	// This centers the sky box around (x, y, z)
-	x = x - width  / 2;
-	y = y - height / 2;
-	z = z - length / 2;
-
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-		
-		// Assign the texture coordinates and vertices for the BACK Side
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y,			z);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z); 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,			y + height, z);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,			y,			z);
-		
-	glEnd();
-
-	// Bind the FRONT texture of the sky map to the FRONT side of the box
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[FRONT_ID]);
-
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);	
-	
-		// Assign the texture coordinates and vertices for the FRONT Side
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y,			z + length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y + height, z + length);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length); 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y,			z + length);
-	glEnd();
-
-	// Bind the BOTTOM texture of the sky map to the BOTTOM side of the box
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[BOTTOM_ID]);
-
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-	
-		// Assign the texture coordinates and vertices for the BOTTOM Side
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y,			z);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y,			z + length);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y,			z + length); 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y,			z);
-	glEnd();
-
-	// Bind the TOP texture of the sky map to the TOP side of the box
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[TOP_ID]);
-	
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-		
-		// Assign the texture coordinates and vertices for the TOP Side
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length); 
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y + height,	z + length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y + height,	z);
-		
-	glEnd();
-
-	// Bind the LEFT texture of the sky map to the LEFT side of the box
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[LEFT_ID]);
-	
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-		
-		// Assign the texture coordinates and vertices for the LEFT Side
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x,			y + height,	z);	
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x,			y + height,	z + length); 
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x,			y,			z + length);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x,			y,			z);		
-		
-	glEnd();
-
-	// Bind the RIGHT texture of the sky map to the RIGHT side of the box
-	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[RIGHT_ID]);
-
-	// Start drawing the side as a QUAD
-	glBegin(GL_QUADS);		
-
-		// Assign the texture coordinates and vertices for the RIGHT Side
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y,			z);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y,			z + length);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height,	z + length); 
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height,	z);
-	glEnd();
-}
 
 
 void Window::initializeGL()
@@ -169,13 +63,7 @@ void Window::initializeGL()
 	//showFullScreen();
 	setVSync(1);
 
-	//Skybox
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Back.bmp",	BACK_ID	 );
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Front.bmp",	FRONT_ID );
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Bottom.bmp",	BOTTOM_ID);
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Top.bmp",		TOP_ID	 );
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Left.bmp",	LEFT_ID	 );
-	CreateSkyBoxTexture(g_TextureSkyBox, "Textures/SkyBox/Right.bmp",	RIGHT_ID );
+	sky=new SkyBox(this);
 
 	//Model 1
 	g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");							//Load Model
@@ -208,18 +96,7 @@ void Window::initializeGL()
 	glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	glCullFace(GL_BACK);
 
-	//glEnable(GL_NORMALIZE);
-	//glPolygonOffset(1.0f,0.0);
-	//glEnable(GL_POLYGON_OFFSET_FILL);
-	/*glEnable (GL_FOG);
-	float c[3]={0.0f,0.0f,0.0f};
-	glFogi (GL_FOG_MODE, GL_EXP2); 
-	glFogfv (GL_FOG_COLOR, c); 
-	glFogf(GL_FOG_START,1.0);               
-	glFogf(GL_FOG_END,50.0);                  
-	glHint (GL_FOG_HINT, GL_NICEST);
-	glFogf (GL_FOG_DENSITY,  0.3f);*/
-
+	
 	//Audio
 	audio.Play("Footsteps.wav");	//play audio cue
 
@@ -228,7 +105,10 @@ void Window::initializeGL()
 void Window::paintGL()
 { 
 	//Display FPS
-	debugDisplay=QString("FPS: ")+QString::number(ratio)+QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
+	debugDisplay=QString("FPS: ")+QString::number(ratio)+
+		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
+		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
+		QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z);
 	renderText(10,10,debugDisplay);
 
 	//FPS counter
@@ -246,14 +126,16 @@ void Window::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-	gluLookAt(camera.eye.x, camera.eye.y, camera.eye.z, camera.center.x, camera.center.y, camera.center.z, camera.up.x, camera.up.y, camera.up.z);	
-	
-	CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
-	//glRotatef(g_RotateX, 0, 1.0f, 0);						// Rotate the object around the Y-Axis
-	//g_RotateX = (m_time.msecsTo(QTime::currentTime())/10)*g_RotationSpeed;							// Increase the speed of rotation
-    
-	//glScalef(5.3f,5.3f,5.3f);
+	// Camara
+	camera.Look();	
+
+	//Show SkyBox
+	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
+
+
+	
+
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
@@ -343,6 +225,7 @@ void Window::mousePressEvent(QMouseEvent *event)
 
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
+	
 	mX=event->x();
 	mY=event->y();
 
