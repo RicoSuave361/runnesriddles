@@ -28,9 +28,6 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	fps=0;
 
 	//Inicializar camara
-	/*camera.eye = CVector3(0.0f,7.0f,15.0f);
-	camera.up = CVector3(0.0f,1.0f,0.0f);
-	camera.center = CVector3(0.0f,5.5f,0.0f);*/
 	lastX=0;
 	lastY=0;
 
@@ -66,8 +63,8 @@ void Window::initializeGL()
 	sky=new SkyBox(this);
 
 	//Model 1
-	g_LoadObj.ImportObj(&g_3DModel, "Models/Box.obj");							//Load Model
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/bone.bmp", 255, 255, 255);	//Load model's texture
+	g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");							//Load Model
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/t2.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 
 	//Model 2
@@ -240,11 +237,6 @@ void Window::mouseMoveEvent(QMouseEvent *event)
 	printf("%d %d\n",lastX,lastY);
 	camera.Rotate(lastX,-lastY);
 	
-	//camera.Rotate(lastX*8,0);
-	//camera.Rotate(0,lastY*8);
-
-	//lastX=event->x();
-	//lastY=event->y();
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
@@ -253,16 +245,16 @@ void Window::keyPressEvent(QKeyEvent *event)
 		close();
 	}
 	if(event->key()==Qt::Key_A){
-		camera.StrafeCamera(0.5f);
+		camera.StrafeCamera(0.8f);
 	}
 	if(event->key()==Qt::Key_S){
-		camera.MoveCamera(0.5f);
+		camera.MoveCamera(0.8f);
 	}
 	if(event->key()==Qt::Key_D){
-		camera.StrafeCamera(-0.5f);
+		camera.StrafeCamera(-0.8f);
 	}
 	if(event->key()==Qt::Key_W){
-		camera.MoveCamera(-0.5f);
+		camera.MoveCamera(-0.8f);
 	}
 
 
