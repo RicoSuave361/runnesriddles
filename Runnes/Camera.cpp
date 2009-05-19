@@ -7,6 +7,13 @@ CCamera::CCamera(void)
 	angleX=0;
 	angleY=0;
 	currentRotX=lastRotX=0.0f;
+	CVector3 vZero = CVector3(0.0, 0.0, 0.0);		// Init a vVector to 0 0 0 for our position
+	CVector3 vView = CVector3(0.0, 1.0, 0.5);		// Init a starting view vVector (looking up and out the screen) 
+	CVector3 vUp   = CVector3(0.0, 0.0, 1.0);		// Init a standard up vVector (Rarely ever changes)
+
+	center	= vZero;					// Init the position to zero
+	eye		= vView;					// Init the view to a std starting view
+	up	= vUp;						// Init the UpVector
 }
 
 CCamera::~CCamera(void)
@@ -22,8 +29,8 @@ void CCamera::Rotate(int dx, int dy)
 	float angleY = 0.0f;
 	float angleZ = 0.0f;
 	if( (dx==0) && (dy==0) ) return;
-	angleY = (float)( dx ) / 1000.0f;		
-	angleZ = (float)( dy ) / 1000.0f;	
+	angleY = (float)( dx ) / 500.0f;		
+	angleZ = (float)( dy ) / 500.0f;	
 
 	lastRotX = currentRotX;
 	// Here we keep track of the current rotation (for up and down) so that
@@ -159,3 +166,11 @@ void CCamera::StrafeCamera(float speed)
 	eye.x += m_vStrafe.x * speed;
 	eye.z += m_vStrafe.z * speed;
 }
+
+void CCamera::Look()
+{
+		// Give openGL our camera position, then camera view, then camera up vector
+		gluLookAt(eye.x, eye.y, eye.z,	
+				  center.x,	 center.y,     center.z,	
+				  up.x, up.y, up.z);
+	}

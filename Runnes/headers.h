@@ -19,11 +19,17 @@ using namespace std;
 #include "camera.h"
 
 typedef unsigned char byte;
-#define SCREEN_WIDTH  1024				//Window width
-#define SCREEN_HEIGHT 768				//Window height
-#define SCREEN_DEPTH  32				//Color Depth
-#define MAX_PATH      260
-#define MAX_TEXTURES  100				// The maximum amount of textures to load
+#define SCREEN_WIDTH	1024				//Window width
+#define SCREEN_HEIGHT	768				//Window height
+#define SCREEN_DEPTH	32				//Color Depth
+#define MAX_PATH		260
+#define MAX_TEXTURES	100				// The maximum amount of textures to load
+#define BACK_ID			0								// The texture ID for the back side of the cube
+#define FRONT_ID		1									// The texture ID for the front side of the cube
+#define BOTTOM_ID		2									// The texture ID for the bottom side of the cube
+#define TOP_ID			3									// The texture ID for the top side of the cube
+#define LEFT_ID			4									// The texture ID for the left side of the cube
+#define RIGHT_ID		5									// The texture ID for the right side of the cube
 
 // Include OpenGL Library
 #include "GL/glew.h"

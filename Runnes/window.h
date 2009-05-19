@@ -3,6 +3,7 @@
 
 #include "headers.h"
 #include "audio.h"
+#include "skybox.h"
 #include <QtGui>
 #include <QGLWidget>
 
@@ -11,7 +12,6 @@ typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
 class Window : public QGLWidget
 {
 public:
-
 	unsigned int g_Texture[MAX_TEXTURES];			// This holds the texture info, referenced by an ID
 	CLoadObj g_LoadObj;								// This is OBJ class.  This should go in a good model class.
 	t3DModel g_3DModel;								// This holds the 3D Model info that we load in
@@ -19,6 +19,7 @@ public:
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 
 	Audio audio;									//Audio Initialize
+	SkyBox *sky;										//SkyBox Initialize
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
@@ -27,13 +28,12 @@ public:
 	QCursor *mouse;									//Mouse instance
 
 	void resizeGL(int width, int height);			//Window resize
+	unsigned int CreateSkyBoxTexture(const char* strFileName)
+	{
+		QImage img(strFileName);			// Load the bitmap and store the data
 
-	void CreateSkyBox(float x, float y, float z, 
-		float width, float height, float length);	//SkyBox
-
-	void CreateSkyBoxTexture(UINT textureArray[], 
-		LPSTR strFileName, int textureID);			//Create texture for skybox
-
+		return bindTexture(img, GL_TEXTURE_2D);
+	}
 	//VSync handler
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
 	void setVSync(int interval=1)
