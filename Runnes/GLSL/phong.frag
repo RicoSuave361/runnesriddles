@@ -24,7 +24,8 @@ void main()
 				sum=sum+amb+diff+spec;
             }
 	}
-        if(text==1) sum=texture2D(texture,gl_TexCoord[0].st)*sum;
+    if(text==1) 
+		sum=texture2D(texture,gl_TexCoord[0].st)*sum;
  	float fog = 1.0;
     if(fogA==1)
 	{

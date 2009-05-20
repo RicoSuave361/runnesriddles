@@ -13,7 +13,9 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	printf("Iniciando...\n");
+	a.setKeyboardInputInterval(1);
 	Window w(NULL);
+	
 	w.show();
 	w.setMouseTracking(true); // Detectar MouseMove
 	w.setVisible(true);

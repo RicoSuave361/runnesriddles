@@ -177,6 +177,7 @@ protected:
 	GLuint v,f,f2,p;
 	void initializeGL();
 	void paintGL();
+
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void keyPressEvent (QKeyEvent * event );
