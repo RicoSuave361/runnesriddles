@@ -108,22 +108,22 @@ void Window::initializeGL()
 	}
 	initShader(); 
 	//applyShader();	
-	for(int i=0; i<5; i++)
-		glUniform1i(getUniLoc(p, "activeLight[i]"), 0);
+	//for(int i=0; i<5; i++)
+	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
  
 
 }
 
 void Window::paintGL()
 { 
-unapplyShader();
+
+	unapplyShader();
 	if(playerController.IsConnected())
 	{
 			//if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
 			//{
 			//	playerController.Vibrate(65535, 0);
 			//}
-
 			//DPAD Move
 			if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
 			{
@@ -165,15 +165,6 @@ unapplyShader();
 	}
 
 
-	//FPS counter
-	++fps;
-	if(m_time.currentTime().second()!=sec && fps>0){
-		ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
-		sec=m_time.currentTime().second();
-		setWindowTitle(QString("FPS: ")+QString::number(ratio));
-		fps=0;
-	}
-
 	//OpenGL Initialize
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0);
@@ -184,30 +175,30 @@ unapplyShader();
 	camera.Look();	
 	glDisable(GL_LIGHTING);
 	//Show SkyBox
-	//sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
+	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
-
-	glEnable(GL_LIGHT0);								// Turn on a light with defaults set
+	applyShader();
+    glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHT1);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
-applyShader();
-	glUniform1i(getUniLoc(p, "activeLight[0]"),1);
+	glUniform1i(getUniLoc(p, "activeLight[1]"),1);
 	float white[]={1.0f,1.0f,1.0f,1.0f};
 	float zero[]={0.0f,0.0f,0.0f,1.0f};
-	float lightPos1[] = {0.0f, 1.50f, 0.0f, 0.0f};
+	float lightPos1[] = {49.0f, 1.50f, 38.0f, 1.0f};
 	float fAmbiental1[] = {0.8f, 0.8f, 0.8f, 1.0f};
-	float colorDiffuse1[] = {0.9f, 0.1f, 0.1f, 1.0f};
+	float colorDiffuse1[] = {0.6f, 0.4f, 0.3f, 1.0f};
 	float fSpecular2[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos1);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbiental1);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecular2);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffuse1);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, fSpecular2);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, colorDiffuse1);
 
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, fAmbiental1);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, white);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 20);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
 		// Make sure we have valid objects just in case. (size() is in the vector class)
@@ -220,15 +211,33 @@ applyShader();
 		if(pObject->bHasTexture) {
 
 			// Turn on texture mapping and turn off color
-			glEnable(GL_TEXTURE_2D);
 
 			// Reset the color to normal again
-			glColor3ub(255, 255, 255);
+//			glColor3ub(255, 255, 255);
 
 			// Bind the texture map to the object by it's materialID (*ID Current Unused*)
-			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
+			
+			if(pObject->materialID >= 0 ){
+				glUniform1i(getUniLoc(p, "text"), 1);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glEnable(GL_TEXTURE_2D);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
+				glUniform1i(getUniLoc(p, "texture"), 0);
+			}
+			else{
+				
+				glUniform1i(getUniLoc(p, "text"), 0);
+				// Turn off texture mapping and turn on color
+				glDisable(GL_TEXTURE_2D);
+
+				// Reset the color to normal again
+				glColor3ub(255, 255, 255);
+			}
 		} else {
 
+			glUniform1i(getUniLoc(p, "text"), 0);
 			// Turn off texture mapping and turn on color
 			glDisable(GL_TEXTURE_2D);
 
@@ -288,7 +297,7 @@ applyShader();
 
 		glEnd();								// End the drawing
 	}
-unapplyShader();
+	unapplyShader();
 
 	//Display FPS
 	debugDisplay=QString("FPS: ")+QString::number(ratio)+

@@ -32,6 +32,7 @@ void SkyBox::CreateSkyBoxTexture(const char* strFileName, int textureID)
 
 void SkyBox::CreateSkyBox(float x, float y, float z, float width, float height, float length)
 {
+	glEnable(GL_TEXTURE_2D);
 	// Bind the BACK texture of the sky map to the BACK side of the cube
 	glBindTexture(GL_TEXTURE_2D, g_TextureSkyBox[BACK_ID]);
 
