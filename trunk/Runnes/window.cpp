@@ -67,8 +67,8 @@ void Window::initializeGL()
 
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
-	//g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/t2.jpg", 255, 255, 255);
-	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
+	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/texture1.bmp", 255, 255, 255);
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
 
 
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
@@ -298,6 +298,15 @@ void Window::paintGL()
 		glEnd();								// End the drawing
 	}
 	unapplyShader();
+
+	//FPS counter
+	++fps;
+	if(m_time.currentTime().second()!=sec && fps>0){
+		ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
+		sec=m_time.currentTime().second();
+		setWindowTitle(QString("FPS: ")+QString::number(ratio));
+		fps=0;
+	}
 
 	//Display FPS
 	debugDisplay=QString("FPS: ")+QString::number(ratio)+
