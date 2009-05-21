@@ -225,8 +225,7 @@ void Window::paintGL()
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
 				glUniform1i(getUniLoc(p, "texture"), 0);
-			}
-			else{
+			}else{
 				
 				glUniform1i(getUniLoc(p, "text"), 0);
 				// Turn off texture mapping and turn on color
@@ -251,6 +250,7 @@ void Window::paintGL()
 			// Go through all of the faces (polygons) of the object and draw them
 			for(int j = 0; j < pObject->numOfFaces; j++)
 			{
+				
 				// Go through each corner of the triangle and draw it.
 				for(int whichVertex = 0; whichVertex < 3; whichVertex++)
 				{
