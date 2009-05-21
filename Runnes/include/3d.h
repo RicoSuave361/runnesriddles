@@ -1,6 +1,6 @@
 #ifndef _3D_INFO
 #define _3D_INFO
-
+#include "vector.h"
 // This is our face structure.  This is is used for indexing into the vertex 
 // and texture coordinate arrays.  From this information we know which vertices
 // from our vertex array go to which face, along with the correct texture coordinates.

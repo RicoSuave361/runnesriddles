@@ -7,6 +7,7 @@
 #include <vector>	
 #include <math.h>
 #include <algorithm>
+#include <float.h>
 
 #pragma warning(disable:4996)
 #pragma warning(disable:4244)
@@ -31,6 +32,11 @@ typedef unsigned char byte;
 #define LEFT_ID			4									// The texture ID for the left side of the cube
 #define RIGHT_ID		5									// The texture ID for the right side of the cube
 #define GAMETIME		m_time.msecsTo(QTime::currentTime())
+#define PI 3.1415926535897932					// This is our famous PI
+#define BEHIND		0
+#define INTERSECTS	1
+#define FRONT		2
+
 
 
 // Include OpenGL Library
@@ -47,7 +53,7 @@ typedef unsigned char byte;
 #include "include/Framework/Vorbis/vorbisfile.h"
 #include "include/XInput.h"
 #include "include/CXBOXController.h"
-
+//#include "include/3DMath.h"
 // Now, the XInput Library
 // NOTE: COMMENT THIS OUT IF YOU ARE NOT USING A COMPILER THAT SUPPORTS THIS METHOD OF LINKING LIBRARIES
 

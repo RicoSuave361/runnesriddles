@@ -24,6 +24,7 @@ public:
 	int angleX;
 	int angleY;
 	int angleZ;
+	float m_radius;								
 	void Look();
 	
 	void PositionCamera(float positionX, float positionY, float positionZ,
@@ -42,4 +43,5 @@ public:
 		up = vUpVector;					// Assign the up vector
 	}
 
+	void CheckCameraCollision(CVector3 *pVertices, int numOfVerts);
 };
