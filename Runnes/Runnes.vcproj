@@ -233,10 +233,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SkyBox.h"
 				>
 			</File>
