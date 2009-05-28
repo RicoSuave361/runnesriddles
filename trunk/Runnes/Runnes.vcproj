@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Frustum.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -217,11 +221,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Frustum.h"
+				>
+			</File>
+			<File
 				RelativePath=".\headers.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Matrix.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
@@ -346,6 +358,10 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\Runnes1.rc"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

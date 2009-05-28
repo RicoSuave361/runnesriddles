@@ -39,6 +39,9 @@ public:
 	// If we just want a color, pass in NULL for strFile.
 	void AddMaterial(t3DModel *pModel, char *strName, char *strFile, 
 					 int r = 255,      int g = 255,   int b = 255);
+
+	//setea el maximo y el minimo para el box
+	void SetMaxMin(t3DModel *pModel);
 	// This tells us if the current object has texture coordinates
 	bool m_bObjectHasUV;
 

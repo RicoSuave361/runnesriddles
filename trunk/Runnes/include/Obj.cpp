@@ -278,12 +278,33 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 		}
 	}
 
+	CVector3 aux_max,aux_min;
+	bool no_vacia = 0 < pObject->numOfVerts;
 	// Go through all the vertices in the object
 	for(i = 0; i < pObject->numOfVerts; i++)
 	{
 		// Copy the current vertice from the temporary list to our Model list
 		pObject->pVerts[i] = m_pVertices[i];
+		
+		//obtengo el los vectores maximos y minimo para poder armar el box
+		if(no_vacia)
+		{
+			no_vacia = false;
+			aux_max = m_pVertices[0];
+			aux_min = m_pVertices[0];
+		}else{
+			if(aux_max.x < m_pVertices[i].x) aux_max.x = m_pVertices[i].x;
+			if(aux_max.y < m_pVertices[i].y) aux_max.y = m_pVertices[i].y;
+			if(aux_max.z < m_pVertices[i].z) aux_max.z = m_pVertices[i].z;
+
+			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
+			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
+			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
+		}
 	}
+	//asigno el max y min al obj
+	pObject->Max = aux_max;
+	pObject->Min = aux_min;
 
 	// Go through all of the texture coordinates in the object (if any)
 	for(i = 0; i < pObject->numTexVertex; i++)
@@ -509,6 +530,23 @@ void CLoadObj::ComputeNormals(t3DModel *pModel)
 }
 
 
+//setea el maximo y el minimo para el box
+void SetMaxMin(t3DModel *pModel)
+{
+	//if(pModel->pObject.empty()) return;
+	//CVector3 *aux_vertices;
+
+	//for(int i = 0; i < pModel->pObject.size() ; i++ )
+	//{
+		//aux_vertices = pModel->pObject[i].pVerts;
+
+		//for(int j = 0 ; j < pModel->pObject[i].pVerts->size() ; j++ )
+		//{
+		
+		//}
+	//}
+	//pModel->pObject[]
+}
 /////////////////////////////////////////////////////////////////////////////////
 // First, no .obj file format is going to be the same.  When you import/export
 // .obj files anywhere, each application has their own way of saving it.  Some

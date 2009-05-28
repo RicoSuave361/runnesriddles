@@ -36,6 +36,7 @@ struct t3DObject
 	CVector3  *pNormals;		// The object's normals
 	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object
+	CVector3 Max,Min;			// el maximo y minimo para el box 
 };
 
 //Model information, OBJ Container (Model will can have one or more objects)

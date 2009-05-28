@@ -18,6 +18,7 @@ using namespace std;
 #include "include/3d.h"
 #include "include/obj.h"
 #include "camera.h"
+#include "Frustum.h"
 
 typedef unsigned char byte;
 #define SCREEN_WIDTH	1024				//Window width

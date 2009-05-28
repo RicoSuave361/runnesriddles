@@ -57,7 +57,7 @@ void Window::initializeGL()
 {
 	//showFullScreen();
 	setVSync(1);
-
+	g_bIgnoreFrustum = false;
 	sky=new SkyBox(this);
 
 	//Model 1
@@ -198,15 +198,28 @@ void Window::paintGL()
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 20);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	
+	//numeros de objetos pintados
+	int nrObjectDraw = 0;
+
+	// Calculate the frustum each frame
+	g_Frustum.CalculateFrustum();
 
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
+		
 		// Make sure we have valid objects just in case. (size() is in the vector class)
 		if(g_3DModel.pObject.size() <= 0) break;
 
 		// Get the current object that we are displaying
 		t3DObject *pObject = &g_3DModel.pObject[i];
 
+		//preguntamos que objetos vamos a pintar
+		if(g_bIgnoreFrustum || g_Frustum.isDrawBox(pObject->Max,pObject->Min))
+		//if(g_bIgnoreFrustum || g_Frustum.PointInFrustum(pObject->Max.x,pObject->Max.y,pObject->Max.z) || g_Frustum.PointInFrustum(pObject->Min.x,pObject->Min.y,pObject->Min.z))
+		{
+			nrObjectDraw++;
+			//g_Frustum.DrawBox(pObject->Max,pObject->Min);
 		// Check to see if this object has a texture map, if so bind the texture to it.
 		if(pObject->bHasTexture) {
 
@@ -296,6 +309,7 @@ void Window::paintGL()
 			}
 
 		glEnd();								// End the drawing
+		}//fin del frustum
 	}
 	unapplyShader();
 
@@ -313,7 +327,7 @@ void Window::paintGL()
 		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
 		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
 		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
-		QString(" GameTime: ")+QString::number(GAMETIME);
+		QString(" GameTime: ")+QString::number(GAMETIME)+QString("NRO objetos pintados: ")+QString::number(nrObjectDraw);
 		
 	renderText(10,10,debugDisplay);
 }
