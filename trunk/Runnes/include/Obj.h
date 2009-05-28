@@ -1,6 +1,9 @@
 #ifndef _OBJ_H
 #define _OBJ_H
 
+#define MINF 1.7e-300
+#define INF 1.7e+300
+
 #include "headers.h"
 #include "3d.h"
 

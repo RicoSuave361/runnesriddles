@@ -219,7 +219,8 @@ void Window::paintGL()
 		//if(g_bIgnoreFrustum || g_Frustum.PointInFrustum(pObject->Max.x,pObject->Max.y,pObject->Max.z) || g_Frustum.PointInFrustum(pObject->Min.x,pObject->Min.y,pObject->Min.z))
 		{
 			nrObjectDraw++;
-			//g_Frustum.DrawBox(pObject->Max,pObject->Min);
+			g_Frustum.DrawBox(pObject->Max,pObject->Min);
+			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 		// Check to see if this object has a texture map, if so bind the texture to it.
 		if(pObject->bHasTexture) {
 
