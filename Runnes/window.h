@@ -3,6 +3,7 @@
 
 #include "headers.h"
 #include "audio.h"
+
 #include "skybox.h"
 #include <QtGui>
 #include <QGLWidget>
@@ -24,6 +25,9 @@ public:
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
+
+	CFrustum g_Frustum;										// esta es nuestra piramide truncada
+	bool g_bIgnoreFrustum;									// boleano que me la activa o no
 
     QTime m_time;									//Gametime
 	QCursor *mouse;									//Mouse instance
@@ -163,6 +167,8 @@ public:
 		{
 			glUseProgram(0);
 		}
+
+	//void DrawBox(CVector3 Maximo,CVector3 Minimo);	
 
 protected:
     QTimer *m_timer;
