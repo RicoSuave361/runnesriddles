@@ -22,7 +22,7 @@ public:
 
 	void DrawBox(CVector3 Maximo,CVector3 Minimo);
 
-	bool isDrawBox(CVector3 Maximo,CVector3 Minimo);
+	bool isDrawBox(CVector3 ma,CVector3 me);
 
 private:
 

@@ -279,15 +279,47 @@ bool CFrustum::CubeInFrustum( float x, float y, float z, float size )
 
 	return true;
 }
-void CFrustum::DrawBox(CVector3 Maximo, CVector3 Minimo)
+void CFrustum::DrawBox(CVector3 maximo, CVector3 minimo)
 {
-	glColor3f(1.0f,0.0f,0.0f);
+	//glColor3f(1.0f,0.0f,0.0f);
+	 glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	
 	glBegin(GL_QUADS);
-		glVertex3f(Maximo.x,Maximo.y,Maximo.z);
-		glVertex3f(Maximo.x,Minimo.y,Maximo.z);
-		glVertex3f(Minimo.x,Maximo.y,Maximo.z);
-		glVertex3f(Minimo.x,Maximo.y,Minimo.z);
+
+		glColor3f(1.0f,0.0f,0.0f);
+
+		glVertex3f(minimo.x,minimo.y,maximo.z);
+		glVertex3f(maximo.x,minimo.y,maximo.z);
+		glVertex3f(maximo.x,maximo.y,maximo.z);
+		glVertex3f(minimo.x,maximo.y,maximo.z);
+
+		glVertex3f(minimo.x,maximo.y,maximo.z);
+		glVertex3f(maximo.x,maximo.y,maximo.z);
+		glVertex3f(maximo.x,maximo.y,minimo.z);
+		glVertex3f(minimo.x,maximo.y,minimo.z);
+
+		glVertex3f(minimo.x,maximo.y,minimo.z);
+		glVertex3f(maximo.x,maximo.y,minimo.z);
+		glVertex3f(maximo.x,minimo.y,minimo.z);
+		glVertex3f(minimo.x,minimo.y,minimo.z);
+
+		glVertex3f(minimo.x,minimo.y,minimo.z);
+		glVertex3f(maximo.x,minimo.y,minimo.z);
+		glVertex3f(maximo.x,minimo.y,maximo.z);
+		glVertex3f(minimo.x,minimo.y,maximo.z);
+
+		glVertex3f(maximo.x,minimo.y,maximo.z);
+		glVertex3f(maximo.x,minimo.y,minimo.z);
+		glVertex3f(maximo.x,maximo.y,minimo.z);
+		glVertex3f(maximo.x,maximo.y,maximo.z);
+
+		glVertex3f(minimo.x,minimo.y,minimo.z);
+		glVertex3f(minimo.x,minimo.y,maximo.z);
+		glVertex3f(minimo.x,maximo.y,maximo.z);
+		glVertex3f(minimo.x,maximo.y,minimo.z);
+
 	glEnd();
+	//glColor3f(1.0f,0.0f,0.0f);
 }
 
 bool CFrustum::isDrawBox(CVector3 Maximo, CVector3 Minimo)

@@ -278,8 +278,8 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 		}
 	}
 
-	CVector3 aux_max,aux_min;
-	bool no_vacia = 0 < pObject->numOfVerts;
+	CVector3 aux_max(MINF,MINF,MINF),aux_min(INF,INF,INF);
+	//bool no_vacia = 0 < pObject->numOfVerts;
 	// Go through all the vertices in the object
 	for(i = 0; i < pObject->numOfVerts; i++)
 	{
@@ -287,20 +287,20 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 		pObject->pVerts[i] = m_pVertices[i];
 		
 		//obtengo el los vectores maximos y minimo para poder armar el box
-		if(no_vacia)
-		{
-			no_vacia = false;
-			aux_max = m_pVertices[0];
-			aux_min = m_pVertices[0];
-		}else{
+		//if(no_vacia)
+		//{
+			//no_vacia = false;
+			//aux_max = m_pVertices[0];
+			//aux_min = m_pVertices[0];
+		//}else{
 			if(aux_max.x < m_pVertices[i].x) aux_max.x = m_pVertices[i].x;
 			if(aux_max.y < m_pVertices[i].y) aux_max.y = m_pVertices[i].y;
 			if(aux_max.z < m_pVertices[i].z) aux_max.z = m_pVertices[i].z;
 
 			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
-			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
-			if(aux_min.x > m_pVertices[i].x) aux_min.x = m_pVertices[i].x;
-		}
+			if(aux_min.y > m_pVertices[i].y) aux_min.y = m_pVertices[i].y;
+			if(aux_min.z > m_pVertices[i].z) aux_min.z = m_pVertices[i].z;
+		//}
 	}
 	//asigno el max y min al obj
 	pObject->Max = aux_max;
