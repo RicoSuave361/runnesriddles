@@ -305,7 +305,10 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 	//asigno el max y min al obj
 	pObject->Max = aux_max;
 	pObject->Min = aux_min;
+	pObject->center = CVector3((aux_max.x + aux_min.x)/2.0f,(aux_max.y + aux_min.y)/2.0f,(aux_max.z + aux_min.z)/2.0f);
+	pObject->radio = sqrt( (aux_max.x-aux_min.x)*(aux_max.x-aux_min.x) + (aux_max.y-aux_min.y)*(aux_max.y-aux_min.y) + (aux_max.z-aux_min.z)*(aux_max.z-aux_min.z))/2.0f;
 
+	
 	// Go through all of the texture coordinates in the object (if any)
 	for(i = 0; i < pObject->numTexVertex; i++)
 	{
