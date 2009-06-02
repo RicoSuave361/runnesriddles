@@ -215,7 +215,7 @@ void Window::paintGL()
 		t3DObject *pObject = &g_3DModel.pObject[i];
 
 		//preguntamos que objetos vamos a pintar
-		if(g_bIgnoreFrustum || g_Frustum.isDrawBox(pObject->Max,pObject->Min))
+		if(g_bIgnoreFrustum || /*g_Frustum.isDrawBox(pObject->Max,pObject->Min)*/ g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio))
 		//if(g_bIgnoreFrustum || g_Frustum.PointInFrustum(pObject->Max.x,pObject->Max.y,pObject->Max.z) || g_Frustum.PointInFrustum(pObject->Min.x,pObject->Min.y,pObject->Min.z))
 		{
 			nrObjectDraw++;
