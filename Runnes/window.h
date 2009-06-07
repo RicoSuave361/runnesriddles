@@ -28,7 +28,8 @@ public:
 	Window(QWidget *parent);						//Window Handler
 	~Window();
 
-	HeightMap hp;									
+	HeightMap hp;	
+	HeightMap escalera;									
 
 	CFrustum g_Frustum;								// esta es nuestra piramide truncada
 	bool g_bIgnoreFrustum;							// boleano que me la activa o no

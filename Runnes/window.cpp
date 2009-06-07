@@ -67,11 +67,11 @@ void Window::initializeGL()
 
 	printf("Load Model...");
 	//Model 1
-	/*
-	g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");							//Load Model
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/t2.jpg", 255, 255, 255);	//Load model's texture
+	
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stair.obj");							//Load Model
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/stairTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
-
+/*
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
 	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/texture1.bmp", 255, 255, 255);
@@ -94,14 +94,23 @@ void Window::initializeGL()
 	hp.LoadRawFile("Models/floorHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
 	QImage img("Textures/floorTexture.jpg");
 	hp.texture=bindTexture(img, GL_TEXTURE_2D);
+
+	escalera.LoadRawFile("Models/stairsHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+998);
+	img=QImage("Textures/stairTexture.jpg");
+	escalera.texture=bindTexture(img, GL_TEXTURE_2D);
+
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	//glCullFace(GL_BACK);
 
 	hp.setTransformation(CVector3(-100,-10,-100),CVector3(100,10,100));
+	escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
+	
 	//Audio
 	audio.Play("Footsteps.wav");	//play audio cue
+
+
 	if(playerController.IsConnected())
 		printf("Player1 Controller XBOX is Connected...\n");
 	else 
@@ -271,9 +280,18 @@ void Window::paintGL()
 	// Calcular Posicion de heightMap
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
-	if(vPos.y < hp.Height2(vPos.x, vPos.z ) + 10 || vPos.y > hp.Height2(vPos.x, vPos.z ) + 10)
+	bool piso;
+	float hPiso=hp.Height2(vPos.x, vPos.z );
+	float hEscalera=escalera.Height2(vPos.x, vPos.z);	
+	float h;
+	if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
+		h=hPiso;
+	else 
+		h=hEscalera;
+
+	if(vPos.y < h + 5 || vPos.y > h + 5)
 	{
-		vNewPos.y = hp.Height2(vPos.x, vPos.z ) + 10;
+		vNewPos.y = h + 10;
 		float temp = vNewPos.y - vPos.y;
 		CVector3 vView = camera.eye;
 		vView.y += temp;
@@ -287,8 +305,9 @@ void Window::paintGL()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, hp.texture);
 	glUniform1i(getUniLoc(p, "texture"), 0);
-	hp.RenderHeightMap();
 
+	hp.RenderHeightMap();
+	escalera.RenderHeightMap();
 
 
 	//Draw OBJ
