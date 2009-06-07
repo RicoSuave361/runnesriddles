@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Particles.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SkyBox.cpp"
 				>
 			</File>
@@ -241,7 +245,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Particles.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SkyBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SystemParticle.h"
 				>
 			</File>
 			<File

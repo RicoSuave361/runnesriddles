@@ -5,6 +5,7 @@
 #include "audio.h"
 #include "skybox.h"
 #include "HeightMap.h"
+#include "SystemParticle.h"
 #include <QtGui>
 #include <QGLWidget>
 
@@ -38,10 +39,11 @@ public:
 	QCursor *mouse;									//Mouse instance
 
 	void resizeGL(int width, int height);			//Window resize
-
+	SystemParticle *sp;
 	bool kL,kD,kR,kU;
 	int nrObjectDraw;
 	void drawObj(int ID);
+	float dead,dt;
 	//VSync handler
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
 	void setVSync(int interval=1)
