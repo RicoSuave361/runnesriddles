@@ -11,6 +11,9 @@
 
 #pragma warning(disable:4996)
 #pragma warning(disable:4244)
+#pragma warning(disable:4305)
+#pragma warning(disable:4056)
+#pragma warning(disable:4756)
 
 using namespace std;
 
@@ -20,24 +23,26 @@ using namespace std;
 #include "camera.h"
 #include "Frustum.h"
 
-typedef unsigned char byte;
-#define SCREEN_WIDTH	1024				//Window width
-#define SCREEN_HEIGHT	768				//Window height
-#define SCREEN_DEPTH	32				//Color Depth
+typedef unsigned char	byte;
+#define SCREEN_WIDTH	1024								//Window width
+#define SCREEN_HEIGHT	768									//Window height
+#define SCREEN_DEPTH	32									//Color Depth
 #define MAX_PATH		260
-#define MAX_TEXTURES	100				// The maximum amount of textures to load
-#define BACK_ID			0								// The texture ID for the back side of the cube
+#define MAX_TEXTURES	100									// The maximum amount of textures to load
+#define BACK_ID			0									// The texture ID for the back side of the cube
 #define FRONT_ID		1									// The texture ID for the front side of the cube
 #define BOTTOM_ID		2									// The texture ID for the bottom side of the cube
 #define TOP_ID			3									// The texture ID for the top side of the cube
 #define LEFT_ID			4									// The texture ID for the left side of the cube
 #define RIGHT_ID		5									// The texture ID for the right side of the cube
 #define GAMETIME		m_time.msecsTo(QTime::currentTime())
-#define PI 3.1415926535897932					// This is our famous PI
-#define BEHIND		0
-#define INTERSECTS	1
-#define FRONT		2
-
+#define PI				3.1415926535897932					// This is our famous PI
+#define BEHIND			0
+#define INTERSECTS		1
+#define FRONT			2
+#define MAP_SIZE		1024								// This is the size of our .raw height map
+#define STEP_SIZE		16  								    // This is width and height of each QUAD
+#define HEIGHT_RATIO	1.5f								// This is the ratio that the Y is scaled according to the X and Z
 
 
 // Include OpenGL Library
@@ -66,5 +71,7 @@ typedef unsigned char byte;
 #pragma comment(lib, "lib/OpenAL32.lib")
 #pragma comment(lib, "lib/EFX-Util.lib")
 #pragma comment(lib, "lib/XInput.lib")
+
+
 
 #endif

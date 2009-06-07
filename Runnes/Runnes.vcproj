@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HeightMap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -226,6 +230,10 @@
 			</File>
 			<File
 				RelativePath=".\headers.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HeightMap.h"
 				>
 			</File>
 			<File
