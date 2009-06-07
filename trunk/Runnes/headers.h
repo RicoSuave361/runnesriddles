@@ -43,7 +43,7 @@ typedef unsigned char	byte;
 #define MAP_SIZE		1024								// This is the size of our .raw height map
 #define STEP_SIZE		16  								    // This is width and height of each QUAD
 #define HEIGHT_RATIO	1.5f								// This is the ratio that the Y is scaled according to the X and Z
-#define MAX_PARTICLES	2024 // Maximum number of particles
+#define MAX_PARTICLES	1024 // Maximum number of particles
 
 // Include OpenGL Library
 #include "include/glew.h"

@@ -18,7 +18,7 @@ bool Particles::init(const CVector3 &p, const CVector3 &v, float lifeSpan, float
 	vel = v; // Set the velocity
 	posIni=p;
 	// Don't allow initialization of a "dead" particle 
-	if(lifeSpan <= 0.0f)
+	if(lifeSpan <= 0.0f) 
 		return false;
 	
 	life = lifeSpan; // Set the time, in seconds, the particle will remain alive
