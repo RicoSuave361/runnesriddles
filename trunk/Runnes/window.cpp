@@ -99,7 +99,7 @@ void Window::initializeGL()
 	img=QImage("Textures/stairTexture.jpg");
 	escalera.texture=bindTexture(img, GL_TEXTURE_2D);
 
-	glEnable(GL_COLOR_MATERIAL);						// Allow color	
+	glEnable(GL_COLOR_MATERIAL);					// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	//glCullFace(GL_BACK);
@@ -132,7 +132,7 @@ void Window::initializeGL()
 	//for(int i=0; i<5; i++)
 	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
  
-
+	sp=new SystemParticle(bindTexture(QImage("Textures/particle.bmp")));
 }
 void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
@@ -319,6 +319,13 @@ void Window::paintGL()
 
 	unapplyShader();
 
+	
+		dead=GAMETIME/1000.0f;
+		dt=dead-dt;
+	sp->render(dt);
+		dt=dead;
+
+		glColor4ub(255,255,255,255);
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
