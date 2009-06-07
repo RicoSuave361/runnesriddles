@@ -97,7 +97,7 @@ void CCamera::RotateView(float angle, float x, float y, float z)
 	CVector3 vNewView;
 
 	// Get the view vector (The direction we are facing)
-	CVector3 vView = center - eye;		
+	CVector3 vView = eye - center;		
 
 	// Calculate the sine and cosine of the angle once
 	float cosTheta = (float)cos(angle);

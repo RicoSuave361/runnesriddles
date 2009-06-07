@@ -111,7 +111,7 @@ void HeightMap::SetVertexColor(int x, int y)
 }
 float HeightMap::Height(float X, float Y)
 {
-	if(!pHeightMap) return 0;
+	if(!pHeightMap) return -100;
 	int xMin=int(X);
 	int yMin=int(Y);
 	int xMax=xMin;
@@ -141,8 +141,8 @@ float HeightMap::Height(float X, float Y)
 float HeightMap::Height2(float X, float Y)
 {
 
-	if(X<pMin.x || X>pMax.x || Y<pMin.z || Y>pMax.z) return 0;
-	if(!pHeightMap) return 0;
+	if(X<pMin.x || X>pMax.x || Y<pMin.z || Y>pMax.z) return -100;
+	if(!pHeightMap) return -100;
 	X+=-pMin.x;
 	Y+=-pMin.z;
 	float pX=fabs(X/float(dX));
