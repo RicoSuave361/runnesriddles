@@ -3,8 +3,8 @@
 
 #include "headers.h"
 #include "audio.h"
-
 #include "skybox.h"
+#include "HeightMap.h"
 #include <QtGui>
 #include <QGLWidget>
 
@@ -19,26 +19,28 @@ public:
 	float g_RotateX;								// This is the current value at which the model is rotated
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 
+    GLuint primitiveList;
+
 	Audio audio;									//Audio Initialize
-	SkyBox *sky;										//SkyBox Initialize
+	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
 
-	CFrustum g_Frustum;										// esta es nuestra piramide truncada
-	bool g_bIgnoreFrustum;									// boleano que me la activa o no
+	HeightMap hp;									
+
+	CFrustum g_Frustum;								// esta es nuestra piramide truncada
+	bool g_bIgnoreFrustum;							// boleano que me la activa o no
 
     QTime m_time;									//Gametime
 	QCursor *mouse;									//Mouse instance
 
 	void resizeGL(int width, int height);			//Window resize
-	unsigned int CreateSkyBoxTexture(const char* strFileName)
-	{
-		QImage img(strFileName);			// Load the bitmap and store the data
 
-		return bindTexture(img, GL_TEXTURE_2D);
-	}
+	bool kL,kD,kR,kU;
+	int nrObjectDraw;
+	void drawObj(int ID);
 	//VSync handler
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
 	void setVSync(int interval=1)
@@ -187,6 +189,7 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void keyPressEvent (QKeyEvent * event );
+	void keyReleaseEvent(QKeyEvent * event );
 };
 
 #endif // WINDOW_H

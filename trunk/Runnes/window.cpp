@@ -12,7 +12,7 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
 	// Inicializar Widget
 	//setCursor(Qt::CrossCursor);							//Setea el cursor de mouse como una cruz
-	setCursor(QCursor(QPixmap("textures/transparent.png")));//Setea el cursor de mouse como transparente
+	setCursor(Qt::BlankCursor);
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -38,6 +38,10 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	camera.PositionCamera(	0 , 1.5f, 12,
 							0 , 0.5f, 0,
 							0 , 1   , 0);
+	kL=false;
+	kD=false;
+	kR=false;
+	kU=false;
 }
 
 Window::~Window()
@@ -55,12 +59,15 @@ void Window::resizeGL(int width, int height)
 
 void Window::initializeGL()
 {
+    primitiveList  = glGenLists(1000);
 	//showFullScreen();
 	setVSync(1);
 	g_bIgnoreFrustum = false;
 	sky=new SkyBox(this);
 
+	printf("Load Model...");
 	//Model 1
+	/*
 	g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");							//Load Model
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/t2.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
@@ -70,7 +77,7 @@ void Window::initializeGL()
 	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/texture1.bmp", 255, 255, 255);
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
 
-
+*/
 	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
 	{
 		// Check if the current material has a file name
@@ -83,13 +90,16 @@ void Window::initializeGL()
 		// Assign the material ID to the current material
 		g_3DModel.pMaterials[i].texureId = i;
 	}
-
+	printf(" End...\n");
+	hp.LoadRawFile("Models/floorHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
+	QImage img("Textures/floorTexture.jpg");
+	hp.texture=bindTexture(img, GL_TEXTURE_2D);
 	glEnable(GL_COLOR_MATERIAL);						// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	glEnable(GL_CULL_FACE);								// Enables Backface Culling
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
+	//glCullFace(GL_BACK);
 
-	
+	hp.setTransformation(CVector3(-100,-10,-100),CVector3(100,10,100));
 	//Audio
 	audio.Play("Footsteps.wav");	//play audio cue
 	if(playerController.IsConnected())
@@ -106,6 +116,8 @@ void Window::initializeGL()
 		printf("OpenGL 2.0 not supported\n");
 		exit(1);
 	}
+	
+	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
 	initShader(); 
 	//applyShader();	
 	//for(int i=0; i<5; i++)
@@ -113,7 +125,58 @@ void Window::initializeGL()
  
 
 }
-
+void Window::drawObj(int ID){
+	if(g_3DModel.pObject.size() <= ID) return;
+	t3DObject *pObject = &g_3DModel.pObject[ID];
+	
+	if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
+		return;
+	
+	nrObjectDraw++;
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	if(pObject->bHasTexture) {			
+		if(pObject->materialID >= 0 ){
+			glUniform1i(getUniLoc(p, "text"), 1);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glEnable(GL_TEXTURE_2D);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
+			glUniform1i(getUniLoc(p, "texture"), 0);
+		}else{
+			glUniform1i(getUniLoc(p, "text"), 0);
+			glDisable(GL_TEXTURE_2D);
+			glColor3ub(255, 255, 255);
+		}
+	} else {
+		glUniform1i(getUniLoc(p, "text"), 0);
+		glDisable(GL_TEXTURE_2D);
+		glColor3ub(255, 255, 255);
+	}
+	glBegin(GL_TRIANGLES);
+		for(int j = 0; j < pObject->numOfFaces; j++)
+		{
+			for(int whichVertex = 0; whichVertex < 3; whichVertex++)
+			{
+				int vertIndex = pObject->pFaces[j].vertIndex[whichVertex];
+				glNormal3f(pObject->pNormals[ vertIndex ].x, pObject->pNormals[ vertIndex ].y, pObject->pNormals[ vertIndex ].z);
+				if(pObject->bHasTexture) {
+					if(pObject->pTexVerts) {
+						int coordIndex = pObject->pFaces[j].coordIndex[whichVertex];
+						glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
+					}
+				} else {
+					if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
+					{
+						BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
+						glColor3ub(pColor[0], pColor[1], pColor[2]);
+					}	
+				}
+				glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
+			}
+		}
+	glEnd();
+}
 void Window::paintGL()
 { 
 
@@ -200,118 +263,41 @@ void Window::paintGL()
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	
 	//numeros de objetos pintados
-	int nrObjectDraw = 0;
+	nrObjectDraw = 0;
 
-	// Calculate the frustum each frame
+	// Calcular frustum
 	g_Frustum.CalculateFrustum();
 
+	// Calcular Posicion de heightMap
+	CVector3 vPos		= camera.center;
+	CVector3 vNewPos    = vPos;
+	if(vPos.y < hp.Height2(vPos.x, vPos.z ) + 10 || vPos.y > hp.Height2(vPos.x, vPos.z ) + 10)
+	{
+		vNewPos.y = hp.Height2(vPos.x, vPos.z ) + 10;
+		float temp = vNewPos.y - vPos.y;
+		CVector3 vView = camera.eye;
+		vView.y += temp;
+		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
+	}
+
+	glUniform1i(getUniLoc(p, "text"), 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, hp.texture);
+	glUniform1i(getUniLoc(p, "texture"), 0);
+	hp.RenderHeightMap();
+
+
+
+	//Draw OBJ
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
-		
-		// Make sure we have valid objects just in case. (size() is in the vector class)
-		if(g_3DModel.pObject.size() <= 0) break;
-
-		// Get the current object that we are displaying
-		t3DObject *pObject = &g_3DModel.pObject[i];
-
-		//preguntamos que objetos vamos a pintar
-		if(g_bIgnoreFrustum || /*g_Frustum.isDrawBox(pObject->Max,pObject->Min)*/ g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio))
-		//if(g_bIgnoreFrustum || g_Frustum.PointInFrustum(pObject->Max.x,pObject->Max.y,pObject->Max.z) || g_Frustum.PointInFrustum(pObject->Min.x,pObject->Min.y,pObject->Min.z))
-		{
-			nrObjectDraw++;
-			g_Frustum.DrawBox(pObject->Max,pObject->Min);
-			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-		// Check to see if this object has a texture map, if so bind the texture to it.
-		if(pObject->bHasTexture) {
-
-			// Turn on texture mapping and turn off color
-
-			// Reset the color to normal again
-//			glColor3ub(255, 255, 255);
-
-			// Bind the texture map to the object by it's materialID (*ID Current Unused*)
-			
-			if(pObject->materialID >= 0 ){
-				glUniform1i(getUniLoc(p, "text"), 1);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glEnable(GL_TEXTURE_2D);
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-				glUniform1i(getUniLoc(p, "texture"), 0);
-			}else{
-				
-				glUniform1i(getUniLoc(p, "text"), 0);
-				// Turn off texture mapping and turn on color
-				glDisable(GL_TEXTURE_2D);
-
-				// Reset the color to normal again
-				glColor3ub(255, 255, 255);
-			}
-		} else {
-
-			glUniform1i(getUniLoc(p, "text"), 0);
-			// Turn off texture mapping and turn on color
-			glDisable(GL_TEXTURE_2D);
-
-			// Reset the color to normal again
-			glColor3ub(255, 255, 255);
-		}
-
-		// This determines if we are in wire frame or normal mode
-		glBegin(GL_TRIANGLES);					// Begin drawing with our selected mode (triangles or lines)
-
-			// Go through all of the faces (polygons) of the object and draw them
-			for(int j = 0; j < pObject->numOfFaces; j++)
-			{
-				
-				// Go through each corner of the triangle and draw it.
-				for(int whichVertex = 0; whichVertex < 3; whichVertex++)
-				{
-					// Get the vertex index for each point of the face
-					int vertIndex = pObject->pFaces[j].vertIndex[whichVertex];
-			
-					// Give OpenGL the normal for this vertex.
-					glNormal3f(pObject->pNormals[ vertIndex ].x, pObject->pNormals[ vertIndex ].y, pObject->pNormals[ vertIndex ].z);
-				
-					// If the object has a texture associated with it, give it a texture coordinate.
-					if(pObject->bHasTexture) {
-
-						// Make sure there was a UVW map applied to the object or else it won't have tex coords.
-						if(pObject->pTexVerts) {
-
-							// Get the texture coordinate index
-							int coordIndex = pObject->pFaces[j].coordIndex[whichVertex];
-
-							// Assign the UV coordinates to the current vertex being rendered
-							glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
-						}
-					} else {
-
-						// Make sure there is a valid material/color assigned to this object.
-						// You should always at least assign a material color to an object, 
-						// but just in case we want to check the size of the material list.
-						// if the size is at least one, and the material ID != -1,
-						// then we have a valid material.
-						if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
-						{
-							// Get and set the color that the object is, since it must not have a texture
-							BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
-
-							// Assign the current color to this model
-							glColor3ub(pColor[0], pColor[1], pColor[2]);
-						}
-						
-					}
-
-					// Pass in the current vertex of the object (Corner of current face)
-					glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
-				}
-			}
-
-		glEnd();								// End the drawing
-		}//fin del frustum
+		//break;
+		drawObj(i);
 	}
+
 	unapplyShader();
 
 	//FPS counter
@@ -328,7 +314,7 @@ void Window::paintGL()
 		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
 		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
 		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
-		QString(" GameTime: ")+QString::number(GAMETIME)+QString("NRO objetos pintados: ")+QString::number(nrObjectDraw);
+		QString(" GameTime: ")+QString::number(GAMETIME)+QString(" NRO objetos pintados: ")+QString::number(nrObjectDraw);
 		
 	renderText(10,10,debugDisplay);
 }
@@ -360,33 +346,54 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(event->key()==Qt::Key_Escape){
 		close();
 	}
-	if(event->key()==Qt::Key_A){
-		camera.StrafeCamera(1.8f);
+	if(event->key()==Qt::Key_A || event->key()==Qt::Key_Left){
+		kL=true;
 	}
-	if(event->key()==Qt::Key_S){
-		camera.MoveCamera(1.8f);
+	if(event->key()==Qt::Key_S || event->key()==Qt::Key_Down){
+		kD=true;
 	}
-	if(event->key()==Qt::Key_D){
-		camera.StrafeCamera(-1.8f);
+	if(event->key()==Qt::Key_D || event->key()==Qt::Key_Right){
+		kR=true;
 	}
-	if(event->key()==Qt::Key_W){
-		camera.MoveCamera(-1.8f);
+	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
+		kU=true;
 	}
 
+	if(kL) camera.StrafeCamera(1.8f);
+	if(kD) camera.MoveCamera(1.8f);
+	if(kR) camera.StrafeCamera(-1.8f);
+	if(kU) camera.MoveCamera(-1.8f);
 
 	if(event->key()==Qt::Key_0)
 	{
 		if(this->isFullScreen())
 		{
 			showNormal();
-			setCursor(QCursor(QPixmap("textures/transparent.png"))); //Mouse transparente
+			setCursor(Qt::BlankCursor);
 			//setCursor(Qt::CrossCursor);
 		}
 		else
 		{
 			showFullScreen();
-			setCursor(QCursor(QPixmap("textures/transparent.png"))); //Mouse transparente
+			setCursor(Qt::BlankCursor);	
 		}
 	}
+}
+void Window::keyReleaseEvent(QKeyEvent *event)
+{
+
+	if(event->key()==Qt::Key_A || event->key()==Qt::Key_Left){
+		kL=false;
+	}
+	if(event->key()==Qt::Key_S || event->key()==Qt::Key_Down){
+		kD=false;
+	}
+	if(event->key()==Qt::Key_D || event->key()==Qt::Key_Right){
+		kR=false;
+	}
+	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
+		kU=false;
+	}
+
 }
 
