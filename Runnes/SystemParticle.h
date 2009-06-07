@@ -10,8 +10,8 @@ public:
 			gParticles[i].init(
 			CVector3(70.0f,10.0f,70.0f),	// Posicion
 			CVector3( RAND(-0.25f, 0.25f), // Direccion
-						RAND(0.5f, 1.5f),   
-					   RAND(-1.0f, 1.0f)
+					  RAND(0.5f, 1.5f),   
+					  RAND(-1.0f, 1.0f)
 					 ),
 			RAND(1.0f, 5.0f),				 // Tiempo de Vida
 			1.75f,						     // Tamaño
