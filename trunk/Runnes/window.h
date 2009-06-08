@@ -119,7 +119,7 @@ public:
 			return loc;
 		}
 
-		void initShader(void)
+		void initShader(const char* vr,const char* fr, GLuint &pp)
 		{
 			char *vs = NULL,*fs = NULL,*fs2 = NULL;
 			
@@ -127,13 +127,11 @@ public:
 			v = glCreateShader(GL_VERTEX_SHADER);
 			f = glCreateShader(GL_FRAGMENT_SHADER);
 			
-			char cwd[]="./glsl/phong.vert";
-				//=_getcwd(NULL,0);
-			//strcat( cwd, "./glsl/phong.vert");
+			char cwd[1000];
+			strcpy(cwd,vr);
 
-			char cwd2[]="./glsl/phong.frag";
-				//_getcwd(NULL,0);
-			//strcat( cwd2, "./glsl/phong.frag");
+			char cwd2[1000];
+			strcpy(cwd2,fr);
 
 			vs =  textFileRead(cwd);
 			fs = textFileRead(cwd2);
@@ -153,19 +151,19 @@ public:
 			glCompileShader(f);
 
 			//crea el programa
-			p = glCreateProgram();
+			pp = glCreateProgram();
 
 			//adjunta el shader al programa creado
-			glAttachShader(p,f);
-			glAttachShader(p,v);
+			glAttachShader(pp,f);
+			glAttachShader(pp,v);
 
 			//se enlaza el programa
-			glLinkProgram(p);
+			glLinkProgram(pp);
 		}
 
-		void applyShader(void)
+		void applyShader(GLuint &pp)
 		{
-			glUseProgram(p);
+			glUseProgram(pp);
 		}
 
 		void unapplyShader(void)
@@ -185,7 +183,7 @@ protected:
 	float posX, posZ;
 	float viewX, viewY;
 	CCamera camera;
-	GLuint v,f,f2,p;
+	GLuint v,f,f2,p,p2;
 	void initializeGL();
 	void paintGL();
 

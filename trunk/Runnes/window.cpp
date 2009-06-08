@@ -71,6 +71,9 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stair.obj");							//Load Model
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/stairTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
+	g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
 /*
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
@@ -127,7 +130,8 @@ void Window::initializeGL()
 	}
 	
 	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
-	initShader(); 
+	initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
+	initShader("./glsl/morph.vert","./glsl/morph.frag",p2); 
 	//applyShader();	
 	//for(int i=0; i<5; i++)
 	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
@@ -145,20 +149,20 @@ void Window::drawObj(int ID){
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	if(pObject->bHasTexture) {			
 		if(pObject->materialID >= 0 ){
-			glUniform1i(getUniLoc(p, "text"), 1);
+			glUniform1i(getUniLoc(p2, "text"), 1);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glEnable(GL_TEXTURE_2D);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-			glUniform1i(getUniLoc(p, "texture"), 0);
+			glUniform1i(getUniLoc(p2, "texture"), 0);
 		}else{
-			glUniform1i(getUniLoc(p, "text"), 0);
+			glUniform1i(getUniLoc(p2, "text"), 0);
 			glDisable(GL_TEXTURE_2D);
 			glColor3ub(255, 255, 255);
 		}
 	} else {
-		glUniform1i(getUniLoc(p, "text"), 0);
+		glUniform1i(getUniLoc(p2, "text"), 0);
 		glDisable(GL_TEXTURE_2D);
 		glColor3ub(255, 255, 255);
 	}
@@ -247,9 +251,9 @@ void Window::paintGL()
 	camera.Look();	
 	glDisable(GL_LIGHTING);
 	//Show SkyBox
-	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
+//	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
-	applyShader();
+	applyShader(p2);
     glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHT1);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
@@ -257,10 +261,12 @@ void Window::paintGL()
 	float white[]={1.0f,1.0f,1.0f,1.0f};
 	float zero[]={0.0f,0.0f,0.0f,1.0f};
 	float lightPos1[] = {49.0f, 1.50f, 38.0f, 1.0f};
-	float fAmbiental1[] = {0.8f, 0.8f, 0.8f, 1.0f};
+	float fAmbiental1[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	float fAmbiental2[] = {0.6f, 0.6f, 0.6f, 1.0f};
 	float colorDiffuse1[] = {0.6f, 0.4f, 0.3f, 1.0f};
 	float fSpecular2[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
+	glLightfv(GL_LIGHT1, GL_AMBIENT, fAmbiental2);
 	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, fSpecular2);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, colorDiffuse1);
@@ -274,7 +280,7 @@ void Window::paintGL()
 	//numeros de objetos pintados
 	nrObjectDraw = 0;
 
-	// Calcular frustum
+/*	// Calcular frustum
 	g_Frustum.CalculateFrustum();
 
 	// Calcular Posicion de heightMap
@@ -305,24 +311,36 @@ void Window::paintGL()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, hp.texture);
 	glUniform1i(getUniLoc(p, "texture"), 0);
+	glUniform1f(getUniLoc(p, "time"), GAMETIME/1000.0f);
 
 	hp.RenderHeightMap();
 	escalera.RenderHeightMap();
 
 
 	//Draw OBJ
-	for(int i = 0; i < g_3DModel.numOfObjects; i++)
+	for(int i = 0; i < g_3DModel.numOfObjects-1; i++)
 	{
 		//break;
 		drawObj(i);
 	}
+*/
+	//unapplyShader();
+//applyShader(p2);
+	glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
+
+	for(float i=-5.0f;i<5.0f;i+=1.0f){
+		for(float j=-5.0f;j<5.0f;j+=1.0f){
+			glPushMatrix();
+			glTranslatef(i,0.0f,j);
+			drawObj(g_3DModel.numOfObjects-1);
+			glPopMatrix();
+		}
+	}
 
 	unapplyShader();
-
-	
 		dead=GAMETIME/1000.0f;
 		dt=dead-dt;
-	sp->render(dt);
+	sp->render(dt);  
 		dt=dead;
 
 		glColor4ub(255,255,255,255);
