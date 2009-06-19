@@ -5,8 +5,9 @@
 #include <math.h>
 #include <gl\gl.h>										// Header File For The OpenGL32 Library
 #include <gl\glu.h>										// Header File For The GLu32 Library
-#include <gl\glaux.h>
+#include "include\glaux.h"
 
+#define DIS_SHADER
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -68,9 +69,10 @@ void Window::initializeGL()
 	printf("Load Model...");
 	//Model 1
 	
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stair.obj");							//Load Model
+	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj");							//Load Model
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/stairTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
+
 	g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
@@ -94,14 +96,13 @@ void Window::initializeGL()
 		g_3DModel.pMaterials[i].texureId = i;
 	}
 	printf(" End...\n");
+/*
 	hp.LoadRawFile("Models/floorHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
-	QImage img("Textures/floorTexture.jpg");
-	hp.texture=bindTexture(img, GL_TEXTURE_2D);
+	hp.texture=bindTexture(QImage("Textures/floorTexture.jpg"), GL_TEXTURE_2D);
 
 	escalera.LoadRawFile("Models/stairsHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+998);
-	img=QImage("Textures/stairTexture.jpg");
-	escalera.texture=bindTexture(img, GL_TEXTURE_2D);
-
+	escalera.texture=bindTexture(QImage("Textures/stairTexture.jpg"), GL_TEXTURE_2D);
+*/
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
@@ -120,23 +121,27 @@ void Window::initializeGL()
 		printf("Player1 Controller XBOX not Connected...\n");
 	setVisible(true);
 
-	glewInit();//shader
-	if (glewIsSupported("GL_VERSION_2_0"))
-		printf("Ready for OpenGL 2.0\n");
-	else 
-	{
-		printf("OpenGL 2.0 not supported\n");
-		exit(1);
-	}
-	
+	#ifndef DIS_SHADER
+		glewInit();//shader
+		if (glewIsSupported("GL_VERSION_2_0"))
+			printf("Ready for OpenGL 2.0\n");
+		else 
+		{
+			printf("OpenGL 2.0 not supported\n");
+			exit(1);
+		}
+	#endif
 	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
-	initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
-	initShader("./glsl/morph.vert","./glsl/morph.frag",p2); 
+
+	#ifndef DIS_SHADER
+		initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
+		initShader("./glsl/morph.vert","./glsl/morph.frag",p2); 
+	#endif
 	//applyShader();	
 	//for(int i=0; i<5; i++)
 	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
  
-	sp=new SystemParticle(bindTexture(QImage("Textures/particle.bmp")));
+//	sp=new SystemParticle(bindTexture(QImage("Textures/particle.bmp")));
 }
 void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
@@ -149,20 +154,26 @@ void Window::drawObj(int ID){
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	if(pObject->bHasTexture) {			
 		if(pObject->materialID >= 0 ){
-			glUniform1i(getUniLoc(p2, "text"), 1);
+			#ifndef DIS_SHADER
+				glUniform1i(getUniLoc(p2, "text"), 1);
+				glActiveTexture(GL_TEXTURE0);
+				glUniform1i(getUniLoc(p2, "texture"), 0);
+			#endif
+			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glEnable(GL_TEXTURE_2D);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
-			glUniform1i(getUniLoc(p2, "texture"), 0);
 		}else{
-			glUniform1i(getUniLoc(p2, "text"), 0);
+			#ifndef DIS_SHADER
+				glUniform1i(getUniLoc(p2, "text"), 0);
+			#endif
 			glDisable(GL_TEXTURE_2D);
 			glColor3ub(255, 255, 255);
 		}
 	} else {
-		glUniform1i(getUniLoc(p2, "text"), 0);
+		#ifndef DIS_SHADER
+			glUniform1i(getUniLoc(p2, "text"), 0);
+		#endif
 		glDisable(GL_TEXTURE_2D);
 		glColor3ub(255, 255, 255);
 	}
@@ -193,7 +204,7 @@ void Window::drawObj(int ID){
 void Window::paintGL()
 { 
 
-	unapplyShader();
+//	unapplyShader();
 	if(playerController.IsConnected())
 	{
 			//if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
@@ -240,7 +251,6 @@ void Window::paintGL()
 			}
 	}
 
-
 	//OpenGL Initialize
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0);
@@ -250,14 +260,18 @@ void Window::paintGL()
 	// Camara
 	camera.Look();	
 	glDisable(GL_LIGHTING);
+	
 	//Show SkyBox
 //	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
 
-	applyShader(p2);
-    glShadeModel(GL_SMOOTH);
+	#ifndef DIS_SHADER
+		applyShader(p2);
+		glUniform1i(getUniLoc(p, "activeLight[1]"),1);
+	#endif
+
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHT1);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
-	glUniform1i(getUniLoc(p, "activeLight[1]"),1);
 	float white[]={1.0f,1.0f,1.0f,1.0f};
 	float zero[]={0.0f,0.0f,0.0f,1.0f};
 	float lightPos1[] = {49.0f, 1.50f, 38.0f, 1.0f};
@@ -280,13 +294,14 @@ void Window::paintGL()
 	//numeros de objetos pintados
 	nrObjectDraw = 0;
 
-/*	// Calcular frustum
+	// Calcular frustum
 	g_Frustum.CalculateFrustum();
 
 	// Calcular Posicion de heightMap
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
 	bool piso;
+	/*
 	float hPiso=hp.Height2(vPos.x, vPos.z );
 	float hEscalera=escalera.Height2(vPos.x, vPos.z);	
 	float h;
@@ -303,18 +318,22 @@ void Window::paintGL()
 		vView.y += temp;
 		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
 	}
-
-	glUniform1i(getUniLoc(p, "text"), 1);
+*/
+	#ifndef DIS_SHADER
+		glUniform1i(getUniLoc(p, "text"), 1);
+		glUniform1i(getUniLoc(p, "texture"), 0);
+		glUniform1f(getUniLoc(p, "time"), GAMETIME/1000.0f);
+		glActiveTexture(GL_TEXTURE0);
+	#endif
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glEnable(GL_TEXTURE_2D);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, hp.texture);
-	glUniform1i(getUniLoc(p, "texture"), 0);
-	glUniform1f(getUniLoc(p, "time"), GAMETIME/1000.0f);
-
+	
+	/*glBindTexture(GL_TEXTURE_2D, hp.texture);
 	hp.RenderHeightMap();
-	escalera.RenderHeightMap();
+	
+	glBindTexture(GL_TEXTURE_2D, escalera.texture);
+	escalera.RenderHeightMap();*/
 
 
 	//Draw OBJ
@@ -323,27 +342,31 @@ void Window::paintGL()
 		//break;
 		drawObj(i);
 	}
-*/
-	//unapplyShader();
-//applyShader(p2);
-	glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
 
-	for(float i=-5.0f;i<5.0f;i+=1.0f){
+	#ifndef DIS_SHADER
+		unapplyShader();
+		applyShader(p2);
+		glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
+	#endif
+
+
+	/* for(float i=-5.0f;i<5.0f;i+=1.0f){
 		for(float j=-5.0f;j<5.0f;j+=1.0f){
 			glPushMatrix();
 			glTranslatef(i,0.0f,j);
 			drawObj(g_3DModel.numOfObjects-1);
 			glPopMatrix();
 		}
-	}
-
+	} */
+/*
 	unapplyShader();
 		dead=GAMETIME/1000.0f;
 		dt=dead-dt;
 	sp->render(dt);  
 		dt=dead;
+*/
 
-		glColor4ub(255,255,255,255);
+	glColor3f(1.0f,1.0f,1.0f);
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
