@@ -17,6 +17,8 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	memset(blur_s,0,sizeof(blur_s));
+pas=0;
 	// Auto llamadas cada 1ms al updateGL
 	m_timer = new QTimer(this);
     m_timer->setInterval(1);
@@ -303,17 +305,26 @@ void Window::paintGL()
 	CVector3 vNewPos    = vPos;
 	bool piso;
 	
-	float hPiso=hp.Height2(vPos.x, vPos.z );
+
+
+	float h=hp.Height2(vPos.x, vPos.z );
 	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
-	float h;
+	//float h;
 	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
-		h=hPiso;
+	//	h=hPiso;
 	//else 
 	//	h=hEscalera;
 
-	if(vPos.y < h + 5 || vPos.y > h + 5)
+	if(vPos.y < h + 30 || vPos.y > h + 30)
 	{
-		vNewPos.y = h + 10;
+		
+		blur_s[pas]=h;
+		pas=(pas+1)%BLUR_STEP;
+		prom=0.0f;
+		for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
+		prom/=float(BLUR_STEP);
+		h=prom;
+		vNewPos.y = h + 30;
 		float temp = vNewPos.y - vPos.y;
 		CVector3 vView = camera.eye;
 		vView.y += temp;
