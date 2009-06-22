@@ -54,7 +54,7 @@ void Window::resizeGL(int width, int height)
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, (float)width/(float)height, 0.1f, 1000.0f);
+	gluPerspective(45.0f, (float)width/(float)height, 0.1f, 10000.0f);
 }
 
 
@@ -70,12 +70,12 @@ void Window::initializeGL()
 	//Model 1
 	
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj");							//Load Model
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/stairTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/planeTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
+	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
+	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
 /*
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
@@ -96,10 +96,10 @@ void Window::initializeGL()
 		g_3DModel.pMaterials[i].texureId = i;
 	}
 	printf(" End...\n");
-/*
-	hp.LoadRawFile("Models/floorHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
-	hp.texture=bindTexture(QImage("Textures/floorTexture.jpg"), GL_TEXTURE_2D);
 
+	hp.LoadRawFile("Textures/planeHeightMap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
+	hp.texture=bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D);
+/*
 	escalera.LoadRawFile("Models/stairsHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+998);
 	escalera.texture=bindTexture(QImage("Textures/stairTexture.jpg"), GL_TEXTURE_2D);
 */
@@ -107,12 +107,13 @@ void Window::initializeGL()
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	//glCullFace(GL_BACK);
-
-	hp.setTransformation(CVector3(-100,-10,-100),CVector3(100,10,100));
-	escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
+	CVector3 c1 = g_3DModel.pObject[0].Min + CVector3(-140, 45, 0);
+	CVector3 c2 = g_3DModel.pObject[0].Max + CVector3(-140, 45, 0);
+	hp.setTransformation(c1 , c2);
+	//escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
 	
 	//Audio
-	audio.Play("Footsteps.wav");	//play audio cue
+	//audio.Play("Footsteps.wav");	//play audio cue
 
 
 	if(playerController.IsConnected())
@@ -262,7 +263,7 @@ void Window::paintGL()
 	glDisable(GL_LIGHTING);
 	
 	//Show SkyBox
-//	sky->CreateSkyBox(0, 0, 0, 400, 200, 400); //Setea el skybox
+	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096); //Setea el skybox
 
 	#ifndef DIS_SHADER
 		applyShader(p2);
@@ -301,14 +302,14 @@ void Window::paintGL()
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
 	bool piso;
-	/*
+	
 	float hPiso=hp.Height2(vPos.x, vPos.z );
-	float hEscalera=escalera.Height2(vPos.x, vPos.z);	
+	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
 	float h;
-	if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
+	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
 		h=hPiso;
-	else 
-		h=hEscalera;
+	//else 
+	//	h=hEscalera;
 
 	if(vPos.y < h + 5 || vPos.y > h + 5)
 	{
@@ -318,7 +319,7 @@ void Window::paintGL()
 		vView.y += temp;
 		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
 	}
-*/
+
 	#ifndef DIS_SHADER
 		glUniform1i(getUniLoc(p, "text"), 1);
 		glUniform1i(getUniLoc(p, "texture"), 0);
@@ -329,18 +330,18 @@ void Window::paintGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glEnable(GL_TEXTURE_2D);
 	
-	/*glBindTexture(GL_TEXTURE_2D, hp.texture);
+	glBindTexture(GL_TEXTURE_2D, hp.texture);
 	hp.RenderHeightMap();
-	
+	/*
 	glBindTexture(GL_TEXTURE_2D, escalera.texture);
 	escalera.RenderHeightMap();*/
 
 
 	//Draw OBJ
-	for(int i = 0; i < g_3DModel.numOfObjects-1; i++)
+	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
 		//break;
-		drawObj(i);
+		//drawObj(i);
 	}
 
 	#ifndef DIS_SHADER
