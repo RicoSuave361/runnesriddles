@@ -8,7 +8,7 @@ Audio::Audio(void)
 	{
 		ALFWprintf("Failed to initialize OpenAL\n");
 		ALFWShutdown();
-		exit(0);
+		//exit(0);
 	}
 	// Generate an AL Buffer
 	alGenBuffers( 1, &uiBuffer );
