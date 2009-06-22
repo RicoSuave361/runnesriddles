@@ -94,7 +94,6 @@ CVector3 HeightMap::hpToOb(CVector3 a){
 	a.y=pMin.y+dY*pY;
 	a.z=pMin.z+dZ*pZ;
 
-
 	return a;
 
 }
@@ -149,7 +148,7 @@ float HeightMap::Height2(float X, float Y)
 	float pZ=fabs(Y/float(dZ));
 
 	
-	float pY=Height(pX*MAP_SIZE,pZ*MAP_SIZE)/255.0f;
+	float pY=Height(pX*float(MAP_SIZE),pZ*float(MAP_SIZE))/255.0f;
 
 	return pMin.y+dY*pY;
 

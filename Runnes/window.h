@@ -183,6 +183,10 @@ protected:
 	float posX, posZ;
 	float viewX, viewY;
 	CCamera camera;
+	float hant;
+	float blur_s[BLUR_STEP];
+	int pas;
+	float prom;
 	GLuint v,f,f2,p,p2;
 	void initializeGL();
 	void paintGL();
