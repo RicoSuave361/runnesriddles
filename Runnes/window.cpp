@@ -75,9 +75,37 @@ void Window::initializeGL()
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/planeTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
 
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
-	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
-	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower1Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower2Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 2,2);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower3Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 3,3);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower4Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 4,4);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/castleTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 5,5);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/roomTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 6, 6);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tunnelTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 7, 7);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/doorTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 8, 8);
 /*
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
@@ -109,8 +137,8 @@ void Window::initializeGL()
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	//glCullFace(GL_BACK);
-	CVector3 c1 = g_3DModel.pObject[0].Min + CVector3(-140, 45, 0);
-	CVector3 c2 = g_3DModel.pObject[0].Max + CVector3(-140, 45, 0);
+	CVector3 c1 = g_3DModel.pObject[0].Min + CVector3(-20, 30, 0);
+	CVector3 c2 = g_3DModel.pObject[0].Max + CVector3(-20, 30, 0);
 	hp.setTransformation(c1 , c2);
 	//escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
 	
@@ -131,7 +159,7 @@ void Window::initializeGL()
 		else 
 		{
 			printf("OpenGL 2.0 not supported\n");
-			exit(1);
+			//exit(1);
 		}
 	#endif
 	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
@@ -350,10 +378,10 @@ void Window::paintGL()
 
 
 	//Draw OBJ
-	for(int i = 0; i < g_3DModel.numOfObjects; i++)
+	for(int i = 1; i < g_3DModel.numOfObjects; i++)
 	{
 		//break;
-		//drawObj(i);
+		drawObj(i);
 	}
 
 	#ifndef DIS_SHADER
