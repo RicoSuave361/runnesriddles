@@ -380,6 +380,19 @@ void Window::paintGL()
 */
 
 	glColor3f(1.0f,1.0f,1.0f);
+	
+	//Panel On Screen
+	orthogonalStart();
+
+		glBegin(GL_QUADS);
+			glVertex2f(500, 500);
+			glVertex2f(500, 375);
+			glVertex2f(375, 375);
+			glVertex2f(375, 500);
+		glEnd();
+
+	orthogonalEnd();
+
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
@@ -399,17 +412,7 @@ void Window::paintGL()
 	renderText(10,10,debugDisplay);
 
 
-/*
-	orthogonalStart();
 
-	glBegin(GL_QUADS);
-		glVertex2f(125, 125);
-		glVertex2f(125, 375);
-		glVertex2f(375, 375);
-		glVertex2f(375, 125);
-	glEnd();
-
-	orthogonalEnd();*/
 }
 void Window::mousePressEvent(QMouseEvent *event)
 {	
