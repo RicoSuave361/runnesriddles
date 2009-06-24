@@ -26,7 +26,7 @@ using namespace std;
 
 typedef unsigned char	byte;
 #define SCREEN_WIDTH	1024								//Window width
-#define SCREEN_HEIGHT	768									//Window height
+#define SCREEN_HEIGHT	700									//Window height
 #define SCREEN_DEPTH	32									//Color Depth
 #define MAX_PATH		260
 #define MAX_TEXTURES	100									// The maximum amount of textures to load
@@ -45,7 +45,7 @@ typedef unsigned char	byte;
 #define STEP_SIZE		64  								    // This is width and height of each QUAD
 #define HEIGHT_RATIO	1.5f								// This is the ratio that the Y is scaled according to the X and Z
 #define MAX_PARTICLES	1024 // Maximum number of particles
-#define BLUR_STEP		15
+#define BLUR_STEP		8
 
 // Include OpenGL Library
 #include "include/glew.h"

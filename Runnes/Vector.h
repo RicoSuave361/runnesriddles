@@ -22,6 +22,11 @@ public:
 		x = X; y = Y; z = Z;
 	}
 
+	inline void set(float x_, float y_, float z_)
+	{
+		x = x_, y = y_, z = z_;
+	}
+
 	CVector3 operator+(const CVector3 &vVector)
 	{
 		return CVector3(vVector.x + x, vVector.y + y, vVector.z + z);
@@ -542,7 +547,24 @@ public:
 	{
 		return CVector2(x / num, y / num);
 	}
+	
+	void CVector2::Normalize()
+	{
+		float distance = (float)sqrt((float)(x*x + y*y));
+		if (distance==0.0) return;
 
+		x /= distance;
+		y /= distance;
+	}
+
+	static float Dot(CVector2 vVector1, CVector2 vVector2) 
+	{
+		// The dot product is this equation: V1.V2 = (V1.x * V2.x  +  V1.y * V2.y  +  V1.z * V2.z)
+		// In math terms, it looks like this:  V1.V2 = ||V1|| ||V2|| cos(theta)
+		
+				 //    (V1.x * V2.x        +        V1.y * V2.y        +        V1.z * V2.z)
+		return ( (vVector1.x * vVector2.x) + (vVector1.y * vVector2.y));
+	}
 	float x, y;
 };
 
