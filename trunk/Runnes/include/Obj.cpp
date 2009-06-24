@@ -3,6 +3,14 @@
 
 //This function loads a .obj file into a specified model by a .obj file name
 
+bool closeEnough(float f1, float f2)
+{
+    // Determines whether the two floating-point values f1 and f2 are
+    // close enough together that they can be considered equal.
+
+    return fabsf((f1 - f2) / ((f2 == 0.0f) ? 1.0f : f2)) < 1e-6f;
+}
+
 bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 {
 	char strMessage[255] = {0};				// This will be used for error messages
@@ -25,6 +33,9 @@ bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 
 	// Now that we have the file read in, let's compute the vertex normals for lighting
 	ComputeNormals(pModel);
+
+	//Calcular las tangentes
+	ComputeTang(pModel);
 
 	// Close the .obj file that we opened
 	fclose(m_FilePointer);
@@ -231,7 +242,7 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 		pObject->pTexVerts = new CVector2 [pObject->numTexVertex];
 		pObject->bHasTexture = true;
 	}	
-
+	pObject->materialID = -1;
 	// Go through all of the faces in the object
 	for(i = 0; i < pObject->numOfFaces; i++)
 	{
@@ -496,7 +507,7 @@ void CLoadObj::ComputeNormals(t3DModel *pModel)
 
 			pNormals[i] = vNormal;						// Assign the normal to the list of normals
 		}
-
+		pObject->pNormalsFaces=pNormals;
 		//////////////// Now Get The Vertex Normals /////////////////
 
 		CVector3 vSum;
@@ -528,9 +539,52 @@ void CLoadObj::ComputeNormals(t3DModel *pModel)
 	
 		// Free our memory and start over on the next object
 		delete [] pTempNormals;
-		delete [] pNormals;
 	}
 }
+
+void CLoadObj::ComputeTang(t3DModel *pModel)
+{
+	CVector3 vVector1, vVector2, vNormal, vPoly[3];
+	CVector2 vCoord[3];
+	// If there are no objects, we can skip this part
+	if(pModel->numOfObjects <= 0)
+		return;
+
+		float tangent[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+
+	for(int index = 0; index < pModel->numOfObjects; index++)
+	{
+		// Get the current object
+		t3DObject *pObject = &(pModel->pObject[index]);
+
+		pObject->pTang		= new CVector4 [pObject->numOfVerts];
+
+		// Go though all of the faces of this object
+		for(int i=0; i < pObject->numOfFaces; i++)
+		{												
+			// To cut down LARGE code, we extract the 3 points of this face
+			vPoly[0] = pObject->pVerts[pObject->pFaces[i].vertIndex[0]];
+			vPoly[1] = pObject->pVerts[pObject->pFaces[i].vertIndex[1]];
+			vPoly[2] = pObject->pVerts[pObject->pFaces[i].vertIndex[2]];
+			vCoord[0]=pObject->pTexVerts[pObject->pFaces[i].coordIndex[0]];
+			vCoord[1]=pObject->pTexVerts[pObject->pFaces[i].coordIndex[1]];
+			vCoord[2]=pObject->pTexVerts[pObject->pFaces[i].coordIndex[2]];
+
+
+			CalcTangentVector(
+            vPoly[0], vPoly[1], vPoly[2],
+            vCoord[0], vCoord[1], vCoord[2],
+            pObject->pNormalsFaces[i], tangent);
+
+			pObject->pTang[pObject->pFaces[i].vertIndex[0]]=CVector4(tangent[0],tangent[1],tangent[2],tangent[3]);
+			pObject->pTang[pObject->pFaces[i].vertIndex[1]]=CVector4(tangent[0],tangent[1],tangent[2],tangent[3]);
+			pObject->pTang[pObject->pFaces[i].vertIndex[2]]=CVector4(tangent[0],tangent[1],tangent[2],tangent[3]);
+
+		}
+	}
+
+}
+
 
 
 //setea el maximo y el minimo para el box
@@ -592,3 +646,108 @@ void SetMaxMin(t3DModel *pModel)
 //
 // I will eventually add this to a 3D Loading Library along with the other formats.
 // Let us know if this helps you out!
+
+void CLoadObj::CalcTangentVector(const CVector3 pos1, const CVector3 pos2,
+                       const CVector3 pos3, const CVector2 texCoord1,
+                       const CVector2 texCoord2, const CVector2 texCoord3,
+                       const CVector3 normal, float tangent[4])
+{
+    // Given the 3 vertices (position and texture coordinates) of a triangle
+    // calculate and return the triangle's tangent vector.
+
+    // Create 2 vectors in object space.
+    //
+    // edge1 is the vector from vertex positions pos1 to pos2.
+    // edge2 is the vector from vertex positions pos1 to pos3.
+    CVector3 edge1(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z);
+    CVector3 edge2(pos3.x - pos1.x, pos3.y - pos1.y, pos3.z - pos1.z);
+
+    edge1.Normalize();
+    edge2.Normalize();
+
+    // Create 2 vectors in tangent (texture) space that point in the same
+    // direction as edge1 and edge2 (in object space).
+    //
+    // texEdge1 is the vector from texture coordinates texCoord1 to texCoord2.
+    // texEdge2 is the vector from texture coordinates texCoord1 to texCoord3.
+    CVector2 texEdge1(texCoord2.x - texCoord1.x, texCoord2.y - texCoord1.y);
+    CVector2 texEdge2(texCoord3.x - texCoord1.x, texCoord3.y - texCoord1.y);
+
+    texEdge1.Normalize();
+    texEdge2.Normalize();
+
+    // These 2 sets of vectors form the following system of equations:
+    //
+    //  edge1 = (texEdge1.x * tangent) + (texEdge1.y * bitangent)
+    //  edge2 = (texEdge2.x * tangent) + (texEdge2.y * bitangent)
+    //
+    // Using matrix notation this system looks like:
+    //
+    //  [ edge1 ]     [ texEdge1.x  texEdge1.y ]  [ tangent   ]
+    //  [       ]  =  [                        ]  [           ]
+    //  [ edge2 ]     [ texEdge2.x  texEdge2.y ]  [ bitangent ]
+    //
+    // The solution is:
+    //
+    //  [ tangent   ]        1     [ texEdge2.y  -texEdge1.y ]  [ edge1 ]
+    //  [           ]  =  -------  [                         ]  [       ]
+    //  [ bitangent ]      det A   [-texEdge2.x   texEdge1.x ]  [ edge2 ]
+    //
+    //  where:
+    //        [ texEdge1.x  texEdge1.y ]
+    //    A = [                        ]
+    //        [ texEdge2.x  texEdge2.y ]
+    //
+    //    det A = (texEdge1.x * texEdge2.y) - (texEdge1.y * texEdge2.x)
+    //
+    // From this solution the tangent space basis vectors are:
+    //
+    //    tangent = (1 / det A) * ( texEdge2.y * edge1 - texEdge1.y * edge2)
+    //  bitangent = (1 / det A) * (-texEdge2.x * edge1 + texEdge1.x * edge2)
+    //     normal = cross(tangent, bitangent)
+
+    CVector3 t;
+    CVector3 b;
+    CVector3 n(normal.x, normal.y, normal.z);
+
+    float det = (texEdge1.x * texEdge2.y) - (texEdge1.y * texEdge2.x);
+
+    if (closeEnough(det, 0.0f))
+    {
+        t.set(1.0f, 0.0f, 0.0f);
+        b.set(0.0f, 1.0f, 0.0f);
+    }
+    else
+    {
+        det = 1.0f / det;
+
+        t.x = (texEdge2.y * edge1.x - texEdge1.y * edge2.x) * det;
+        t.y = (texEdge2.y * edge1.y - texEdge1.y * edge2.y) * det;
+        t.z = (texEdge2.y * edge1.z - texEdge1.y * edge2.z) * det;
+
+        b.x = (-texEdge2.x * edge1.x + texEdge1.x * edge2.x) * det;
+        b.y = (-texEdge2.x * edge1.y + texEdge1.x * edge2.y) * det;
+        b.z = (-texEdge2.x * edge1.z + texEdge1.x * edge2.z) * det;
+
+        t.Normalize();
+        b.Normalize();
+    }
+
+    // Calculate the handedness of the local tangent space.
+    // The bitangent vector is the cross product between the triangle face
+    // normal vector and the calculated tangent vector. The resulting bitangent
+    // vector should be the same as the bitangent vector calculated from the
+    // set of linear equations above. If they point in different directions
+    // then we need to invert the cross product calculated bitangent vector. We
+    // store this scalar multiplier in the tangent vector's 'w' component so
+    // that the correct bitangent vector can be generated in the normal mapping
+    // shader's vertex shader.
+
+    CVector3 bitangent = CVector3::Cross(n, t);
+    float handedness = (CVector3::Dot(bitangent, b) < 0.0f) ? -1.0f : 1.0f;
+
+    tangent[0] = t.x;
+    tangent[1] = t.y;
+    tangent[2] = t.z;
+    tangent[3] = handedness;
+}

@@ -30,10 +30,13 @@ struct t3DObject
 	int  numOfFaces;			// The number of faces in the model
 	int  numTexVertex;			// The number of texture coordinates
 	int  materialID;			// The texture ID to use, which is the index into our texture array
+	int  normalID;				// The texture ID to use, which is the index into our texture array
 	bool bHasTexture;			// This is TRUE if there is a texture map for this object
 	char strName[255];			// The name of the object
 	CVector3  *pVerts;			// The object's vertices
 	CVector3  *pNormals;		// The object's normals
+	CVector3  *pNormalsFaces;		// The object's normals
+	CVector4  *pTang;			// The object's tangent
 	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object
 	CVector3 Max,Min,center;	// el maximo y minimo para el box  y el centro

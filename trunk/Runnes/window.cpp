@@ -7,7 +7,7 @@
 #include <gl\glu.h>										// Header File For The GLu32 Library
 #include "include\glaux.h"
 
-#define DIS_SHADER
+//#define DIS_SHADER
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -107,6 +107,11 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj");							//Load 
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/doorTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 8, 8);
+	g_LoadObj.ImportObj(&g_3DModel, "Models/box.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/color_map.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
+	g_3DModel.pObject[9].normalID=bindTexture(QImage("Textures/normal_map.jpg"), GL_TEXTURE_2D);
+
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
 	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
 	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
@@ -183,22 +188,32 @@ void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
 	
-	if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
-		return;
+	//if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
+	//	return;
 	
 	nrObjectDraw++;
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	if(pObject->bHasTexture) {			
 		if(pObject->materialID >= 0 ){
 			#ifndef DIS_SHADER
-				glUniform1i(getUniLoc(p2, "text"), 1);
-				glActiveTexture(GL_TEXTURE0);
-				glUniform1i(getUniLoc(p2, "texture"), 0);
+				
+				if(pObject->normalID!=-1){
+					glActiveTexture(GL_TEXTURE1);
+					glEnable(GL_TEXTURE_2D);
+					glUniform1i(getUniLoc(normalMap, "normalMap"), 1);
+					glBindTexture(GL_TEXTURE_2D, pObject->normalID);
+					glActiveTexture(GL_TEXTURE0);
+					glEnable(GL_TEXTURE_2D);
+					glUniform1i(getUniLoc(normalMap, "colorMap"), 0);
+				}else{
+					glUniform1i(getUniLoc(p2, "text"), 1);
+					glActiveTexture(GL_TEXTURE0);
+					glUniform1i(getUniLoc(p2, "texture"), 0);
+				}
 			#endif
 			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glEnable(GL_TEXTURE_2D);
 		}else{
 			#ifndef DIS_SHADER
 				glUniform1i(getUniLoc(p2, "text"), 0);
@@ -216,14 +231,20 @@ void Window::drawObj(int ID){
 	glBegin(GL_TRIANGLES);
 		for(int j = 0; j < pObject->numOfFaces; j++)
 		{
+			
 			for(int whichVertex = 0; whichVertex < 3; whichVertex++)
 			{
 				int vertIndex = pObject->pFaces[j].vertIndex[whichVertex];
 				glNormal3f(pObject->pNormals[ vertIndex ].x, pObject->pNormals[ vertIndex ].y, pObject->pNormals[ vertIndex ].z);
+				
 				if(pObject->bHasTexture) {
 					if(pObject->pTexVerts) {
 						int coordIndex = pObject->pFaces[j].coordIndex[whichVertex];
-						glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
+						glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);	
+						#ifndef DIS_SHADER
+							glMultiTexCoord2f(GL_TEXTURE0,pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
+							glMultiTexCoord4f(GL_TEXTURE1,pObject->pTang[vertIndex].x,pObject->pTang[vertIndex].y,pObject->pTang[vertIndex].z,pObject->pTang[vertIndex].w);
+						#endif
 					}
 				} else {
 					if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
@@ -232,6 +253,7 @@ void Window::drawObj(int ID){
 						glColor3ub(pColor[0], pColor[1], pColor[2]);
 					}	
 				}
+			
 				glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
 			}
 		}
@@ -306,6 +328,7 @@ void Window::paintGL()
 	#endif
 
 	glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHT0);	
 	glEnable(GL_LIGHT1);								// Turn on a light with defaults set
 	glEnable(GL_LIGHTING);								// Turn on lighting
 	float white[]={1.0f,1.0f,1.0f,1.0f};
@@ -385,7 +408,19 @@ void Window::paintGL()
 	for(int i = 1; i < g_3DModel.numOfObjects; i++)
 	{
 		//break;
+		glPushMatrix();
+		if(i==9){
+			
+			#ifndef DIS_SHADER
+				unapplyShader();
+				applyShader(normalMap);
+			#endif
+
+			glTranslatef(-220,22,6);
+		}
 		drawObj(i);
+
+		glPopMatrix();
 	}
 
 	#ifndef DIS_SHADER

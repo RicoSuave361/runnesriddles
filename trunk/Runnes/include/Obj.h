@@ -51,6 +51,14 @@ public:
 	// This tells us if we just read in face data so we can keep track of multiple objects
 	bool m_bJustReadAFace;
 
+	//Calculo de tangente para el NormalMap
+	void CalcTangentVector(const CVector3 pos1, const CVector3 pos2,
+                       const CVector3 pos3, const CVector2 texCoord1,
+                       const CVector2 texCoord2, const CVector2 texCoord3,
+                       const CVector3 normal, float tangent[4]);
+
+	void ComputeTang(t3DModel *pModel);
+
 private:
 
 	// This holds our file pointer for reading in the file
