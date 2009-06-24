@@ -187,7 +187,12 @@ protected:
 	float blur_s[BLUR_STEP];
 	int pas;
 	float prom;
-	GLuint v,f,f2,p,p2;
+	GLuint v,f,f2,p,p2,normalMap;
+
+	
+GLuint      g_colorMapTexture;
+GLuint      g_normalMapTexture;
+
 	void initializeGL();
 	void paintGL();
 
@@ -195,6 +200,9 @@ protected:
 	void mouseMoveEvent(QMouseEvent *event);
 	void keyPressEvent (QKeyEvent * event );
 	void keyReleaseEvent(QKeyEvent * event );
+
+	void orthogonalStart (void);
+	void orthogonalEnd (void);
 };
 
 #endif // WINDOW_H

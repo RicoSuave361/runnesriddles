@@ -7,7 +7,7 @@
 #include <gl\glu.h>										// Header File For The GLu32 Library
 #include "include\glaux.h"
 
-#define DIS_SHADER
+//#define DIS_SHADER
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -38,7 +38,7 @@ pas=0;
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
-	camera.PositionCamera(	0 , 1.5f, 12,
+	camera.PositionCamera(	-220 , 22, 6,
 							0 , 0.5f, 0,
 							0 , 1   , 0);
 	kL=false;
@@ -139,6 +139,7 @@ void Window::initializeGL()
 	#ifndef DIS_SHADER
 		initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
 		initShader("./glsl/morph.vert","./glsl/morph.frag",p2); 
+		initShader("./glsl/normalMap.vert","./glsl/normalMap.frag",normalMap); 
 	#endif
 	//applyShader();	
 	//for(int i=0; i<5; i++)
@@ -268,7 +269,7 @@ void Window::paintGL()
 	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096); //Setea el skybox
 
 	#ifndef DIS_SHADER
-		applyShader(p2);
+		applyShader(p);
 		glUniform1i(getUniLoc(p, "activeLight[1]"),1);
 	#endif
 
@@ -357,8 +358,8 @@ void Window::paintGL()
 
 	#ifndef DIS_SHADER
 		unapplyShader();
-		applyShader(p2);
-		glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
+		//applyShader(p2);
+		//glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
 	#endif
 
 
@@ -396,6 +397,19 @@ void Window::paintGL()
 		QString(" GameTime: ")+QString::number(GAMETIME)+QString(" NRO objetos pintados: ")+QString::number(nrObjectDraw);
 		
 	renderText(10,10,debugDisplay);
+
+
+/*
+	orthogonalStart();
+
+	glBegin(GL_QUADS);
+		glVertex2f(125, 125);
+		glVertex2f(125, 375);
+		glVertex2f(375, 375);
+		glVertex2f(375, 125);
+	glEnd();
+
+	orthogonalEnd();*/
 }
 void Window::mousePressEvent(QMouseEvent *event)
 {	
@@ -475,4 +489,37 @@ void Window::keyReleaseEvent(QKeyEvent *event)
 	}
 
 }
+void Window::orthogonalStart (void) {
+	GLint iViewport[4];
 
+	// Get a copy of the viewport
+	glGetIntegerv( GL_VIEWPORT, iViewport );
+
+	// Save a copy of the projection matrix so that we can restore it 
+	// when it's time to do 3D rendering again.
+	glMatrixMode( GL_PROJECTION );
+	glPushMatrix();
+	glLoadIdentity();
+
+	// Set up the orthographic projection
+	glOrtho( iViewport[0], iViewport[0]+iViewport[2],
+			 iViewport[1]+iViewport[3], iViewport[1], -1, 1 );
+	glMatrixMode( GL_MODELVIEW );
+	glPushMatrix();
+	glLoadIdentity();
+
+	// Make sure depth testing and lighting are disabled for 2D rendering until
+	// we are finished rendering in 2D
+	glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_LIGHTING );
+
+}
+void Window::orthogonalEnd (void) {
+	glPopAttrib();
+	glMatrixMode( GL_PROJECTION );
+	glPopMatrix();
+	glMatrixMode( GL_MODELVIEW );
+	glPopMatrix();
+
+}
