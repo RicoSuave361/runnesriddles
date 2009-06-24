@@ -199,10 +199,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mathlib.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Matrix.cpp"
 				>
 			</File>
@@ -242,10 +238,6 @@
 			</File>
 			<File
 				RelativePath=".\HeightMap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\mathlib.h"
 				>
 			</File>
 			<File
