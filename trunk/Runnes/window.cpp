@@ -112,6 +112,18 @@ void Window::initializeGL()
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
 	g_3DModel.pObject[9].normalID=bindTexture(QImage("Textures/normal_map.jpg"), GL_TEXTURE_2D);
 
+	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/treesTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 10, 10);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/checkerTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 11, 11);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/indoorTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 12, 12);
+
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
 	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
 	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
@@ -168,7 +180,7 @@ void Window::initializeGL()
 		else 
 		{
 			printf("OpenGL 2.0 not supported\n");
-			exit(1);
+			//exit(1);
 		}
 	#endif
 	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
