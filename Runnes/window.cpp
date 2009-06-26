@@ -187,8 +187,8 @@ void Window::initializeGL()
 	}
 	printf(" End...\n");
 
-	hp.LoadRawFile("Textures/planeHeightMap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
-	hp.texture=bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D);
+	//hp.LoadRawFile("Textures/planeHeightMap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
+	//hp.texture=bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D);
 /*
 	escalera.LoadRawFile("Models/stairsHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+998);
 	escalera.texture=bindTexture(QImage("Textures/stairTexture.jpg"), GL_TEXTURE_2D);
@@ -199,7 +199,7 @@ void Window::initializeGL()
 	//glCullFace(GL_BACK);
 	CVector3 c1 = g_3DModel.pObject[0].Min + CVector3(-20, 30, 0);
 	CVector3 c2 = g_3DModel.pObject[0].Max + CVector3(-20, 30, 0);
-	hp.setTransformation(c1 , c2);
+	//hp.setTransformation(c1 , c2);
 	//escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
 	
 	//Audio
