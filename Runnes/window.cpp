@@ -124,6 +124,38 @@ void Window::initializeGL()
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/indoorTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 12, 12);
 
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/chestTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 13, 13);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/chestTopTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 14, 14);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune1Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 15, 15);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune2Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 16, 16);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune3Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 17, 17);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune4Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 18, 18);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune5.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune5Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 19, 19);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/keyTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 20, 20);
+
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
 	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
 	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
