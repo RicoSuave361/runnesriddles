@@ -163,9 +163,22 @@ void Window::initializeGL()
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 20, 20);
 
 
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
-	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
-	//g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem1Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 21,21);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem2Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 22,22);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem3Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 23,23);
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem4Texture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 24,24);
+
 /*
 	//Model 2
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
