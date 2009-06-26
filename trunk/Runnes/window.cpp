@@ -7,7 +7,7 @@
 #include <gl\glu.h>										// Header File For The GLu32 Library
 #include "include\glaux.h"
 
-//#define DIS_SHADER
+#define DIS_SHADER
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -107,10 +107,16 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj");							//Load 
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/doorTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 8, 8);
-	g_LoadObj.ImportObj(&g_3DModel, "Models/box.obj");							//Load 
+
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/box.obj");							//Load 
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/color_map.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
-	g_3DModel.pObject[9].normalID=bindTexture(QImage("Textures/normal_map.jpg"), GL_TEXTURE_2D);
+	g_3DModel.pObject[9].normalID=bindTexture(QImage("Textures/normal_map.jpg"), GL_TEXTURE_2D);*/
+
+	
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/keyTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
 
 	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj");							//Load 
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/treesTexture.jpg", 255, 255, 255);	//Load model's texture
@@ -152,9 +158,10 @@ void Window::initializeGL()
 	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune5Texture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 19, 19);
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/keyTexture.jpg", 255, 255, 255);	//Load model's texture
+	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj");							//Load 
+	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/planeStartTexture.jpg", 255, 255, 255);	//Load model's texture
 	g_LoadObj.SetObjectMaterial(&g_3DModel, 20, 20);
+
 
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/grass.obj");							//Load 
 	//g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/grass.jpg", 255, 255, 255);	//Load model's texture
@@ -406,8 +413,18 @@ void Window::paintGL()
 	bool piso;
 	
 
-
-	float h=hp.Height2(vPos.x, vPos.z );
+	float dist=100000.0f;
+	float ht=100000.0f;
+	int c=g_3DModel.pObject[0].numOfVerts;
+	for(int i=0;i<c;++i){
+		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
+		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
+		if(dT<dist){
+			ht=ver.y;
+			dist=dT;
+		}
+	}
+	float h=ht;//hp.Height2(vPos.x, vPos.z );
 	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
 	//float h;
 	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
@@ -415,7 +432,7 @@ void Window::paintGL()
 	//else 
 	//	h=hEscalera;
 
-	if(vPos.y < h + 30 || vPos.y > h + 30)
+	if(vPos.y < h + 60 || vPos.y > h + 60)
 	{
 		
 		blur_s[pas]=h;
@@ -424,7 +441,7 @@ void Window::paintGL()
 		for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
 		prom/=float(BLUR_STEP);
 		h=prom;
-		vNewPos.y = h + 30;
+		vNewPos.y = h + 60;
 		float temp = vNewPos.y - vPos.y;
 		CVector3 vView = camera.eye;
 		vView.y += temp;
@@ -441,19 +458,19 @@ void Window::paintGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D, hp.texture);
-	hp.RenderHeightMap();
+	//glBindTexture(GL_TEXTURE_2D, hp.texture);
+	//hp.RenderHeightMap();
 	/*
 	glBindTexture(GL_TEXTURE_2D, escalera.texture);
 	escalera.RenderHeightMap();*/
 
 
 	//Draw OBJ
-	for(int i = 1; i < g_3DModel.numOfObjects; i++)
+	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
 		//break;
 		glPushMatrix();
-		if(i==9){
+		/*if(i==9){
 			
 			#ifndef DIS_SHADER
 				unapplyShader();
@@ -461,7 +478,8 @@ void Window::paintGL()
 			#endif
 
 			glTranslatef(-220,22,6);
-		}
+		}*/
+
 		drawObj(i);
 
 		glPopMatrix();
