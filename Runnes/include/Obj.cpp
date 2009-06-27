@@ -292,7 +292,7 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel,unsigned int textureId,unsigned
 		}
 	}
 
-	CVector3 aux_max(MINF,MINF,MINF),aux_min(INF,INF,INF);
+	CVector3 aux_max(-30000,-30000,-30000),aux_min(30000,30000,30000);
 	//bool no_vacia = 0 < pObject->numOfVerts;
 	// Go through all the vertices in the object
 	for(i = 0; i < pObject->numOfVerts; i++)
