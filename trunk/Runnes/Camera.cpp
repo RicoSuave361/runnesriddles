@@ -115,6 +115,7 @@ void CCamera::MoveCamera(float speed)
 	center.x += vVector.x * speed;		// Add our acceleration to our position's X
 	center.z += vVector.z * speed;		// Add our acceleration to our position's Z
 
+	box.center=center;
 	box.Max=CVector3(1.0f,0,1.0f)+center;
 	box.Min=CVector3(-1.0f,-50.0f,-1.0f)+center;
 	eye.x += vVector.x * speed;			// Add our acceleration to our view's X
@@ -138,6 +139,7 @@ void CCamera::StrafeCamera(float speed)
 	center.x += m_vStrafe.x * speed;
 	center.z += m_vStrafe.z * speed;
 
+	box.center=center;
 	box.Max=CVector3(1.0f,0,1.0f)+center;
 	box.Min=CVector3(-1.0f,-50.0f,-1.0f)+center;
 
