@@ -15,6 +15,9 @@ CCamera::CCamera(void)
 	eye		= vView;					// Init the view to a std starting view
 	up	= vUp;						// Init the UpVector
 	m_radius=1.0f;
+
+	box.Max=CVector3(0.5f,1.0f,0.5f);
+	box.Min=CVector3(-0.5f,0.0f,-0.5f);
 }
 
 CCamera::~CCamera(void)
@@ -111,6 +114,8 @@ void CCamera::MoveCamera(float speed)
 
 	center.x += vVector.x * speed;		// Add our acceleration to our position's X
 	center.z += vVector.z * speed;		// Add our acceleration to our position's Z
+	box.Max=CVector3(0.5f,1.0f,0.5f)+center;
+	box.Min=CVector3(-0.5f,0.0f,-0.5f)+center;
 	eye.x += vVector.x * speed;			// Add our acceleration to our view's X
 	eye.z += vVector.z * speed;			// Add our acceleration to our view's Z
 }
@@ -131,7 +136,8 @@ void CCamera::StrafeCamera(float speed)
 	// Add the strafe vector to our position
 	center.x += m_vStrafe.x * speed;
 	center.z += m_vStrafe.z * speed;
-
+	box.Max=CVector3(0.5f,1.0f,0.5f)+center;
+	box.Min=CVector3(-0.5f,0.0f,-0.5f)+center;
 	// Add the strafe vector to our view
 	eye.x += m_vStrafe.x * speed;
 	eye.z += m_vStrafe.z * speed;

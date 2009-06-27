@@ -11,7 +11,7 @@ bool closeEnough(float f1, float f2)
     return fabsf((f1 - f2) / ((f2 == 0.0f) ? 1.0f : f2)) < 1e-6f;
 }
 
-bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
+bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName,unsigned int textureId,unsigned int mapId)
 {
 	char strMessage[255] = {0};				// This will be used for error messages
 
@@ -29,13 +29,14 @@ bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 	}
 
 	// Now that we have a valid file and it's open, let's read in the info!
-	ReadObjFile(pModel);
+	ReadObjFile(pModel,textureId,mapId);
 
 	// Now that we have the file read in, let's compute the vertex normals for lighting
 	ComputeNormals(pModel);
 
 	//Calcular las tangentes
 	ComputeTang(pModel);
+
 
 	// Close the .obj file that we opened
 	fclose(m_FilePointer);
@@ -46,7 +47,7 @@ bool CLoadObj::ImportObj(t3DModel *pModel, char *strFileName)
 
 
 //This function is the main loop for reading in the .obj file
-void CLoadObj::ReadObjFile(t3DModel *pModel)
+void CLoadObj::ReadObjFile(t3DModel *pModel,unsigned int textureId,unsigned int mapId)
 {
 	char strLine[255]		= {0};
 	char ch					= 0;
@@ -66,7 +67,7 @@ void CLoadObj::ReadObjFile(t3DModel *pModel)
 			// so we need to save the last object's data before moving onto the next one.
 			if(m_bJustReadAFace) {
 				// Save the last object's info into our model structure
-				FillInObjectInfo(pModel);
+				FillInObjectInfo(pModel,textureId,mapId);
 			}
 
 			// Decipher this line to see if it's a vertex ("v"), normal ("vn"), or UV coordinate ("vt")
@@ -97,7 +98,7 @@ void CLoadObj::ReadObjFile(t3DModel *pModel)
 	}
 
 	// Now that we are done reading in the file, we have need to save the last object read.
-	FillInObjectInfo(pModel);
+	FillInObjectInfo(pModel,textureId,mapId);
 }
 
 
@@ -197,7 +198,7 @@ void CLoadObj::ReadFaceInfo()
 }
 
 //	This function is called after an object is read in to fill in the model structure
-void CLoadObj::FillInObjectInfo(t3DModel *pModel)
+void CLoadObj::FillInObjectInfo(t3DModel *pModel,unsigned int textureId,unsigned int mapId)
 {
 	t3DObject newObject = {0};
 	int textureOffset = 0, vertexOffset = 0;
@@ -242,7 +243,9 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 		pObject->pTexVerts = new CVector2 [pObject->numTexVertex];
 		pObject->bHasTexture = true;
 	}	
-	pObject->materialID = -1;
+	pObject->materialID = textureId;
+	pObject->normalID = mapId;
+
 	// Go through all of the faces in the object
 	for(i = 0; i < pObject->numOfFaces; i++)
 	{
@@ -329,7 +332,7 @@ void CLoadObj::FillInObjectInfo(t3DModel *pModel)
 
 	// Since .OBJ files don't have materials, we set the material ID to -1.
 	// We need to manually give it a material using AddMaterial().
-	pObject->materialID = -1;
+	//pObject->materialID = -1;
 
 	// Now that we have all the information from out list's, we need to clear them
 	// so we can be ready for the next object that we read in.

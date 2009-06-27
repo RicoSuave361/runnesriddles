@@ -45,6 +45,8 @@ pas=0;
 	kD=false;
 	kR=false;
 	kU=false;
+
+	memset(objetos,false,sizeof(objetos));
 }
 
 Window::~Window()
@@ -59,6 +61,28 @@ void Window::resizeGL(int width, int height)
 	gluPerspective(45.0f, (float)width/(float)height, 0.1f, 10000.0f);
 }
 
+bool Window::isColliding(t3DObject A, t3DObject B){
+
+	/*If the max x position of A is less than the min x position of B they do not collide
+    * If the min x position of A is greater than the max x position of B they do not collide
+    * and the same goes for y and z
+	*/
+
+	if( A.Max.x < B.Min.x ) 		return false;
+
+	if( A.Min.x > B.Max.x ) 		return false;
+
+	if( A.Max.y < B.Min.y ) 		return false;
+
+	if( A.Min.y > B.Max.y ) 		return false;
+
+	if( A.Max.z < B.Min.z ) 		return false;
+
+	if( A.Min.z > B.Max.z ) 		return false;
+
+	return true;
+
+}
 
 void Window::initializeGL()
 {
@@ -66,156 +90,58 @@ void Window::initializeGL()
 	//showFullScreen();
 	setVSync(1);
 	g_bIgnoreFrustum = false;
-	sky=new SkyBox(this);
+
 
 	printf("Load Model...");
-	//Model 1
-	
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj");							//Load Model
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/planeTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 0, 0);
+	//Texturas del Panel On Screen
+	panel[0]=bindTexture(QImage("Textures/gem1.jpg"), GL_TEXTURE_2D);
+	panel[1]=bindTexture(QImage("Textures/gem2.jpg"), GL_TEXTURE_2D);
+	panel[2]=bindTexture(QImage("Textures/gem3.jpg"), GL_TEXTURE_2D);
+	panel[3]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
+	panel[4]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
+	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower1Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 1,1);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower2Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 2,2);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower3Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 3,3);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tower4Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 4,4);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/castleTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 5,5);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/roomTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 6, 6);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/tunnelTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 7, 7);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/doorTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 8, 8);
-
-	/*g_LoadObj.ImportObj(&g_3DModel, "Models/box.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/color_map.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
-	g_3DModel.pObject[9].normalID=bindTexture(QImage("Textures/normal_map.jpg"), GL_TEXTURE_2D);*/
-
-	
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/keyTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 9, 9);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/treesTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 10, 10);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/checkerTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 11, 11);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/indoorTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 12, 12);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/chestTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 13, 13);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/chestTopTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 14, 14);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune1Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 15, 15);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune2Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 16, 16);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune3Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 17, 17);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune4Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 18, 18);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune5.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/rune5Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 19, 19);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/planeStartTexture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 20, 20);
+	//Models
+	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj");
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune5.obj",		bindTexture(QImage("Textures/rune5Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj",		bindTexture(QImage("Textures/gem1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj",		bindTexture(QImage("Textures/gem2Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));*/
 
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem1Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 21,21);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem2Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 22,22);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem3Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 23,23);
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj");							//Load 
-	g_LoadObj.AddMaterial(&g_3DModel, "bone", "Textures/gem4Texture.jpg", 255, 255, 255);	//Load model's texture
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 24,24);
-
-/*
-	//Model 2
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/mm.obj");
-	g_LoadObj.AddMaterial(&g_3DModel, "text2", "Textures/texture1.bmp", 255, 255, 255);
-	g_LoadObj.SetObjectMaterial(&g_3DModel, 1, 1);
-
-*/
-	for(int i = 0; i < g_3DModel.numOfMaterials; i++)
-	{
-		// Check if the current material has a file name
-		if(strlen(g_3DModel.pMaterials[i].strFile) > 0) 
-		{
-			QImage img(g_3DModel.pMaterials[i].strFile);
-			g_Texture[i]=bindTexture(img, GL_TEXTURE_2D);
-		}
-		
-		// Assign the material ID to the current material
-		g_3DModel.pMaterials[i].texureId = i;
-	}
 	printf(" End...\n");
 
-	//hp.LoadRawFile("Textures/planeHeightMap.raw", MAP_SIZE * MAP_SIZE,primitiveList+999);
-	//hp.texture=bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D);
-/*
-	escalera.LoadRawFile("Models/stairsHeightmap.raw", MAP_SIZE * MAP_SIZE,primitiveList+998);
-	escalera.texture=bindTexture(QImage("Textures/stairTexture.jpg"), GL_TEXTURE_2D);
-*/
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	//glEnable(GL_CULL_FACE);								// Enables Backface Culling
 	//glCullFace(GL_BACK);
-	CVector3 c1 = g_3DModel.pObject[0].Min + CVector3(-20, 30, 0);
-	CVector3 c2 = g_3DModel.pObject[0].Max + CVector3(-20, 30, 0);
-	//hp.setTransformation(c1 , c2);
-	//escalera.setTransformation(CVector3(-30,-12,-30),CVector3(30,50,30));
-	
-	//Audio
+
 	//audio.Play("Footsteps.wav");	//play audio cue
 
 
@@ -234,8 +160,7 @@ void Window::initializeGL()
 			printf("OpenGL 2.0 not supported\n");
 			//exit(1);
 		}
-	#endif
-	//camera.PositionCamera( 280, 35, 225,  281, 35, 225,  0, 1, 0);
+	#endif;
 
 	#ifndef DIS_SHADER
 		initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
@@ -247,18 +172,25 @@ void Window::initializeGL()
 	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
  
 //	sp=new SystemParticle(bindTexture(QImage("Textures/particle.bmp")));
+	
+		sky=new SkyBox(this);
+
+		
+		g_BlurRate = 50;
+		g_Viewport = 512;
+		CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
 }
 void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
 	
-	//if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
-	//	return;
+	if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
+		return;
 	
 	nrObjectDraw++;
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	if(pObject->bHasTexture) {			
-		if(pObject->materialID >= 0 ){
+		if(pObject->materialID > 0 ){
 			#ifndef DIS_SHADER
 				
 				if(pObject->normalID!=-1){
@@ -275,7 +207,7 @@ void Window::drawObj(int ID){
 					glUniform1i(getUniLoc(p2, "texture"), 0);
 				}
 			#endif
-			glBindTexture(GL_TEXTURE_2D, g_Texture[pObject->materialID]);
+			glBindTexture(GL_TEXTURE_2D, pObject->materialID);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}else{
@@ -383,8 +315,126 @@ void Window::paintGL()
 	camera.Look();	
 	glDisable(GL_LIGHTING);
 	
-	//Show SkyBox
-	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096); //Setea el skybox
+	// Camara
+	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+
+	//glTranslatef(g_RotateX, 0.0f, 0.0f);//montion
+
+	//iba re paint
+	if( AnimateNextFrame(g_BlurRate) )
+	{
+		// Shrink the viewport by the current viewport size.  Hit 1, 2, or 3 to change the size.
+		glViewport(0, 0, g_Viewport, g_Viewport);								
+								
+		// This is where we redraw the current rendered texture before we draw the spinning box.
+		// This creates the recursive fading of the motion blur.  We pass in the texture ID
+		// we are using for the rendered texture.
+		RenderMotionBlur(0);
+		
+
+		// Now we get to render the spinning box to the texture.  We just
+		// need to create the box and it will be effected by the current rotation.
+		// The parameters are the texture ID, the center (x,y,z), dimensions and uv scale.
+		//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);
+		repaint();
+		// Before we copy the screen to a texture, we need to specify the current
+		// texture to draw to by calling glBindTexture() with the appropriate texture 
+		glBindTexture(GL_TEXTURE_2D,g_Texture2[0]);				
+
+		// Render the current screen to our texture
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, g_Viewport, g_Viewport, 0);
+
+		// Here we clear the screen and depth bits of the small viewport
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			
+
+		// Set our viewport back to it's normal size
+		glViewport(0, 0, width(), height());	
+	}
+
+	// Now that we have updated our rendered texture, let us display it to the screen
+	// by blending it once again.  This should have all the blur trails rendered to it.
+	RenderMotionBlur(0);
+
+	// Redraw the box at the same position as it was drawn into the rendered texture
+	//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);
+	repaint();
+
+	// If we want rotation, increase the current rotations along each axises
+	
+	if(g_RotateX > 7){
+		g_RotateX = 0;
+	}else{
+		g_RotateX += 0.1 ;
+	}
+
+	// Camara
+
+	glColor3f(1.0f,1.0f,1.0f);
+	
+
+	//Panel On Screen
+	#ifndef DIS_SHADER
+		unapplyShader();
+	#endif
+	orthogonalStart();
+	int tU=0;
+	for(int i=width()/3;i<(width()*2)/3;i+=width()/15){
+
+		//if(objetos[tU]){
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_COLOR, GL_ONE);
+			glDepthMask(false);
+			glPushMatrix();
+			//glColor4ub(0,0,0,255);
+			glBindTexture(GL_TEXTURE_2D, panel[tU]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			glBegin(GL_QUADS);
+				glTexCoord2f(0,0);
+				glVertex2f(i,height()-5);
+				glTexCoord2f(0,1);
+				glVertex2f(i, height()-width()/15 -10);
+				glTexCoord2f(1,1);
+				glVertex2f(i+width()/15-5, height()-width()/15 -10);
+				glTexCoord2f(1,0);
+				glVertex2f(i+width()/15-5, height()-5);
+			glEnd();
+		//}
+		tU++;	
+		glPopMatrix();
+		glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
+		glDisable(GL_BLEND);
+	}
+	orthogonalEnd();
+	
+
+	//FPS counter
+	++fps;
+	if(m_time.currentTime().second()!=sec && fps>0){
+		ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
+		sec=m_time.currentTime().second();
+		setWindowTitle(QString("FPS: ")+QString::number(ratio));
+		fps=0;
+	}
+
+	//Display FPS
+	debugDisplay=QString("FPS: ")+QString::number(ratio)+
+		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
+		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
+		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
+		QString(" GameTime: ")+QString::number(GAMETIME)+QString(" NRO objetos pintados: ")+QString::number(nrObjectDraw);
+		
+	renderText(10,10,debugDisplay);
+
+
+
+}
+
+void Window::repaint()
+{
+
+	
 
 	#ifndef DIS_SHADER
 		applyShader(p);
@@ -471,30 +521,30 @@ void Window::paintGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glEnable(GL_TEXTURE_2D);
 	
-	//glBindTexture(GL_TEXTURE_2D, hp.texture);
-	//hp.RenderHeightMap();
-	/*
-	glBindTexture(GL_TEXTURE_2D, escalera.texture);
-	escalera.RenderHeightMap();*/
-
 
 	//Draw OBJ
 	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
-		//break;
 		glPushMatrix();
-		/*if(i==9){
-			
-			#ifndef DIS_SHADER
-				unapplyShader();
-				applyShader(normalMap);
-			#endif
+			if(i>=1 && i<=6)
+			{
+				if(!objetos[i-1]) drawObj(i);
+			}
+			else
+			{
+				//break;
+				if(i==15){
+					
+					#ifndef DIS_SHADER
+						unapplyShader();
+						applyShader(normalMap);
+					#endif
 
-			glTranslatef(-220,22,6);
-		}*/
+				//	glTranslatef(-220,22,6);
+				}
 
-		drawObj(i);
-
+				drawObj(i);
+			}
 		glPopMatrix();
 	}
 
@@ -505,6 +555,8 @@ void Window::paintGL()
 	#endif
 
 
+	// Camara
+	//sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
 	/* for(float i=-5.0f;i<5.0f;i+=1.0f){
 		for(float j=-5.0f;j<5.0f;j+=1.0f){
 			glPushMatrix();
@@ -521,46 +573,11 @@ void Window::paintGL()
 		dt=dead;
 */
 
-	glColor3f(1.0f,1.0f,1.0f);
 	
-
-	//Panel On Screen
-	#ifndef DIS_SHADER
-		unapplyShader();
-	#endif
-	orthogonalStart();
-	for(int i=width()/3;i<(width()*2)/3;i+=width()/18){
-		glBegin(GL_QUADS);
-			glVertex2f(i,height()-5);
-			glVertex2f(i, height()-width()/18 -10);
-			glVertex2f(i+width()/18-5, height()-width()/18 -10);
-			glVertex2f(i+width()/18-5, height()-5);
-		glEnd();
-	}
-	orthogonalEnd();
-	
-
-	//FPS counter
-	++fps;
-	if(m_time.currentTime().second()!=sec && fps>0){
-		ratio=double(fps)/double(abs(m_time.currentTime().second()-sec));
-		sec=m_time.currentTime().second();
-		setWindowTitle(QString("FPS: ")+QString::number(ratio));
-		fps=0;
-	}
-
-	//Display FPS
-	debugDisplay=QString("FPS: ")+QString::number(ratio)+
-		QString(" Eye: ")+QString::number((double)camera.eye.x)+QString(" ")+QString::number((double)camera.eye.y)+QString(" ")+QString::number((double)camera.eye.z)+
-		QString(" Center: ")+QString::number((double)camera.center.x)+QString(" ")+QString::number((double)camera.center.y)+QString(" ")+QString::number((double)camera.center.z)+
-		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
-		QString(" GameTime: ")+QString::number(GAMETIME)+QString(" NRO objetos pintados: ")+QString::number(nrObjectDraw);
-		
-	renderText(10,10,debugDisplay);
-
-
 
 }
+
+
 void Window::mousePressEvent(QMouseEvent *event)
 {	
 }
@@ -602,10 +619,26 @@ void Window::keyPressEvent(QKeyEvent *event)
 		kU=true;
 	}
 
-	if(kL) camera.StrafeCamera(1.8f);
-	if(kD) camera.MoveCamera(1.8f);
-	if(kR) camera.StrafeCamera(-1.8f);
-	if(kU) camera.MoveCamera(-1.8f);
+
+	float dk=0.0f;
+	float dl=0.0f;
+	if(kL) dk=1.8;//camera.StrafeCamera(1.8f);
+	if(kD) dl=1.8f;//camera.MoveCamera(1.8f);
+	if(kR) dk=-1.8f;//camera.StrafeCamera(-1.8f);
+	if(kU) dl=-1.8f;//camera.MoveCamera(-1.8f);
+
+	
+
+	if(dl!=0.0f || dk!=0.0f){
+		camera.StrafeCamera(dk);
+		camera.MoveCamera(dl);
+		for(int i=20;i<g_3DModel.numOfObjects; i++)
+			if(isColliding(camera.box,g_3DModel.pObject[i])){
+				camera.StrafeCamera(-dk);
+				camera.MoveCamera(-dl);
+				break;
+			}
+	}
 
 	if(event->key()==Qt::Key_0)
 	{
@@ -672,4 +705,173 @@ void Window::orthogonalEnd (void) {
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();
 
+}
+
+void Window::OrthoMode(int left, int top, int right, int bottom)
+{
+	// Switch to our projection matrix so that we can change it to ortho mode, not perspective.
+	glMatrixMode(GL_PROJECTION);						
+
+	// Push on a new matrix so that we can just pop it off to go back to perspective mode
+	glPushMatrix();									
+	
+	// Reset the current matrix to our identify matrix
+	glLoadIdentity();								
+
+	//Pass in our 2D ortho screen coordinates like so (left, right, bottom, top).  The last
+	// 2 parameters are the near and far planes.
+	glOrtho( left, right, bottom, top, 0, 1 );	
+	
+	// Switch to model view so that we can render the scope image
+	glMatrixMode(GL_MODELVIEW);								
+
+	// Initialize the current model view matrix with the identity matrix
+	glLoadIdentity();										
+}
+
+
+///////////////////////////////// PERSPECTIVE MODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////	This function changes our returns our projection mode from 2D to 3D
+/////
+///////////////////////////////// PERSPECTIVE MODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+
+void Window::PerspectiveMode()										// Set Up A Perspective View
+{
+	// Enter into our projection matrix mode
+	glMatrixMode( GL_PROJECTION );							
+
+	// Pop off the last matrix pushed on when in projection mode (Get rid of ortho mode)
+	glPopMatrix();											
+
+	// Go back to our model view matrix like normal
+	glMatrixMode( GL_MODELVIEW );							
+
+	// We should be in the normal 3D perspective mode now
+}
+
+void Window::CreateRenderTexture(UINT textureArray[], int size, int channels, int type, int textureID)										
+{
+	// Create a pointer to store the blank image data
+	unsigned int *pTexture = NULL;											
+
+	// Allocate and init memory for the image array and point to it from pTexture
+	pTexture = new unsigned int [size * size * channels];
+	memset(pTexture, 0, size * size * channels * sizeof(unsigned int));	
+
+	// Register the texture with OpenGL and bind it to the texture ID
+	glGenTextures(1, &textureArray[textureID]);								
+	glBindTexture(GL_TEXTURE_2D, textureArray[textureID]);					
+	
+	// Create the texture and store it on the video card
+	glTexImage2D(GL_TEXTURE_2D, 0, channels, size, size, 0, type, GL_UNSIGNED_INT, pTexture);						
+	
+	// Set the texture quality
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	// Since we stored the texture space with OpenGL, we can delete the image data
+	delete [] pTexture;																					
+}
+
+
+/////// * /////////// * /////////// * NEW * /////// * /////////// * /////////// *
+
+///////////////////////////////// ANIMATE NEXT FRAME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////	This function returns true only the "desiredFrameRate" times a second
+/////
+///////////////////////////////// ANIMATE NEXT FRAME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+
+bool Window::AnimateNextFrame(int desiredFrameRate)
+{
+	static float lastTime = 0.0f;
+	float elapsedTime = 0.0;
+
+	// Get current time in seconds  (milliseconds * .001 = seconds)
+    float currentTime = GetTickCount() * 0.001f; 
+
+	// Get the elapsed time by subtracting the current time from the last time
+	elapsedTime = currentTime - lastTime;
+
+	// Check if the time since we last checked is over (1 second / framesPerSecond)
+    if( elapsedTime > (1.0f / desiredFrameRate) )
+    {
+		// Reset the last time
+        lastTime = currentTime;	
+
+		// Return TRUE, to animate the next frame of animation
+        return true;
+    }
+
+	// We don't animate right now.
+	return false;
+}
+
+
+///////////////////////////////// RENDER MOTION BLUR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+/////
+/////	This function takes a texture ID to blend over the screen for motion blur
+/////
+///////////////////////////////// RENDER MOTION BLUR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+	
+void Window::RenderMotionBlur(int textureID2)
+{
+	// This function was created to blend the rendered texture over top of the screen
+	// to create the recursive blur effect.  What happens is we start out by turning
+	// off depth testing, setting our blending mode, then binding the texture of our 
+	// rendered textured over the QUAD that is about to be created.  Next, we set our 
+	// alpha level to %90 of full strength.  This makes it so it will slowly disappear.
+	// Before rendering the QUAD, we want to go into ortho mode.  This makes it easier
+	// to render a QUAD over the full screen without having to deal with vertices, but
+	// 2D coordinates.  Once we render the QUAD, we want to go back to perspective mode.
+	// We can then turn depth testing back on and turn off texturing.
+
+	// Push on a new stack so that we do not interfere with the current matrix
+	glPushMatrix();
+
+		// Turn off depth testing so that we can blend over the screen
+		glDisable(GL_DEPTH_TEST);			
+
+		// Set our blend method and enable blending
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE);	
+		glEnable(GL_BLEND);					
+
+		// Bind the rendered texture to our QUAD
+		glBindTexture(GL_TEXTURE_2D, g_Texture2[textureID2]);			
+
+		// Decrease the alpha value of the blend by %10 so it will fade nicely
+		glColor4f(1, 1, 1, 0.9f);
+
+		// Switch to 2D mode (Ortho mode)
+		OrthoMode(0, 0, width(), height());
+
+		// Display a 2D quad with our blended texture
+		glBegin(GL_QUADS);
+
+			// Display the top left point of the 2D image
+			glTexCoord2f(0.0f, 1.0f);	glVertex2f(0, 0);
+
+			// Display the bottom left point of the 2D image
+			glTexCoord2f(0.0f, 0.0f);	glVertex2f(0, height());
+
+			// Display the bottom right point of the 2D image
+			glTexCoord2f(1.0f, 0.0f);	glVertex2f(width(), height());
+
+			// Display the top right point of the 2D image
+			glTexCoord2f(1.0f, 1.0f);	glVertex2f(width(), 0);
+
+		// Stop drawing 
+		glEnd();
+		
+		// Let's set our mode back to perspective 3D mode.
+		PerspectiveMode();
+
+		// Turn depth testing back on and texturing off.  If you do NOT do these 2 lines of 
+		// code it produces a cool flash effect that might come in handy somewhere down the road.
+		glEnable(GL_DEPTH_TEST);						
+		glDisable(GL_BLEND);							
+
+	// Go back to our original matrix
+	glPopMatrix();
 }

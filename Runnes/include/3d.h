@@ -29,8 +29,8 @@ struct t3DObject
 	int  numOfVerts;			// The number of verts in the model
 	int  numOfFaces;			// The number of faces in the model
 	int  numTexVertex;			// The number of texture coordinates
-	int  materialID;			// The texture ID to use, which is the index into our texture array
-	int  normalID;				// The texture ID to use, which is the index into our texture array
+	unsigned int  materialID;			// The texture ID to use, which is the index into our texture array
+	unsigned int  normalID;				// The texture ID to use, which is the index into our texture array
 	bool bHasTexture;			// This is TRUE if there is a texture map for this object
 	char strName[255];			// The name of the object
 	CVector3  *pVerts;			// The object's vertices

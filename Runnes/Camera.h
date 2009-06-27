@@ -1,6 +1,7 @@
 #pragma once
 #include "vector.h"
 #include "headers.h"
+#include "3d.h"
 
 class CCamera
 {
@@ -26,6 +27,8 @@ public:
 	int angleZ;
 	float m_radius;								
 	void Look();
+
+	t3DObject box;	
 	
 	void PositionCamera(float positionX, float positionY, float positionZ,
 				  				 float viewX,     float viewY,     float viewZ,
@@ -41,6 +44,8 @@ public:
 		center = vPosition;					// Assign the position
 		eye     = vView;						// Assign the view
 		up = vUpVector;					// Assign the up vector
+		box.Max=CVector3(0.5f,1.0f,0.5f)+center;
+		box.Min=CVector3(-0.5f,0.0f,-0.5f)+center;
 	}
 
 	void CheckCameraCollision(CVector3 *pVertices, int numOfVerts);

@@ -16,10 +16,10 @@ public:
 	CLoadObj():m_bObjectHasUV(false),m_bJustReadAFace(false){};
 	// This will be the only function that needs to be called by you.
 	// Just pass in your model that will hold the information and the file name.
-	bool ImportObj(t3DModel *pModel, char *strFileName);
+	bool ImportObj(t3DModel *pModel, char *strFileName,unsigned int textureId=0,unsigned int mapId=0);
 
 	// This is the main loading loop that gets called in ImportObj()
-	void ReadObjFile(t3DModel *pModel);
+	void ReadObjFile(t3DModel *pModel,unsigned int textureId=0,unsigned int mapId=0);
 
 	// This is called in ReadObjFile() if we find a line starting with 'v'
 	void ReadVertexInfo();
@@ -28,7 +28,7 @@ public:
 	void ReadFaceInfo();
 
 	// This is called when we are finished loading in the face information
-	void FillInObjectInfo(t3DModel *pModel);
+	void FillInObjectInfo(t3DModel *pModel,unsigned int textureId,unsigned int mapId);
 
 	// This isn't necessary for the loader, but it's nice to have vertex normals for lighting
 	void ComputeNormals(t3DModel *pModel);
