@@ -23,11 +23,16 @@ public:
 	GLuint panel[6];								//texturas para el panel on screen
 
     GLuint primitiveList;
-
+	int initCol;
 	Audio audio;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 
+
+	float dk;
+	float dl;
+	float dk2;
+	float dl2;
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
@@ -45,7 +50,7 @@ public:
 	bool isColliding(t3DObject A, t3DObject B);
 	void resizeGL(int width, int height);			//Window resize
 	SystemParticle *sp;
-	bool kL,kD,kR,kU;
+	bool kL,kD,kR,kU,isCol;
 	int nrObjectDraw;
 	void drawObj(int ID);
 	float dead,dt;
