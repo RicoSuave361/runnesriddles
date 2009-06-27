@@ -104,7 +104,6 @@ void Window::initializeGL()
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
@@ -114,11 +113,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
@@ -132,9 +127,10 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj",		bindTexture(QImage("Textures/gem1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj",		bindTexture(QImage("Textures/gem2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));*/
-
-
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
+*/
+	initCol=g_3DModel.numOfObjects;
+	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
 
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
@@ -179,6 +175,25 @@ void Window::initializeGL()
 		g_BlurRate = 50;
 		g_Viewport = 512;
 		CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
+			float dist=0.0f;
+	int iMax=0,jMax=0;
+	for(int o=initCol;o<g_3DModel.numOfObjects;++o){
+		dist=0.0f;
+		for(int i=0;i<g_3DModel.pObject[o].numOfVerts;++i)
+			for(int j=0;j<g_3DModel.pObject[o].numOfVerts;++j){
+				if(i==j) continue;
+				CVector3 &v1=g_3DModel.pObject[o].pVerts[i];
+				CVector3 &v2=g_3DModel.pObject[o].pVerts[j];
+				float d=sqrt( (v1.x-v2.x)*(v1.x-v2.x) + (v1.y-v2.y)*(v1.y-v2.y) + (v1.z-v2.z)*(v1.z-v2.z));
+				if(dist<d){
+					iMax=i;
+					jMax=j;
+					dist=d;
+				}
+			}
+			g_3DModel.pObject[o].min=g_3DModel.pObject[o].pVerts[iMax];
+			g_3DModel.pObject[o].max=g_3DModel.pObject[o].pVerts[jMax];
+	}
 }
 void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
@@ -224,6 +239,7 @@ void Window::drawObj(int ID){
 		glDisable(GL_TEXTURE_2D);
 		glColor3ub(255, 255, 255);
 	}
+	if(ID<initCol){
 	glBegin(GL_TRIANGLES);
 		for(int j = 0; j < pObject->numOfFaces; j++)
 		{
@@ -254,6 +270,34 @@ void Window::drawObj(int ID){
 			}
 		}
 	glEnd();
+	}else{
+		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		glColor3ub(255, 255, 255);
+		glBegin(GL_LINES);
+		for(int j = 0; j < pObject->numOfVerts; j++)
+		{	
+			for(int i = 0; i < pObject->numOfVerts; i++)
+			{
+				if(i==j) continue;
+					glVertex3f(pObject->pVerts[ j ].x, pObject->pVerts[ j ].y, pObject->pVerts[ j ].z);
+					glVertex3f(pObject->pVerts[ i ].x, pObject->pVerts[ i ].y, pObject->pVerts[ i ].z);
+			
+			}
+		}
+		
+		glEnd();
+		
+		/*glColor3ub(255, 0, 0);
+		CVector3 v1=pObject->min;
+		CVector3 v2=pObject->max;
+		glBegin(GL_LINES);
+
+			glVertex3f(v1.x, v1.y, v1.z);
+			glVertex3f(v2.x, v2.y, v2.z);
+
+
+		glEnd();*/
+	}
 }
 void Window::paintGL()
 { 
@@ -318,51 +362,10 @@ void Window::paintGL()
 	// Camara
 	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
 
-	//glTranslatef(g_RotateX, 0.0f, 0.0f);//montion
-
-	//iba re paint
-	/*if( AnimateNextFrame(g_BlurRate) )
-	{
-		// Shrink the viewport by the current viewport size.  Hit 1, 2, or 3 to change the size.
-		glViewport(0, 0, g_Viewport, g_Viewport);								
-								
-		// This is where we redraw the current rendered texture before we draw the spinning box.
-		// This creates the recursive fading of the motion blur.  We pass in the texture ID
-		// we are using for the rendered texture.
-		RenderMotionBlur(0);
-		
-
-		// Now we get to render the spinning box to the texture.  We just
-		// need to create the box and it will be effected by the current rotation.
-		// The parameters are the texture ID, the center (x,y,z), dimensions and uv scale.
-		//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);
-		repaint();
-		// Before we copy the screen to a texture, we need to specify the current
-		// texture to draw to by calling glBindTexture() with the appropriate texture 
-		glBindTexture(GL_TEXTURE_2D,g_Texture2[0]);				
-
-		// Render the current screen to our texture
-		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, g_Viewport, g_Viewport, 0);
-
-		// Here we clear the screen and depth bits of the small viewport
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			
-
-		// Set our viewport back to it's normal size
-		glViewport(0, 0, width(), height());	
-	}
-
-	// Now that we have updated our rendered texture, let us display it to the screen
-	// by blending it once again.  This should have all the blur trails rendered to it.
-	RenderMotionBlur(0);
-
-	// Redraw the box at the same position as it was drawn into the rendered texture
-	//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);*/
 	repaint();
 
-	
 
 	// Camara
-
 	glColor3f(1.0f,1.0f,1.0f);
 	
 
@@ -616,20 +619,22 @@ void Window::keyPressEvent(QKeyEvent *event)
 
 	float dk=0.0f;
 	float dl=0.0f;
-	if(kL) dk=1.8;//camera.StrafeCamera(1.8f);
-	if(kD) dl=1.8f;//camera.MoveCamera(1.8f);
-	if(kR) dk=-1.8f;//camera.StrafeCamera(-1.8f);
-	if(kU) dl=-1.8f;//camera.MoveCamera(-1.8f);
+	float dk2=0.0f;
+	float dl2=0.0f;
+	if(kL){ dk=1.8; dk2=-2.0f; }//camera.StrafeCamera(1.8f);
+	if(kD){ dl=1.8f; dl2=-2.0f; }//camera.MoveCamera(1.8f);
+	if(kR){ dk=-1.8f; dk2=2.0f; }//camera.StrafeCamera(-1.8f);
+	if(kU){ dl=-1.8f; dl2=2.0f; }//camera.MoveCamera(-1.8f);
 
 	
 
 	if(dl!=0.0f || dk!=0.0f){
 		camera.StrafeCamera(dk);
 		camera.MoveCamera(dl);
-	/*	for(int i=20;i<g_3DModel.numOfObjects; i++)
+		/*for(int i=initCol+1;i<g_3DModel.numOfObjects; i++)
 			if(isColliding(camera.box,g_3DModel.pObject[i])){
-				camera.StrafeCamera(-dk);
-				camera.MoveCamera(-dl);
+				camera.StrafeCamera(dk2);
+				camera.MoveCamera(dl2);
 				break;
 			}*/
 	}

@@ -39,7 +39,7 @@ struct t3DObject
 	CVector4  *pTang;			// The object's tangent
 	CVector2  *pTexVerts;		// The texture's UV coordinates
 	tFace *pFaces;				// The faces information of the object
-	CVector3 Max,Min,center;	// el maximo y minimo para el box  y el centro
+	CVector3 Max,Min,center,min,max;	// el maximo y minimo para el box  y el centro
 	int radio;
 };
 
