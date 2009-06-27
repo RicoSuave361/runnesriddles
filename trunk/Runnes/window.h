@@ -19,12 +19,15 @@ public:
 	t3DModel g_3DModel;								// This holds the 3D Model info that we load in
 	float g_RotateX;								// This is the current value at which the model is rotated
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
+	bool objetos[6];								//objetos cargados en el panel on screen
+	GLuint panel[6];								//texturas para el panel on screen
 
     GLuint primitiveList;
 
 	Audio audio;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
+
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
@@ -38,6 +41,8 @@ public:
     QTime m_time;									//Gametime
 	QCursor *mouse;									//Mouse instance
 
+	//Detecta colisiones
+	bool isColliding(t3DObject A, t3DObject B);
 	void resizeGL(int width, int height);			//Window resize
 	SystemParticle *sp;
 	bool kL,kD,kR,kU;
@@ -188,7 +193,18 @@ protected:
 	int pas;
 	float prom;
 	GLuint v,f,f2,p,p2,normalMap;
-
+	//motion blur
+	void OrthoMode(int left, int top, int right, int bottom);
+	void PerspectiveMode();
+	void CreateRenderTexture(UINT textureArray[], int size, int channels, int type, int textureID);
+	bool AnimateNextFrame(int desiredFrameRate);
+	void RenderMotionBlur(int textureID);
+	void repaint();
+	//motion blur fin
+	UINT g_Texture2[2];
+int g_BlurRate;
+float traslate_MB;
+int g_Viewport;
 	
 GLuint      g_colorMapTexture;
 GLuint      g_normalMapTexture;
