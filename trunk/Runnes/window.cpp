@@ -104,7 +104,7 @@ void Window::initializeGL()
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
@@ -321,7 +321,7 @@ void Window::paintGL()
 	//glTranslatef(g_RotateX, 0.0f, 0.0f);//montion
 
 	//iba re paint
-	if( AnimateNextFrame(g_BlurRate) )
+	/*if( AnimateNextFrame(g_BlurRate) )
 	{
 		// Shrink the viewport by the current viewport size.  Hit 1, 2, or 3 to change the size.
 		glViewport(0, 0, g_Viewport, g_Viewport);								
@@ -356,16 +356,10 @@ void Window::paintGL()
 	RenderMotionBlur(0);
 
 	// Redraw the box at the same position as it was drawn into the rendered texture
-	//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);
+	//CreateBox(1,	0, 0, 0,	1, 6, 1,	1, 3);*/
 	repaint();
 
-	// If we want rotation, increase the current rotations along each axises
 	
-	if(g_RotateX > 7){
-		g_RotateX = 0;
-	}else{
-		g_RotateX += 0.1 ;
-	}
 
 	// Camara
 
@@ -632,12 +626,12 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(dl!=0.0f || dk!=0.0f){
 		camera.StrafeCamera(dk);
 		camera.MoveCamera(dl);
-		for(int i=20;i<g_3DModel.numOfObjects; i++)
+	/*	for(int i=20;i<g_3DModel.numOfObjects; i++)
 			if(isColliding(camera.box,g_3DModel.pObject[i])){
 				camera.StrafeCamera(-dk);
 				camera.MoveCamera(-dl);
 				break;
-			}
+			}*/
 	}
 
 	if(event->key()==Qt::Key_0)
