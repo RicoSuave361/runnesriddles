@@ -16,7 +16,7 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	setCursor(Qt::BlankCursor);
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
-
+angCof=0;
 	memset(blur_s,0,sizeof(blur_s));
 pas=0;
 	// Auto llamadas cada 1ms al updateGL
@@ -99,12 +99,12 @@ void Window::initializeGL()
 	panel[1]=bindTexture(QImage("Textures/gem2.jpg"), GL_TEXTURE_2D);
 	panel[2]=bindTexture(QImage("Textures/gem3.jpg"), GL_TEXTURE_2D);
 	panel[3]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
-	panel[4]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
+	panel[4]=bindTexture(QImage("Textures/gem5.jpg"), GL_TEXTURE_2D);
 	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
@@ -117,6 +117,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
+	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
@@ -128,9 +129,10 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj",		bindTexture(QImage("Textures/gem2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
-*/
+	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
+
 	initCol=g_3DModel.numOfObjects;
-	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
 
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
@@ -240,36 +242,65 @@ void Window::drawObj(int ID){
 		glColor3ub(255, 255, 255);
 	}
 	if(ID<initCol){
-	glBegin(GL_TRIANGLES);
-		for(int j = 0; j < pObject->numOfFaces; j++)
-		{
-			
-			for(int whichVertex = 0; whichVertex < 3; whichVertex++)
-			{
-				int vertIndex = pObject->pFaces[j].vertIndex[whichVertex];
-				glNormal3f(pObject->pNormals[ vertIndex ].x, pObject->pNormals[ vertIndex ].y, pObject->pNormals[ vertIndex ].z);
-				
-				if(pObject->bHasTexture) {
-					if(pObject->pTexVerts) {
-						int coordIndex = pObject->pFaces[j].coordIndex[whichVertex];
-						glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);	
-						#ifndef DIS_SHADER
-							glMultiTexCoord2f(GL_TEXTURE0,pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
-							glMultiTexCoord4f(GL_TEXTURE1,pObject->pTang[vertIndex].x,pObject->pTang[vertIndex].y,pObject->pTang[vertIndex].z,pObject->pTang[vertIndex].w);
-						#endif
+			if(ID==cofre){
+					if(CVector3::Distance(g_3DModel.pObject[cofre].center,camera.center)<=70){
+						intClose=false;
+						if(!intOpen){
+							intOpen=true;
+							tFI=float(GAMETIME)/1000.0f;
+						}
+						if(angCof<90){
+							angCof+=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
+							tFI=float(GAMETIME)/1000.0f;
+						}
+					}else{
+						intOpen = false;
+						if(!intClose){
+							intClose=true;
+							tFI=float(GAMETIME)/1000.0f;
+						}
+						if(angCof>0){
+							angCof-=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
+							if(angCof<0)angCof=0;
+							tFI=float(GAMETIME)/1000.0f;
+							
+						}
 					}
-				} else {
-					if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
-					{
-						BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
-						glColor3ub(pColor[0], pColor[1], pColor[2]);
-					}	
+					
+					glTranslatef(pObject->center.x,pObject->Min.y,pObject->Max.z);
+					glRotatef(angCof,1.0f,0.0f,0.0f);
+					glTranslatef(-pObject->center.x,-pObject->Min.y,-pObject->Max.z);
 				}
-			
-				glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
+		glBegin(GL_TRIANGLES);
+			for(int j = 0; j < pObject->numOfFaces; j++)
+			{
+				
+				for(int whichVertex = 0; whichVertex < 3; whichVertex++)
+				{
+					int vertIndex = pObject->pFaces[j].vertIndex[whichVertex];
+					glNormal3f(pObject->pNormals[ vertIndex ].x, pObject->pNormals[ vertIndex ].y, pObject->pNormals[ vertIndex ].z);
+					
+					if(pObject->bHasTexture) {
+						if(pObject->pTexVerts) {
+							int coordIndex = pObject->pFaces[j].coordIndex[whichVertex];
+							glTexCoord2f(pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);	
+							#ifndef DIS_SHADER
+								glMultiTexCoord2f(GL_TEXTURE0,pObject->pTexVerts[ coordIndex ].x, pObject->pTexVerts[ coordIndex ].y);
+								glMultiTexCoord4f(GL_TEXTURE1,pObject->pTang[vertIndex].x,pObject->pTang[vertIndex].y,pObject->pTang[vertIndex].z,pObject->pTang[vertIndex].w);
+							#endif
+						}
+					} else {
+						if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
+						{
+							BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
+							glColor3ub(pColor[0], pColor[1], pColor[2]);
+						}	
+					}
+				
+					glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
+				}
 			}
-		}
-	glEnd();
+		glEnd();
 	}else{
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		glColor3ub(255, 255, 255);
@@ -422,9 +453,12 @@ void Window::paintGL()
 		//QString(" Up: ")+QString::number((double)camera.up.x)+QString(" ")+QString::number((double)camera.up.y)+QString(" ")+QString::number((double)camera.up.z) +
 		QString(" GameTime: ")+QString::number(GAMETIME)+QString(" NRO objetos pintados: ")+QString::number(nrObjectDraw);
 		
+	//Abrir cofre
+	
+	
+
+	debugDisplay+=QString(" dist: ")+QString::number(CVector3::Distance(g_3DModel.pObject[cofre].center,camera.center))+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.y)+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.x)+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.z);
 	renderText(10,10,debugDisplay);
-
-
 
 }
 
