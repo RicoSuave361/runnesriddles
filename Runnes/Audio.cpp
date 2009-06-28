@@ -1,6 +1,6 @@
 #include "Audio.h"
 
-Audio::Audio(const int _buffer,const char* dir): buffer(_buffer)
+Audio::Audio(const int _buffAl,const char* dir): buffAl(_buffAl)
 {
 	load=false;
 	ALFWInit();
@@ -15,7 +15,7 @@ Audio::Audio(const int _buffer,const char* dir): buffer(_buffer)
 		}
 	}
 	// Generate an AL Buffer
-	alGenBuffers(buffer, &uiBuffer );
+	alGenBuffers(buffAl, &uiBuffer );
 	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(dir), uiBuffer))
 	{
 		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(dir));
@@ -28,21 +28,21 @@ Audio::Audio(const int _buffer,const char* dir): buffer(_buffer)
 Audio::~Audio(void)
 {
 	alSourceStop(uiSource);
-    alDeleteSources(buffer, &uiSource);
-	alDeleteBuffers(buffer, &uiBuffer);
+    alDeleteSources(buffAl, &uiSource);
+	alDeleteBuffers(buffAl, &uiBuffer);
 	ALFWShutdownOpenAL();
 	ALFWShutdown();
 }
 void Audio::Play(){	
-	if(buffer!=-1){
+	if(load){
 		// Generate a Source to playback the Buffer
-		alGenSources( buffer, &uiSource );
+		alGenSources( buffAl, &uiSource );
 
 		// Attach Source to Buffer
 		alSourcei( uiSource, AL_BUFFER, uiBuffer );
 
 		// Play Source
 		alSourcePlay( uiSource );
-		ALFWprintf("Play: %d\n", buffer);
+		ALFWprintf("Play: %d\n", buffAl);
 	}
 }

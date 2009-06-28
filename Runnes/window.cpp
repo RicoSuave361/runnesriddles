@@ -205,8 +205,9 @@ void Window::initializeGL()
 	float dist=0.0f;
 	
 	sonidos.push_back(new Audio(1,"ambienceMusic.wav"));
-	sonidos.push_back(new Audio(2,"doorLock.wav"));
-	sonidos.push_back(new Audio(3,"stone3.wav"));
+	sonidos.push_back(new Audio(2,"footStepGrass1.wav"));
+	sonidos.push_back(new Audio(3,"doorOpen.wav"));
+	sonidos.push_back(new Audio(4,"doorLock.wav"));
 
 }
 void Window::drawObj(int ID){
@@ -366,7 +367,7 @@ void Window::drawObj(int ID){
 }
 void Window::paintGL()
 { 
-	suenaWav(0,10);
+	suenaWav(0,167);
 //	unapplyShader();
 	if(playerController.IsConnected())
 	{
@@ -669,29 +670,18 @@ void Window::keyPressEvent(QKeyEvent *event)
 		close();
 	}
 	if(event->key()==Qt::Key_A || event->key()==Qt::Key_Left){
-		kL=true;suenaWav(2,1);
+		kL=true;suenaWav(1,1);
 	}
 	if(event->key()==Qt::Key_S || event->key()==Qt::Key_Down){
-		kD=true;suenaWav(2,1);
+		kD=true;suenaWav(1,1);
 	}
 	if(event->key()==Qt::Key_D || event->key()==Qt::Key_Right){
-		kR=true;suenaWav(2,1);
+		kR=true;suenaWav(1,1);
 	}
 	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
-		kU=true;suenaWav(2,1);
+		kU=true;suenaWav(1,1);
 	}
-	if(event->key()==Qt::Key_1){
-		sonidos[0]->Play();
-	}
-	if(event->key()==Qt::Key_2){
-		sonidos[1]->Play();
-	}
-	if(event->key()==Qt::Key_3){
-		sonidos[2]->Play();
-	}
-	if(event->key()==Qt::Key_B){
-		montionBlur = !montionBlur;
-	}
+	
 	
 	if(kL)	{ dk=1.8; dk2=-2.0f; }
 	else	{ dk=0.0f; dk2=0.0f; }//camera.StrafeCamera(1.8f);
@@ -714,7 +704,7 @@ void Window::keyPressEvent(QKeyEvent *event)
 			if(isColliding(camera.box,g_3DModel.pObject[i])){
 				camera.StrafeCamera(dk2);
 				camera.MoveCamera(dl2);
-				//break;
+				break;
 			}
 	}
 
@@ -868,7 +858,7 @@ bool Window::AnimateNextFrame(int desiredFrameRate)
 	// We don't animate right now.
 	return false;
 }
-void Window::suenaWav(int NroSound, int TimeSound){
+void Window::suenaWav(int NroSound, float TimeSound){
 	//static float lastTime = 0.0f;
 	float elapsedTime = 0.0;
 	float currentTime = GAMETIME * 0.001f; 
