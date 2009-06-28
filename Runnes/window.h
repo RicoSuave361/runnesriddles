@@ -19,12 +19,16 @@ public:
 	t3DModel g_3DModel;								// This holds the 3D Model info that we load in
 	float g_RotateX;								// This is the current value at which the model is rotated
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
-	bool objetos[6],intClose,intOpen;								//objetos cargados en el panel on screen
-	GLuint panel[6];								//texturas para el panel on screen
+	bool objetos[6];								//objetos cargados en el panel on screen
+	GLuint panel[6];//texturas para el panel on screen
 	float dk;
 	float dl;
 	float dk2;
 	float dl2;
+	//Puerta y Cofre
+	bool intClose,intOpen,intCloseDoor,intOpenDoor;
+	float angCof,tFI,angDoor,tFIDoor;
+
     GLuint primitiveList;
 	int initCol;
 	int cofre,door;
@@ -32,7 +36,6 @@ public:
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 
-	float angCof,tFI;
 
 
 	Window(QWidget *parent);						//Window Handler

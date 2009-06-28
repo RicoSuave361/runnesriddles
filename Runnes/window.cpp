@@ -50,6 +50,9 @@ dk=0.0f;
 	kR=false;
 	kU=false;
 	cofre=-1;
+	door=-1;
+	angCof=0.0f;
+	angDoor=0.0f;
 	memset(objetos,false,sizeof(objetos));
 }
 
@@ -117,7 +120,7 @@ void Window::initializeGL()
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
@@ -129,14 +132,14 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
-	*/
+	
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
 
 	door=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
 
-	/*g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
@@ -147,7 +150,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
-*/
+
 	initCol=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
@@ -180,39 +183,21 @@ void Window::initializeGL()
 	#ifndef DIS_SHADER
 		initShader("./glsl/phong.vert","./glsl/phong.frag",p); 
 		initShader("./glsl/morph.vert","./glsl/morph.frag",p2); 
-		initShader("./glsl/normalMap.vert","./glsl/normalMap.frag",normalMap); 
+		initShader("./glsl/normalMap.vert","./glsl/normalMap.frag",normalMap);
+		//applyShader();	
+		//for(int i=0; i<5; i++)
+		//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
 	#endif
-	//applyShader();	
-	//for(int i=0; i<5; i++)
-	//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
- 
+
 //	sp=new SystemParticle(bindTexture(QImage("Textures/particle.bmp")));
 	
-		sky=new SkyBox(this);
+	sky=new SkyBox(this);
 
-		
-		g_BlurRate = 50;
-		g_Viewport = 512;
-		CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
-			float dist=0.0f;
-	int iMax=0,jMax=0;
-	for(int o=initCol;o<g_3DModel.numOfObjects;++o){
-		dist=0.0f;
-		for(int i=0;i<g_3DModel.pObject[o].numOfVerts;++i)
-			for(int j=0;j<g_3DModel.pObject[o].numOfVerts;++j){
-				if(i==j) continue;
-				CVector3 &v1=g_3DModel.pObject[o].pVerts[i];
-				CVector3 &v2=g_3DModel.pObject[o].pVerts[j];
-				float d=sqrt( (v1.x-v2.x)*(v1.x-v2.x) + (v1.y-v2.y)*(v1.y-v2.y) + (v1.z-v2.z)*(v1.z-v2.z));
-				if(dist<d){
-					iMax=i;
-					jMax=j;
-					dist=d;
-				}
-			}
-			g_3DModel.pObject[o].min=g_3DModel.pObject[o].pVerts[iMax];
-			g_3DModel.pObject[o].max=g_3DModel.pObject[o].pVerts[jMax];
-	}
+	g_BlurRate = 50;
+	g_Viewport = 512;
+	CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
+	float dist=0.0f;
+
 }
 void Window::drawObj(int ID){
 	if(g_3DModel.pObject.size() <= ID) return;
@@ -260,7 +245,7 @@ void Window::drawObj(int ID){
 	}
 	if(ID<initCol){
 			if(ID==cofre){
-					if(CVector3::Distance(g_3DModel.pObject[cofre].center,camera.center)<=70){
+					if(CVector3::Distance(pObject->center,camera.center)<=70){
 						intClose=false;
 						if(!intOpen){
 							intOpen=true;
@@ -287,6 +272,35 @@ void Window::drawObj(int ID){
 					glTranslatef(pObject->center.x,pObject->Min.y,pObject->Max.z);
 					glRotatef(angCof,1.0f,0.0f,0.0f);
 					glTranslatef(-pObject->center.x,-pObject->Min.y,-pObject->Max.z);
+				}
+			if(ID==door){
+					if(CVector3::Distance(pObject->center,camera.center)<=100){
+						intCloseDoor=false;
+						if(!intOpenDoor){
+							intOpenDoor=true;
+							tFIDoor=float(GAMETIME)/1000.0f;
+						}
+						if(angDoor<70){
+							angDoor+=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
+							tFIDoor=float(GAMETIME)/1000.0f;
+						}
+					}else{
+						intOpenDoor = false;
+						if(!intCloseDoor){
+							intCloseDoor=true;
+							tFIDoor=float(GAMETIME)/1000.0f;
+						}
+						if(angDoor>0){
+							angDoor-=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
+							if(angDoor<0)angDoor=0;
+							tFIDoor=float(GAMETIME)/1000.0f;
+							
+						}
+					}
+					
+					glTranslatef(pObject->center.x,pObject->center.y,pObject->Max.z);
+					glRotatef(angDoor,0.0f,1.0f,0.0f);
+					glTranslatef(-pObject->center.x,-pObject->center.y,-pObject->Max.z);
 				}
 		glBegin(GL_TRIANGLES);
 			for(int j = 0; j < pObject->numOfFaces; j++)
@@ -318,7 +332,7 @@ void Window::drawObj(int ID){
 				}
 			}
 		glEnd();
-	}else{
+	}/*else{
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		if(!isColliding(camera.box,*pObject))
 			glColor3ub(255, 255, 255);
@@ -347,8 +361,8 @@ void Window::drawObj(int ID){
 			glVertex3f(v2.x, v2.y, v2.z);
 
 
-		glEnd();*/
-	}
+		glEnd();* /
+	}*/
 }
 void Window::paintGL()
 { 
