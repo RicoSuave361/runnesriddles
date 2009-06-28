@@ -367,7 +367,7 @@ void Window::drawObj(int ID){
 }
 void Window::paintGL()
 { 
-	suenaWav(0,167);
+	suenaWav(0,10);
 //	unapplyShader();
 	if(playerController.IsConnected())
 	{
