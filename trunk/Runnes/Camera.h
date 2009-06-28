@@ -46,6 +46,7 @@ public:
 		up = vUpVector;					// Assign the up vector
 		box.Max=CVector3(0.5f,1.0f,0.5f)+center;
 		box.Min=CVector3(-0.5f,0.0f,-0.5f)+center;
+		box.center=center;
 	}
 
 	void CheckCameraCollision(CVector3 *pVertices, int numOfVerts);
