@@ -206,7 +206,7 @@ void Window::initializeGL()
 	
 	sonidos.push_back(new Audio(1,"ambienceMusic.wav"));
 	sonidos.push_back(new Audio(2,"doorLock.wav"));
-	sonidos.push_back(new Audio(3,"doorOpen.wav"));
+	sonidos.push_back(new Audio(3,"stone3.wav"));
 
 }
 void Window::drawObj(int ID){
@@ -366,7 +366,7 @@ void Window::drawObj(int ID){
 }
 void Window::paintGL()
 { 
-
+	suenaWav(0,146);
 //	unapplyShader();
 	if(playerController.IsConnected())
 	{
@@ -669,16 +669,16 @@ void Window::keyPressEvent(QKeyEvent *event)
 		close();
 	}
 	if(event->key()==Qt::Key_A || event->key()==Qt::Key_Left){
-		kL=true;
+		kL=true;suenaWav(2,1);
 	}
 	if(event->key()==Qt::Key_S || event->key()==Qt::Key_Down){
-		kD=true;
+		kD=true;suenaWav(2,1);
 	}
 	if(event->key()==Qt::Key_D || event->key()==Qt::Key_Right){
-		kR=true;
+		kR=true;suenaWav(2,1);
 	}
 	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
-		kU=true;
+		kU=true;suenaWav(2,1);
 	}
 	if(event->key()==Qt::Key_1){
 		sonidos[0]->Play();
@@ -868,7 +868,28 @@ bool Window::AnimateNextFrame(int desiredFrameRate)
 	// We don't animate right now.
 	return false;
 }
+void Window::suenaWav(int NroSound, int TimeSound){
+	static float lastTime = 0.0f;
+	float elapsedTime = 0.0;
+	float currentTime = GetTickCount() * 0.001f; 
 
+	// Get the elapsed time by subtracting the current time from the last time
+	elapsedTime = currentTime - lastTime;
+
+	// Check if the time since we last checked is over (1 second / framesPerSecond)
+	if( elapsedTime > (TimeSound ) )
+	{
+
+		// Reset the last time
+		sonidos[NroSound]->Play();
+		lastTime = currentTime;	
+
+		// Return TRUE, to animate the next frame of animation
+	}
+
+	// We don't animate right now.
+
+}
 
 void Window::RenderMotionBlur(int textureID2)
 {
