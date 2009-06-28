@@ -1,41 +1,47 @@
 #include "Audio.h"
 
-Audio::Audio(void)
+Audio::Audio(const int buffer,const char* dir)
 {
-	// Initialize Framework
 	ALFWInit();
+	// Initialize Framework
 	if (!ALFWInitOpenAL())
 	{
-		ALFWprintf("Failed to initialize OpenAL\n");
-		ALFWShutdown();
-		//exit(0);
+		if (!ALFWInitOpenAL())
+		{
+			ALFWprintf("Failed to initialize OpenAL\n");
+			ALFWShutdown();
+			return;
+		}
 	}
 	// Generate an AL Buffer
-	alGenBuffers( 1, &uiBuffer );
+	this->buffer=buffer;
+	alGenBuffers(this->buffer, &uiBuffer );
+	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(dir), uiBuffer))
+	{
+		this->buffer=-1;
+		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(dir));
+		return;
+	}
 
 }
 Audio::~Audio(void)
 {
 	alSourceStop(uiSource);
-    alDeleteSources(1, &uiSource);
-	alDeleteBuffers(1, &uiBuffer);
+    alDeleteSources(buffer, &uiSource);
+	alDeleteBuffers(buffer, &uiBuffer);
 	ALFWShutdownOpenAL();
 	ALFWShutdown();
 }
-void Audio::Play(const char* dir){	
-	if (!ALFWLoadWaveToBuffer((char*)ALFWaddMediaPath(dir), uiBuffer))
-	{
-		ALFWprintf("Failed to load %s\n", ALFWaddMediaPath(dir));
-		return;
+void Audio::Play(){	
+	if(buffer!=-1){
+		// Generate a Source to playback the Buffer
+		alGenSources( buffer, &uiSource );
+
+		// Attach Source to Buffer
+		alSourcei( uiSource, AL_BUFFER, uiBuffer );
+
+		// Play Source
+		alSourcePlay( uiSource );
+		ALFWprintf("Play: %d\n", buffer);
 	}
-
-	// Generate a Source to playback the Buffer
-    alGenSources( 1, &uiSource );
-
-	// Attach Source to Buffer
-	alSourcei( uiSource, AL_BUFFER, uiBuffer );
-
-	// Play Source
-    alSourcePlay( uiSource );
-	ALFWprintf("Play: %s\n", ALFWaddMediaPath(dir));
 }

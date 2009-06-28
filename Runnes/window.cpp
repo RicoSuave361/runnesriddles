@@ -25,9 +25,9 @@ dk=0.0f;
 	 dl2=0.0f;
 	// Auto llamadas cada 1ms al updateGL
 	m_timer = new QTimer(this);
-    m_timer->setInterval(1);
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
-    m_timer->start();
+	m_timer->setInterval(1);
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
+	m_timer->start();
 
 	// Inicializar Tiempo para FPS
 	m_time=QTime::currentTime();
@@ -71,8 +71,8 @@ void Window::resizeGL(int width, int height)
 bool Window::isColliding(t3DObject A, t3DObject B){
 
 	/*If the max x position of A is less than the min x position of B they do not collide
-    * If the min x position of A is greater than the max x position of B they do not collide
-    * and the same goes for y and z
+	* If the min x position of A is greater than the max x position of B they do not collide
+	* and the same goes for y and z
 	*/
 	for(int i=0;i<B.numOfFaces;i++){
 		CVector3 N=B.pNormalsFaces[i];
@@ -102,7 +102,7 @@ bool Window::isColliding(t3DObject A, t3DObject B){
 
 void Window::initializeGL()
 {
-    primitiveList  = glGenLists(1000);
+	primitiveList  = glGenLists(1000);
 	//showFullScreen();
 	setVSync(1);
 	g_bIgnoreFrustum = false;
@@ -119,8 +119,11 @@ void Window::initializeGL()
 	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
 
 	//Models
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj");
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
@@ -128,23 +131,22 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
-	
+	*/
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
 
 	door=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
@@ -155,7 +157,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
-
+*/
 	initCol=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
@@ -202,6 +204,10 @@ void Window::initializeGL()
 	g_Viewport = 512;
 	CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
 	float dist=0.0f;
+	
+	sonidos.push_back(new Audio(1,"ambienceMusic.wav"));
+	sonidos.push_back(new Audio(2,"doorLock.wav"));
+	sonidos.push_back(new Audio(3,"doorOpen.wav"));
 
 }
 void Window::drawObj(int ID){
@@ -215,11 +221,10 @@ void Window::drawObj(int ID){
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	if(pObject->bHasTexture) {			
 		if(pObject->materialID > 0 ){
+			glEnable(GL_TEXTURE_2D);
 			#ifndef DIS_SHADER
-				
 				if(pObject->normalID!=-1){
 					glActiveTexture(GL_TEXTURE1);
-					glEnable(GL_TEXTURE_2D);
 					glUniform1i(getUniLoc(normalMap, "normalMap"), 1);
 					glBindTexture(GL_TEXTURE_2D, pObject->normalID);
 					glActiveTexture(GL_TEXTURE0);
@@ -239,74 +244,72 @@ void Window::drawObj(int ID){
 				glUniform1i(getUniLoc(p2, "text"), 0);
 			#endif
 			glDisable(GL_TEXTURE_2D);
-			glColor3ub(255, 255, 255);
 		}
 	} else {
 		#ifndef DIS_SHADER
 			glUniform1i(getUniLoc(p2, "text"), 0);
 		#endif
 		glDisable(GL_TEXTURE_2D);
-		glColor3ub(255, 255, 255);
 	}
 	if(ID<initCol){
-			if(ID==cofre){
-					if(CVector3::Distance(pObject->center,camera.center)<=70){
-						intClose=false;
-						if(!intOpen){
-							intOpen=true;
-							tFI=float(GAMETIME)/1000.0f;
-						}
-						if(angCof<90){
-							angCof+=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
-							tFI=float(GAMETIME)/1000.0f;
-						}
-					}else{
-						intOpen = false;
-						if(!intClose){
-							intClose=true;
-							tFI=float(GAMETIME)/1000.0f;
-						}
-						if(angCof>0){
-							angCof-=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
-							if(angCof<0)angCof=0;
-							tFI=float(GAMETIME)/1000.0f;
-							
-						}
-					}
-					
-					glTranslatef(pObject->center.x,pObject->Min.y,pObject->Max.z);
-					glRotatef(angCof,1.0f,0.0f,0.0f);
-					glTranslatef(-pObject->center.x,-pObject->Min.y,-pObject->Max.z);
+		if(ID==cofre){
+			if(CVector3::Distance(pObject->center,camera.center)<=70){
+				intClose=false;
+				if(!intOpen){
+					intOpen=true;
+					tFI=float(GAMETIME)/1000.0f;
 				}
-			if(ID==door){
-					if(CVector3::Distance(pObject->center,camera.center)<=100){
-						intCloseDoor=false;
-						if(!intOpenDoor){
-							intOpenDoor=true;
-							tFIDoor=float(GAMETIME)/1000.0f;
-						}
-						if(angDoor<70){
-							angDoor+=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
-							tFIDoor=float(GAMETIME)/1000.0f;
-						}
-					}else{
-						intOpenDoor = false;
-						if(!intCloseDoor){
-							intCloseDoor=true;
-							tFIDoor=float(GAMETIME)/1000.0f;
-						}
-						if(angDoor>0){
-							angDoor-=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
-							if(angDoor<0)angDoor=0;
-							tFIDoor=float(GAMETIME)/1000.0f;
-							
-						}
-					}
-					
-					glTranslatef(pObject->center.x,pObject->center.y,pObject->Max.z);
-					glRotatef(angDoor,0.0f,1.0f,0.0f);
-					glTranslatef(-pObject->center.x,-pObject->center.y,-pObject->Max.z);
+				if(angCof<90){
+					angCof+=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
+					tFI=float(GAMETIME)/1000.0f;
 				}
+			}else{
+				intOpen = false;
+				if(!intClose){
+					intClose=true;
+					tFI=float(GAMETIME)/1000.0f;
+				}
+				if(angCof>0){
+					angCof-=(float(GAMETIME)/1000.0f-tFI) * 20.0f;
+					if(angCof<0)angCof=0;
+					tFI=float(GAMETIME)/1000.0f;
+					
+				}
+			}
+			
+			glTranslatef(pObject->center.x,pObject->Min.y,pObject->Max.z);
+			glRotatef(angCof,1.0f,0.0f,0.0f);
+			glTranslatef(-pObject->center.x,-pObject->Min.y,-pObject->Max.z);
+		}
+		if(ID==door){
+			if(CVector3::Distance(pObject->center,camera.center)<=100){
+				intCloseDoor=false;
+				if(!intOpenDoor){
+					intOpenDoor=true;
+					tFIDoor=float(GAMETIME)/1000.0f;
+				}
+				if(angDoor<70){
+					angDoor+=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
+					tFIDoor=float(GAMETIME)/1000.0f;
+				}
+			}else{
+				intOpenDoor = false;
+				if(!intCloseDoor){
+					intCloseDoor=true;
+					tFIDoor=float(GAMETIME)/1000.0f;
+				}
+				if(angDoor>0){
+					angDoor-=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
+					if(angDoor<0)angDoor=0;
+					tFIDoor=float(GAMETIME)/1000.0f;
+					
+				}
+			}
+			
+			glTranslatef(pObject->center.x,pObject->center.y,pObject->Max.z);
+			glRotatef(angDoor,0.0f,1.0f,0.0f);
+			glTranslatef(-pObject->center.x,-pObject->center.y,-pObject->Max.z);
+		}
 		glBegin(GL_TRIANGLES);
 			for(int j = 0; j < pObject->numOfFaces; j++)
 			{
@@ -325,14 +328,7 @@ void Window::drawObj(int ID){
 								glMultiTexCoord4f(GL_TEXTURE1,pObject->pTang[vertIndex].x,pObject->pTang[vertIndex].y,pObject->pTang[vertIndex].z,pObject->pTang[vertIndex].w);
 							#endif
 						}
-					} else {
-						if(g_3DModel.pMaterials.size() && pObject->materialID >= 0) 
-						{
-							BYTE *pColor = g_3DModel.pMaterials[pObject->materialID].color;
-							glColor3ub(pColor[0], pColor[1], pColor[2]);
-						}	
-					}
-				
+					} 
 					glVertex3f(pObject->pVerts[ vertIndex ].x, pObject->pVerts[ vertIndex ].y, pObject->pVerts[ vertIndex ].z);
 				}
 			}
@@ -431,21 +427,61 @@ void Window::paintGL()
 	
 	// Camara
 	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+	
+
+	// Calcular Posicion de heightMap
+	CVector3 vPos		= camera.center;
+	CVector3 vNewPos    = vPos;
+	float dist=100000.0f;
+	float ht=100000.0f;
+	int c=g_3DModel.pObject[0].numOfVerts;
+	for(int i=0;i<c;++i){
+		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
+		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
+		if(dT<dist){
+			ht=ver.y;
+			dist=dT;
+		}
+	}
+
+	float h=ht;//hp.Height2(vPos.x, vPos.z );
+	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
+	//float h;
+	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
+	//	h=hPiso;
+	//else 
+	//	h=hEscalera;
+
+	if(vPos.y < h + 60 || vPos.y > h + 60)
+	{
+		
+		blur_s[pas]=h;
+		pas=(pas+1)%BLUR_STEP;
+		prom=0.0f;
+		for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
+		prom/=float(BLUR_STEP);
+		h=prom;
+		vNewPos.y = h + 60;
+		float temp = vNewPos.y - vPos.y;
+		CVector3 vView = camera.eye;
+		vView.y += temp;
+		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
+	}
 
 	repaint();
 
 
-	// Camara
-	glColor3f(1.0f,1.0f,1.0f);
-	
 
 	//Panel On Screen
 	#ifndef DIS_SHADER
 		unapplyShader();
 	#endif
+
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
 	orthogonalStart();
 	int tU=0;
-	for(int i=width()/3;i<(width()*2)/3;i+=width()/15){
+	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
 
 		//if(objetos[tU]){
 			glEnable(GL_BLEND);
@@ -476,6 +512,7 @@ void Window::paintGL()
 	orthogonalEnd();
 	
 
+	glColor3f(1.0f,1.0f,1.0f);
 	//FPS counter
 	++fps;
 	if(m_time.currentTime().second()!=sec && fps>0){
@@ -540,46 +577,6 @@ void Window::repaint()
 	// Calcular frustum
 	g_Frustum.CalculateFrustum();
 
-	// Calcular Posicion de heightMap
-	CVector3 vPos		= camera.center;
-	CVector3 vNewPos    = vPos;
-	bool piso;
-	
-
-	float dist=100000.0f;
-	float ht=100000.0f;
-	int c=g_3DModel.pObject[0].numOfVerts;
-	for(int i=0;i<c;++i){
-		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
-		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
-		if(dT<dist){
-			ht=ver.y;
-			dist=dT;
-		}
-	}
-	float h=ht;//hp.Height2(vPos.x, vPos.z );
-	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
-	//float h;
-	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
-	//	h=hPiso;
-	//else 
-	//	h=hEscalera;
-
-	if(vPos.y < h + 60 || vPos.y > h + 60)
-	{
-		
-		blur_s[pas]=h;
-		pas=(pas+1)%BLUR_STEP;
-		prom=0.0f;
-		for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
-		prom/=float(BLUR_STEP);
-		h=prom;
-		vNewPos.y = h + 60;
-		float temp = vNewPos.y - vPos.y;
-		CVector3 vView = camera.eye;
-		vView.y += temp;
-		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
-	}
 
 	#ifndef DIS_SHADER
 		glUniform1i(getUniLoc(p, "text"), 1);
@@ -593,7 +590,7 @@ void Window::repaint()
 	
 
 	//Draw OBJ
-	for(int i = 0; i < g_3DModel.numOfObjects; i++)
+	for(int i = 2; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();
 			if(i>=1 && i<=6)
@@ -688,7 +685,15 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
 		kU=true;
 	}
-
+	if(event->key()==Qt::Key_1){
+		sonidos[0]->Play();
+	}
+	if(event->key()==Qt::Key_2){
+		sonidos[1]->Play();
+	}
+	if(event->key()==Qt::Key_3){
+		sonidos[2]->Play();
+	}
 
 	
 	if(kL)	{ dk=1.8; dk2=-2.0f; }
@@ -865,20 +870,20 @@ bool Window::AnimateNextFrame(int desiredFrameRate)
 	float elapsedTime = 0.0;
 
 	// Get current time in seconds  (milliseconds * .001 = seconds)
-    float currentTime = GetTickCount() * 0.001f; 
+	float currentTime = GetTickCount() * 0.001f; 
 
 	// Get the elapsed time by subtracting the current time from the last time
 	elapsedTime = currentTime - lastTime;
 
 	// Check if the time since we last checked is over (1 second / framesPerSecond)
-    if( elapsedTime > (1.0f / desiredFrameRate) )
-    {
+	if( elapsedTime > (1.0f / desiredFrameRate) )
+	{
 		// Reset the last time
-        lastTime = currentTime;	
+		lastTime = currentTime;	
 
 		// Return TRUE, to animate the next frame of animation
-        return true;
-    }
+		return true;
+	}
 
 	// We don't animate right now.
 	return false;

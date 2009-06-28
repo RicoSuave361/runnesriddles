@@ -185,8 +185,11 @@ ALboolean ALFWLoadWaveToBuffer(const char *szWaveFile, ALuint uiBufferID, ALenum
 
 				alGetError();
 				alBufferData(uiBufferID, eBufferFormat, pData, iDataSize, iFrequency);
-				if (alGetError() == AL_NO_ERROR)
+				int ae=alGetError();
+				if (ae == AL_NO_ERROR)
 					bReturn = AL_TRUE;
+				else
+					printf("Error No: %d\n",ae);
 
 				g_pWaveLoader->DeleteWaveFile(WaveID);
 			}
@@ -207,7 +210,7 @@ void ALFWprintf( const char* x, ... )
 ALchar fullPath[_MAX_PATH];
 ALchar *ALFWaddMediaPath(const ALchar *filename)
 {
-	sprintf(fullPath, "%s%s", ".\\media\\", filename);
+	sprintf(fullPath, "%s%s", ".\\Sounds\\", filename);
 	return fullPath;
 }
 
