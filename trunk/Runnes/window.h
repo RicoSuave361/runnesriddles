@@ -32,7 +32,7 @@ public:
     GLuint primitiveList;
 	int initCol;
 	int cofre,door;
-	Audio audio;									//Audio Initialize
+	vector<Audio*> sonidos;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 

@@ -7,11 +7,13 @@
 class Audio
 {
 public:
-	Audio(void);
-	void Play(const char* dir);
+	Audio(const int buffer,const char* dir);
+	void Play();
 public:
 	~Audio(void);
 	ALuint      uiBuffer;
 	ALuint      uiSource;  
 	ALint       iState;
+	int buffer;
+	char *arch;
 };
