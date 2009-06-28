@@ -31,7 +31,7 @@ public:
 
     GLuint primitiveList;
 	int initCol;
-	int cofre,door,piso1;
+	int cofre,door;
 	vector<Audio*> sonidos;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
@@ -214,6 +214,7 @@ protected:
 int g_BlurRate;
 float traslate_MB;
 int g_Viewport;
+bool montionBlur;
 	
 GLuint      g_colorMapTexture;
 GLuint      g_normalMapTexture;
