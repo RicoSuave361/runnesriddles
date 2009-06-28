@@ -121,6 +121,8 @@ void Window::initializeGL()
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj");
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj");
+
+	piso1=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 
 	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
@@ -434,9 +436,9 @@ void Window::paintGL()
 	CVector3 vNewPos    = vPos;
 	float dist=100000.0f;
 	float ht=100000.0f;
-	int c=g_3DModel.pObject[0].numOfVerts;
+	int c=g_3DModel.pObject[piso1].numOfVerts;
 	for(int i=0;i<c;++i){
-		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
+		CVector3  ver=g_3DModel.pObject[piso1].pVerts[i];
 		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
 		if(dT<dist){
 			ht=ver.y;

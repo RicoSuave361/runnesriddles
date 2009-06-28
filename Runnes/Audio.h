@@ -14,6 +14,7 @@ public:
 	ALuint      uiBuffer;
 	ALuint      uiSource;  
 	ALint       iState;
-	int buffer;
+	const int buffer;
 	char *arch;
+	bool load;
 };
