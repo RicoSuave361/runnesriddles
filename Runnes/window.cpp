@@ -49,6 +49,7 @@ dk=0.0f;
 	kD=false;
 	kR=false;
 	kU=false;
+	montionBlur = false;
 	cofre=-1;
 	door=-1;
 	angCof=0.0f;
@@ -119,11 +120,9 @@ void Window::initializeGL()
 	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
 
 	//Models
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj");
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj");
-
-	piso1=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 
 	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
@@ -137,8 +136,6 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
 	*/
@@ -202,7 +199,7 @@ void Window::initializeGL()
 	
 	sky=new SkyBox(this);
 
-	g_BlurRate = 50;
+	g_BlurRate = 100;
 	g_Viewport = 512;
 	CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
 	float dist=0.0f;
@@ -429,16 +426,37 @@ void Window::paintGL()
 	
 	// Camara
 	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+
+
+	if(montionBlur){
+		if( AnimateNextFrame(g_BlurRate) )
+		{
+			glViewport(0, 0, g_Viewport, g_Viewport);								
+			RenderMotionBlur(0);
+			repaint();
+			glBindTexture(GL_TEXTURE_2D,g_Texture2[0]);				
+			glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, g_Viewport, g_Viewport, 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			
+			glViewport(0, 0, width(), height());	
+		}
+		RenderMotionBlur(0);
+	}
+
 	
 
-	// Calcular Posicion de heightMap
+	repaint();
+
+
+
+	
+// Calcular Posicion de heightMap
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
 	float dist=100000.0f;
 	float ht=100000.0f;
-	int c=g_3DModel.pObject[piso1].numOfVerts;
+	int c=g_3DModel.pObject[0].numOfVerts;
 	for(int i=0;i<c;++i){
-		CVector3  ver=g_3DModel.pObject[piso1].pVerts[i];
+		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
 		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
 		if(dT<dist){
 			ht=ver.y;
@@ -469,49 +487,6 @@ void Window::paintGL()
 		vView.y += temp;
 		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
 	}
-
-	repaint();
-
-
-
-	//Panel On Screen
-	#ifndef DIS_SHADER
-		unapplyShader();
-	#endif
-
-	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	orthogonalStart();
-	int tU=0;
-	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
-
-		//if(objetos[tU]){
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_COLOR, GL_ONE);
-			glDepthMask(false);
-			glPushMatrix();
-			//glColor4ub(0,0,0,255);
-			glBindTexture(GL_TEXTURE_2D, panel[tU]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-			glBegin(GL_QUADS);
-				glTexCoord2f(0,0);
-				glVertex2f(i,height()-5);
-				glTexCoord2f(0,1);
-				glVertex2f(i, height()-width()/15 -10);
-				glTexCoord2f(1,1);
-				glVertex2f(i+width()/15-5, height()-width()/15 -10);
-				glTexCoord2f(1,0);
-				glVertex2f(i+width()/15-5, height()-5);
-			glEnd();
-		//}
-		tU++;	
-		glPopMatrix();
-		glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
-		glDisable(GL_BLEND);
-	}
-	orthogonalEnd();
 	
 
 	glColor3f(1.0f,1.0f,1.0f);
@@ -544,7 +519,6 @@ void Window::repaint()
 {
 
 	
-
 	#ifndef DIS_SHADER
 		applyShader(p);
 		glUniform1i(getUniLoc(p, "activeLight[1]"),1);
@@ -592,7 +566,7 @@ void Window::repaint()
 	
 
 	//Draw OBJ
-	for(int i = piso1; i < g_3DModel.numOfObjects; i++)
+	for(int i = 0; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();
 			if(i>=1 && i<=6)
@@ -624,25 +598,44 @@ void Window::repaint()
 	#endif
 
 
-	// Camara
-	//sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
-	/* for(float i=-5.0f;i<5.0f;i+=1.0f){
-		for(float j=-5.0f;j<5.0f;j+=1.0f){
-			glPushMatrix();
-			glTranslatef(i,0.0f,j);
-			drawObj(g_3DModel.numOfObjects-1);
-			glPopMatrix();
-		}
-	} */
-/*
-	unapplyShader();
-		dead=GAMETIME/1000.0f;
-		dt=dead-dt;
-	sp->render(dt);  
-		dt=dead;
-*/
+	//Panel On Screen
+	#ifndef DIS_SHADER
+		unapplyShader();
+	#endif
 
-	
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	orthogonalStart();
+	int tU=0;
+	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
+
+		//if(objetos[tU]){
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_COLOR, GL_ONE);
+			glDepthMask(false);
+			glPushMatrix();
+			//glColor4ub(0,0,0,255);
+			glBindTexture(GL_TEXTURE_2D, panel[tU]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			glBegin(GL_QUADS);
+				glTexCoord2f(0,0);
+				glVertex2f(i,height()-5);
+				glTexCoord2f(0,1);
+				glVertex2f(i, height()-width()/15 -10);
+				glTexCoord2f(1,1);
+				glVertex2f(i+width()/15-5, height()-width()/15 -10);
+				glTexCoord2f(1,0);
+				glVertex2f(i+width()/15-5, height()-5);
+			glEnd();
+		//}
+		tU++;	
+		glPopMatrix();
+		glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
+		glDisable(GL_BLEND);
+	}
+	orthogonalEnd();
 
 }
 
@@ -696,7 +689,9 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(event->key()==Qt::Key_3){
 		sonidos[2]->Play();
 	}
-
+	if(event->key()==Qt::Key_B){
+		montionBlur = !montionBlur;
+	}
 	
 	if(kL)	{ dk=1.8; dk2=-2.0f; }
 	else	{ dk=0.0f; dk2=0.0f; }//camera.StrafeCamera(1.8f);
@@ -789,7 +784,6 @@ void Window::orthogonalEnd (void) {
 	glPopMatrix();
 
 }
-
 void Window::OrthoMode(int left, int top, int right, int bottom)
 {
 	// Switch to our projection matrix so that we can change it to ortho mode, not perspective.
@@ -811,14 +805,6 @@ void Window::OrthoMode(int left, int top, int right, int bottom)
 	// Initialize the current model view matrix with the identity matrix
 	glLoadIdentity();										
 }
-
-
-///////////////////////////////// PERSPECTIVE MODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function changes our returns our projection mode from 2D to 3D
-/////
-///////////////////////////////// PERSPECTIVE MODE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
 void Window::PerspectiveMode()										// Set Up A Perspective View
 {
 	// Enter into our projection matrix mode
@@ -858,14 +844,6 @@ void Window::CreateRenderTexture(UINT textureArray[], int size, int channels, in
 }
 
 
-/////// * /////////// * /////////// * NEW * /////// * /////////// * /////////// *
-
-///////////////////////////////// ANIMATE NEXT FRAME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function returns true only the "desiredFrameRate" times a second
-/////
-///////////////////////////////// ANIMATE NEXT FRAME \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-
 bool Window::AnimateNextFrame(int desiredFrameRate)
 {
 	static float lastTime = 0.0f;
@@ -892,12 +870,6 @@ bool Window::AnimateNextFrame(int desiredFrameRate)
 }
 
 
-///////////////////////////////// RENDER MOTION BLUR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-/////
-/////	This function takes a texture ID to blend over the screen for motion blur
-/////
-///////////////////////////////// RENDER MOTION BLUR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-	
 void Window::RenderMotionBlur(int textureID2)
 {
 	// This function was created to blend the rendered texture over top of the screen
@@ -924,7 +896,7 @@ void Window::RenderMotionBlur(int textureID2)
 		glBindTexture(GL_TEXTURE_2D, g_Texture2[textureID2]);			
 
 		// Decrease the alpha value of the blend by %10 so it will fade nicely
-		glColor4f(1, 1, 1, 0.9f);
+		glColor4f(1, 1, 1, 0.6f);
 
 		// Switch to 2D mode (Ortho mode)
 		OrthoMode(0, 0, width(), height());
