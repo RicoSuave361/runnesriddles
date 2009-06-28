@@ -208,7 +208,7 @@ protected:
 	void CreateRenderTexture(UINT textureArray[], int size, int channels, int type, int textureID);
 	bool AnimateNextFrame(int desiredFrameRate);
 	void RenderMotionBlur(int textureID);
-	void Window::suenaWav(int NroSound, int TimeSound);
+	void suenaWav(int NroSound, float TimeSound);
 	void repaint();
 	//motion blur fin
 	UINT g_Texture2[2];
