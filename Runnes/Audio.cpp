@@ -22,6 +22,7 @@ Audio::Audio(const int _buffer,const char* dir): buffer(_buffer)
 		return;
 	}
 	load=true;
+	lastTime = 0;
 
 }
 Audio::~Audio(void)

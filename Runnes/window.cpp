@@ -366,7 +366,7 @@ void Window::drawObj(int ID){
 }
 void Window::paintGL()
 { 
-	suenaWav(0,146);
+	suenaWav(0,10);
 //	unapplyShader();
 	if(playerController.IsConnected())
 	{
@@ -869,12 +869,12 @@ bool Window::AnimateNextFrame(int desiredFrameRate)
 	return false;
 }
 void Window::suenaWav(int NroSound, int TimeSound){
-	static float lastTime = 0.0f;
+	//static float lastTime = 0.0f;
 	float elapsedTime = 0.0;
-	float currentTime = GetTickCount() * 0.001f; 
+	float currentTime = GAMETIME * 0.001f; 
 
 	// Get the elapsed time by subtracting the current time from the last time
-	elapsedTime = currentTime - lastTime;
+	elapsedTime = currentTime - sonidos[NroSound]->lastTime;
 
 	// Check if the time since we last checked is over (1 second / framesPerSecond)
 	if( elapsedTime > (TimeSound ) )
@@ -882,7 +882,7 @@ void Window::suenaWav(int NroSound, int TimeSound){
 
 		// Reset the last time
 		sonidos[NroSound]->Play();
-		lastTime = currentTime;	
+		sonidos[NroSound]->lastTime = currentTime;	
 
 		// Return TRUE, to animate the next frame of animation
 	}

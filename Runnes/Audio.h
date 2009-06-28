@@ -17,4 +17,5 @@ public:
 	const int buffer;
 	char *arch;
 	bool load;
+	int lastTime;
 };
