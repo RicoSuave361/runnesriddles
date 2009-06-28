@@ -21,20 +21,19 @@ public:
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 	bool objetos[6],intClose,intOpen;								//objetos cargados en el panel on screen
 	GLuint panel[6];								//texturas para el panel on screen
-
+	float dk;
+	float dl;
+	float dk2;
+	float dl2;
     GLuint primitiveList;
 	int initCol;
-	int cofre;
+	int cofre,door;
 	Audio audio;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 
 	float angCof,tFI;
 
-	float dk;
-	float dl;
-	float dk2;
-	float dl2;
 
 	Window(QWidget *parent);						//Window Handler
 	~Window();
@@ -52,7 +51,7 @@ public:
 	bool isColliding(t3DObject A, t3DObject B);
 	void resizeGL(int width, int height);			//Window resize
 	SystemParticle *sp;
-	bool kL,kD,kR,kU,isCol;
+	bool kL,kD,kR,kU;
 	int nrObjectDraw;
 	void drawObj(int ID);
 	float dead,dt;

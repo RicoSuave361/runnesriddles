@@ -19,6 +19,10 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 angCof=0;
 	memset(blur_s,0,sizeof(blur_s));
 pas=0;
+dk=0.0f;
+	 dl=0.0f;
+	 dk2=0.0f;
+	 dl2=0.0f;
 	// Auto llamadas cada 1ms al updateGL
 	m_timer = new QTimer(this);
     m_timer->setInterval(1);
@@ -45,7 +49,7 @@ pas=0;
 	kD=false;
 	kR=false;
 	kU=false;
-
+	cofre=-1;
 	memset(objetos,false,sizeof(objetos));
 }
 
@@ -67,6 +71,15 @@ bool Window::isColliding(t3DObject A, t3DObject B){
     * If the min x position of A is greater than the max x position of B they do not collide
     * and the same goes for y and z
 	*/
+	for(int i=0;i<B.numOfFaces;i++){
+		CVector3 N=B.pNormalsFaces[i];
+		CVector3 q=A.center;
+		int vertIndex = B.pFaces[i].vertIndex[0];
+		CVector3 p=B.pVerts[vertIndex];
+					
+		if(N.x*q.x + N.y*q.y + N.z*q.z - (N.x*p.x + N.y*p.y+N.z*p.z) <= 0 ) return false;
+	}
+	return true;/*
 
 	if( A.Max.x < B.Min.x ) 		return false;
 
@@ -81,7 +94,7 @@ bool Window::isColliding(t3DObject A, t3DObject B){
 	if( A.Min.z > B.Max.z ) 		return false;
 
 	return true;
-
+*/
 }
 
 void Window::initializeGL()
@@ -104,22 +117,26 @@ void Window::initializeGL()
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
+		g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoor.obj",	bindTexture(QImage("Textures/indoorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
+	*/
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+
+	door=g_3DModel.numOfObjects;
+	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
+
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
@@ -130,9 +147,9 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
-
+*/
 	initCol=g_3DModel.numOfObjects;
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
 
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
@@ -303,7 +320,10 @@ void Window::drawObj(int ID){
 		glEnd();
 	}else{
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glColor3ub(255, 255, 255);
+		if(!isColliding(camera.box,*pObject))
+			glColor3ub(255, 255, 255);
+		else
+			glColor3ub(255, 0, 0);
 		glBegin(GL_LINES);
 		for(int j = 0; j < pObject->numOfVerts; j++)
 		{	
@@ -315,7 +335,7 @@ void Window::drawObj(int ID){
 			
 			}
 		}
-		
+	
 		glEnd();
 		
 		/*glColor3ub(255, 0, 0);
@@ -651,26 +671,30 @@ void Window::keyPressEvent(QKeyEvent *event)
 	}
 
 
-	float dk=0.0f;
-	float dl=0.0f;
-	float dk2=0.0f;
-	float dl2=0.0f;
-	if(kL){ dk=1.8; dk2=-2.0f; }//camera.StrafeCamera(1.8f);
-	if(kD){ dl=1.8f; dl2=-2.0f; }//camera.MoveCamera(1.8f);
-	if(kR){ dk=-1.8f; dk2=2.0f; }//camera.StrafeCamera(-1.8f);
-	if(kU){ dl=-1.8f; dl2=2.0f; }//camera.MoveCamera(-1.8f);
+	
+	if(kL)	{ dk=1.8; dk2=-2.0f; }
+	else	{ dk=0.0f; dk2=0.0f; }//camera.StrafeCamera(1.8f);
+
+	if(kD)	{ dl=1.8f; dl2=-2.0f; }
+	else	{ dl=0.0f; dl2=0.0f;  } //camera.MoveCamera(1.8f);
+
+	if(kR)	{ dk=-1.8f; dk2=2.0f; }
+	else if(!kL)	{ dk=0.0f;  dk2=0.0f; }//camera.StrafeCamera(-1.8f);
+
+	if(kU)	{ dl=-1.8f; dl2=2.0f; }//camera.MoveCamera(-1.8f);
+	else if(!kD)	{ dl=0.0f;  dl2=0.0f; }
 
 	
 
 	if(dl!=0.0f || dk!=0.0f){
 		camera.StrafeCamera(dk);
 		camera.MoveCamera(dl);
-		/*for(int i=initCol+1;i<g_3DModel.numOfObjects; i++)
+		for(int i=initCol;i<g_3DModel.numOfObjects; i++)
 			if(isColliding(camera.box,g_3DModel.pObject[i])){
 				camera.StrafeCamera(dk2);
 				camera.MoveCamera(dl2);
-				break;
-			}*/
+				//break;
+			}
 	}
 
 	if(event->key()==Qt::Key_0)
