@@ -592,7 +592,7 @@ void Window::repaint()
 	
 
 	//Draw OBJ
-	for(int i = 2; i < g_3DModel.numOfObjects; i++)
+	for(int i = piso1; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();
 			if(i>=1 && i<=6)
