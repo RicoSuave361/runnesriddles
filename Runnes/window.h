@@ -70,7 +70,7 @@ public:
 	
 	bool kL,kD,kR,kU;
 	int nrObjectDraw;
-	void drawObj(int ID);
+	void drawObj(int ID,CVector3 *Pos=NULL);
 	float dead,dt;
 	//VSync handler
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
@@ -213,7 +213,7 @@ protected:
 	CCamera camera;
 	float hant;
 	float blur_s[BLUR_STEP];
-	int pas;
+	int pas,initGem;
 	float prom;
 	GLuint v,f,f2,p,p2,normalMap;
 	//motion blur

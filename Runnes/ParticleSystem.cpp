@@ -412,7 +412,7 @@ void CParticleSystem::Render( void )
     glPointParameterfARB( GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f );
 
     glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, 1.0f );
-    glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, m_fMaxPointSize );
+    glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, m_fMaxPointSize);
 
     // Specify point sprite texture coordinate replacement mode for each texture unit
     glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
@@ -423,7 +423,7 @@ void CParticleSystem::Render( void )
 
     glEnable( GL_POINT_SPRITE_ARB );
 
-    glPointSize( m_fSize );
+    glPointSize( m_fSize);
 
 	glColor3f( m_clrColor.x, m_clrColor.y, m_clrColor.z );
 

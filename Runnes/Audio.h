@@ -17,7 +17,7 @@ public:
 	char *arch;
 	bool load;
 	float lastTime;
+	int buffAl;
 private:
-	const int buffAl;
 
 };
