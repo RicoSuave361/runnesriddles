@@ -5,7 +5,7 @@
 #include "audio.h"
 #include "skybox.h"
 #include "HeightMap.h"
-#include "SystemParticle.h"
+#include "ParticleSystem.h"
 #include <QtGui>
 #include <QGLWidget>
 
@@ -53,7 +53,15 @@ public:
 	//Detecta colisiones
 	bool isColliding(t3DObject A, t3DObject B);
 	void resizeGL(int width, int height);			//Window resize
-	SystemParticle *sp;
+	
+	// PARTICLE' VAGO
+	CParticleSystem *g_pParticleSystems[6];
+	void initParticles();
+	double g_dCurTime;
+	float g_fElpasedTime;
+	double g_dLastTime;
+	int g_nActiveSystem;
+	
 	bool kL,kD,kR,kU;
 	int nrObjectDraw;
 	void drawObj(int ID);
