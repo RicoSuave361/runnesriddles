@@ -233,8 +233,29 @@ g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Texture
 }
 void Window::initParticles()
 {
-	g_nActiveSystem=1;
+	g_nParticleSystems=3;
+
 	//
+    // Wind blown fountain
+	//
+
+	g_pParticleSystems[0] = new CParticleSystem();
+
+    g_pParticleSystems[0]->SetTexture( "Textures/fire.bmp" );
+    g_pParticleSystems[0]->SetMaxParticles( 500 );
+    g_pParticleSystems[0]->SetNumToRelease( 5 );
+    g_pParticleSystems[0]->SetReleaseInterval( 0.05f );
+    g_pParticleSystems[0]->SetLifeCycle( 4.0f );
+    g_pParticleSystems[0]->SetSize( 30.0f );
+    g_pParticleSystems[0]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
+    g_pParticleSystems[0]->SetPosition( CVector3( -879.5f, 185.0f, 286.5f ) );
+    g_pParticleSystems[0]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
+    g_pParticleSystems[0]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
+    g_pParticleSystems[0]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
+    g_pParticleSystems[0]->SetVelocityVar( 1.5f );
+
+	g_pParticleSystems[0]->Init();
+	/*//
     // Exploding burst
 	//
     
@@ -253,7 +274,7 @@ void Window::initParticles()
     g_pParticleSystems[0]->SetWind( CVector3( 0.0f, 0.0f, 0.0f) );
     g_pParticleSystems[0]->SetVelocityVar( 10.0f );
 
-    g_pParticleSystems[0]->Init();
+    g_pParticleSystems[0]->Init();*/
 
 	//
     // Wind blown fountain
@@ -261,26 +282,43 @@ void Window::initParticles()
 
 	g_pParticleSystems[1] = new CParticleSystem();
 
-    g_pParticleSystems[1]->SetTexture( "Textures/particle.bmp" );
+    g_pParticleSystems[1]->SetTexture( "Textures/fire.bmp" );
     g_pParticleSystems[1]->SetMaxParticles( 500 );
     g_pParticleSystems[1]->SetNumToRelease( 5 );
     g_pParticleSystems[1]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[1]->SetLifeCycle( 4.0f );
     g_pParticleSystems[1]->SetSize( 30.0f );
     g_pParticleSystems[1]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
-    g_pParticleSystems[1]->SetPosition( CVector3( -811.0f, 185.0f, 287.0f ) );
+    g_pParticleSystems[1]->SetPosition( CVector3( -810.0f, 185.0f, 286.5f ) );
     g_pParticleSystems[1]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
     g_pParticleSystems[1]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
-    g_pParticleSystems[1]->SetWind( CVector3( 2.0f, 0.0f, 0.0f ) );
+    g_pParticleSystems[1]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
     g_pParticleSystems[1]->SetVelocityVar( 1.5f );
 
     g_pParticleSystems[1]->Init();
+
+	g_pParticleSystems[2] = new CParticleSystem();
+
+    g_pParticleSystems[2]->SetTexture( "Textures/fire.bmp" );
+    g_pParticleSystems[2]->SetMaxParticles( 500 );
+    g_pParticleSystems[2]->SetNumToRelease( 5 );
+    g_pParticleSystems[2]->SetReleaseInterval( 0.05f );
+    g_pParticleSystems[2]->SetLifeCycle( 4.0f );
+    g_pParticleSystems[2]->SetSize( 30.0f );
+    g_pParticleSystems[2]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
+    g_pParticleSystems[2]->SetPosition( CVector3( -972.5f, 227.0f, 285.0f ) );
+    g_pParticleSystems[2]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
+    g_pParticleSystems[2]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
+    g_pParticleSystems[2]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
+    g_pParticleSystems[2]->SetVelocityVar( 1.5f );
+
+    g_pParticleSystems[2]->Init();
 
 	//
     // Omni-directiional emission expanding into space with no air resistence
 	//
 
-    g_pParticleSystems[2] = new CParticleSystem();
+    /*g_pParticleSystems[2] = new CParticleSystem();
 
     g_pParticleSystems[2]->SetTexture( "Textures/particle.bmp" );
     g_pParticleSystems[2]->SetMaxParticles( 2048 );
@@ -298,7 +336,7 @@ void Window::initParticles()
 
     g_pParticleSystems[2]->SetVelocityVar(2.0f);
 
-    g_pParticleSystems[2]->Init();
+    g_pParticleSystems[2]->Init();*/
  
 	//
     // Fountain particles behave like paint spots when striking a plane as 
@@ -390,6 +428,9 @@ void Window::initParticles()
 
     g_pParticleSystems[5]->Init();
 }
+
+
+
 
 void Window::drawObj(int ID){
 	if(ID<noPint) return;
@@ -628,27 +669,32 @@ void Window::paintGL()
 	g_dLastTime    = g_dCurTime;
 
 	glEnable(GL_TEXTURE_2D);
-	g_pParticleSystems[g_nActiveSystem]->Update( (float)g_fElpasedTime );
-
 	glEnable( GL_DEPTH_TEST );
-    glDepthMask( GL_FALSE );
+	glDepthMask( GL_FALSE );
 
 	glEnable( GL_BLEND );
-    glBlendFunc( GL_DST_ALPHA, GL_ONE );
+	glBlendFunc( GL_DST_ALPHA, GL_ONE );
+	for (int p=0; p<g_nParticleSystems; ++p)
+	{
+		
+		g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
 
-    //
-	// Render particle system
+		//
+		// Render particle system
+		//
+
+		glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[p]->GetTextureID() );
+		g_pParticleSystems[p]->Render();
+
+
+	}
+
+	//
+	// Reset OpenGL states...
 	//
 
-	glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[g_nActiveSystem]->GetTextureID() );
-    g_pParticleSystems[g_nActiveSystem]->Render();
-
-    //
-    // Reset OpenGL states...
-	//
-
-    glDepthMask( GL_TRUE );
-    glDisable( GL_BLEND );
+	glDepthMask( GL_TRUE );
+	glDisable( GL_BLEND );
 
 	
 
