@@ -124,31 +124,35 @@ void Window::initializeGL()
 	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
 
 	//Models
+	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoTechoCastillo.obj");
+	noPint=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
-
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
+	pisoAje=g_3DModel.numOfObjects;
+	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
+	
+/*	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
 	//g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
+g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
-	
+	*/
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
 
 	door=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
-
+/*
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
@@ -160,7 +164,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
-
+*/
 	initCol=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
@@ -198,6 +202,19 @@ void Window::initializeGL()
 		//for(int i=0; i<5; i++)
 		//	glUniform1i(getUniLoc(p, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
 	#endif
+
+	printf("Calculate HeightMap... ");
+	hp=new HeightMap(&(g_3DModel.pObject[1]));
+	printf(" 1/5 -");
+	escalera1=new HeightMap(&(g_3DModel.pObject[2]));
+	printf(" 2/5 -");
+	escalera2=new HeightMap(&(g_3DModel.pObject[3]));
+	printf(" 3/5 -");
+	techoCas=new HeightMap(&(g_3DModel.pObject[0]));
+	printf(" 4/5 -");
+	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]));
+	printf(" 5/5 -");
+	printf(" End...\n");
 
 	initParticles();
 	sky=new SkyBox(this);
@@ -375,7 +392,9 @@ void Window::initParticles()
 }
 
 void Window::drawObj(int ID){
+	if(ID<noPint) return;
 	if(g_3DModel.pObject.size() <= ID) return;
+	if(ID>=initCol) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
 	
 	if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
@@ -497,7 +516,7 @@ void Window::drawObj(int ID){
 				}
 			}
 		glEnd();
-	}/*else{
+	}else{
 		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		if(!isColliding(camera.box,*pObject))
 			glColor3ub(255, 255, 255);
@@ -517,17 +536,7 @@ void Window::drawObj(int ID){
 	
 		glEnd();
 		
-		/*glColor3ub(255, 0, 0);
-		CVector3 v1=pObject->min;
-		CVector3 v2=pObject->max;
-		glBegin(GL_LINES);
-
-			glVertex3f(v1.x, v1.y, v1.z);
-			glVertex3f(v2.x, v2.y, v2.z);
-
-
-		glEnd();* /
-	}*/
+	}
 }
 void Window::paintGL()
 { 
@@ -642,30 +651,36 @@ void Window::paintGL()
     glDisable( GL_BLEND );
 
 	
+
+	
 // Calcular Posicion de heightMap
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
-	float dist=100000.0f;
-	float ht=100000.0f;
-	int c=g_3DModel.pObject[0].numOfVerts;
-	for(int i=0;i<c;++i){
-		CVector3  ver=g_3DModel.pObject[0].pVerts[i];
-		float dT=sqrt( (ver.x-vPos.x)*(ver.x-vPos.x) + (ver.z-vPos.z)*(ver.z-vPos.z)  + (ver.y-vPos.y)*(ver.y-vPos.y) );
-		if(dT<dist){
-			ht=ver.y;
-			dist=dT;
+	float h;
+	float alturas[5];
+	alturas[0]=hp->Height(vPos.x,vPos.z);
+	alturas[1]=escalera1->Height(vPos.x,vPos.z);
+	alturas[2]=escalera2->Height(vPos.x,vPos.z);
+	alturas[3]=ejedrez->Height(vPos.x,vPos.z);
+	alturas[4]=techoCas->Height(vPos.x,vPos.z);
+	float difAltu[5];
+	difAltu[0]=vPos.y-alturas[0];
+	difAltu[1]=vPos.y-alturas[1];
+	difAltu[2]=vPos.y-alturas[2];
+	difAltu[3]=vPos.y-alturas[3];
+	difAltu[4]=vPos.y-alturas[4];
+	float hDif=fabs(difAltu[0]);
+	int Hi=0;
+	for(int i=1;i<5;++i){
+		if(difAltu[i]<hDif && difAltu[i]>=0){
+			Hi=i;
+			hDif=difAltu[i];
 		}
 	}
+	h=alturas[Hi];
 
-	float h=ht;//hp.Height2(vPos.x, vPos.z );
-	//float hEscalera=escalera.Height2(vPos.x, vPos.z);	
-	//float h;
-	//if(fabs(vPos.y-hPiso)<fabs(vPos.y-hEscalera))
-	//	h=hPiso;
-	//else 
-	//	h=hEscalera;
 
-	if(vPos.y < h + 60 || vPos.y > h + 60)
+	if(vPos.y < h + 40 || vPos.y > h + 40)
 	{
 		
 		blur_s[pas]=h;
@@ -674,7 +689,7 @@ void Window::paintGL()
 		for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
 		prom/=float(BLUR_STEP);
 		h=prom;
-		vNewPos.y = h + 60;
+		vNewPos.y = h + 40;
 		float temp = vNewPos.y - vPos.y;
 		CVector3 vView = camera.eye;
 		vView.y += temp;
@@ -759,28 +774,10 @@ void Window::repaint()
 	
 
 	//Draw OBJ
-	for(int i = 0; i < g_3DModel.numOfObjects; i++)
+	for(int i = noPint; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();
-			if(i>=1 && i<=6)
-			{
-				if(!objetos[i-1]) drawObj(i);
-			}
-			else
-			{
-				//break;
-				if(i==15){
-					
-					#ifndef DIS_SHADER
-						unapplyShader();
-						applyShader(normalMap);
-					#endif
-
-				//	glTranslatef(-220,22,6);
-				}
-
-				drawObj(i);
-			}
+			drawObj(i);
 		glPopMatrix();
 	}
 

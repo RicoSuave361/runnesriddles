@@ -28,7 +28,7 @@ public:
 	//Puerta y Cofre
 	bool intClose,intOpen,intCloseDoor,intOpenDoor;
 	float angCof,tFI,angDoor,tFIDoor;
-
+	int noPint,pisoAje;
     GLuint primitiveList;
 	int initCol;
 	int cofre,door;
@@ -41,8 +41,13 @@ public:
 	Window(QWidget *parent);						//Window Handler
 	~Window();
 
-	HeightMap hp;	
-	HeightMap escalera;									
+
+	HeightMap *hp;	
+	HeightMap *escalera1;
+	HeightMap *escalera2;
+	HeightMap *techoCas;
+	HeightMap *ejedrez;	
+
 
 	CFrustum g_Frustum;								// esta es nuestra piramide truncada
 	bool g_bIgnoreFrustum;							// boleano que me la activa o no

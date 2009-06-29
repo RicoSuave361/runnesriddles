@@ -21,7 +21,7 @@ HeightMap::HeightMap(t3DObject *plane)
 					h=plane->pVerts[v].y;
 				}
 			}
-			if(dist>30*30) h=-200;
+			if(dist>40*40) h=-200;
 			mapa[i][j]=h; 
 		}
 	}
