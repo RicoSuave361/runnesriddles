@@ -16,7 +16,7 @@ public:
 	ALint       iState;
 	char *arch;
 	bool load;
-	int lastTime;
+	float lastTime;
 private:
 	const int buffAl;
 
