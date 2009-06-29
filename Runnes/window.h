@@ -65,7 +65,7 @@ public:
 	double g_dCurTime;
 	float g_fElpasedTime;
 	double g_dLastTime;
-	int g_nActiveSystem;
+	int g_nParticleSystems;
 	
 	bool kL,kD,kR,kU;
 	int nrObjectDraw;
