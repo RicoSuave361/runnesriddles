@@ -1,6 +1,6 @@
 #include "HeightMap.h"
 
-HeightMap::HeightMap(t3DObject *plane)
+HeightMap::HeightMap(t3DObject *plane,int err)
 {
 	minX=plane->Min.x;
 	minY=plane->Min.z;
@@ -21,7 +21,7 @@ HeightMap::HeightMap(t3DObject *plane)
 					h=plane->pVerts[v].y;
 				}
 			}
-			if(dist>40*40) h=-200;
+			if(dist>err*err) h=-200;
 			mapa[i][j]=h; 
 		}
 	}
