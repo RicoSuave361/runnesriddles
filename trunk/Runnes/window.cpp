@@ -8,7 +8,7 @@
 #include "include\glaux.h"
 #include <mmsystem.h>
 
-#define DIS_SHADER
+//#define DIS_SHADER
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
@@ -121,11 +121,12 @@ void Window::initializeGL()
 	panel[2]=bindTexture(QImage("Textures/gem3.jpg"), GL_TEXTURE_2D);
 	panel[3]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
 	panel[4]=bindTexture(QImage("Textures/gem5.jpg"), GL_TEXTURE_2D);
-	panel[5]=bindTexture(QImage("Textures/key.jpg"), GL_TEXTURE_2D);
+	panel[5]=bindTexture(QImage("Textures/key.jpg"),  GL_TEXTURE_2D);
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoTechoCastillo.obj");
 	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoIni.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/foliage.obj",		bindTexture(QImage("Textures/foliageTexture.jpg"), GL_TEXTURE_2D));
 	noPint=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
@@ -134,35 +135,36 @@ void Window::initializeGL()
 	pisoAje=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
 
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 	
-	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));*/
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
 
 	door=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+	/*g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune5.obj",		bindTexture(QImage("Textures/rune5Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));*/
+	initGem=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj",		bindTexture(QImage("Textures/gem1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj",		bindTexture(QImage("Textures/gem2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem3.obj",		bindTexture(QImage("Textures/gem3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem4.obj",		bindTexture(QImage("Textures/gem4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem5.obj",		bindTexture(QImage("Textures/gem5Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
 	initCol=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
 	printf(" End...\n");
@@ -198,11 +200,11 @@ void Window::initializeGL()
 
 	printf("Calculate HeightMap... ");
 	printf(" 1/6 -");
-	hp=new HeightMap(&(g_3DModel.pObject[2]),50);
+	hp=new HeightMap(&(g_3DModel.pObject[noPint]),150);
 	printf(" 2/6 -");
-	escalera1=new HeightMap(&(g_3DModel.pObject[3]),70);
+	escalera1=new HeightMap(&(g_3DModel.pObject[noPint+1]),70);
 	printf(" 3/6 -");
-	escalera2=new HeightMap(&(g_3DModel.pObject[4]),70);
+	escalera2=new HeightMap(&(g_3DModel.pObject[noPint+2]),70);
 	printf(" 4/6 -");
 	techoCas=new HeightMap(&(g_3DModel.pObject[1]),6);
 	printf(" 5/6 -");
@@ -223,6 +225,7 @@ void Window::initializeGL()
 	sonidos.push_back(new Audio(2,"footStepGrass1.wav"));
 	sonidos.push_back(new Audio(3,"doorOpen.wav"));
 	sonidos.push_back(new Audio(4,"doorLock.wav"));
+	sonidos.push_back(new Audio(5,"gemsDrag.wav"));
 
 	suenaWav(0,0);
 }
@@ -241,7 +244,7 @@ void Window::initParticles()
     g_pParticleSystems[0]->SetNumToRelease( 5 );
     g_pParticleSystems[0]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[0]->SetLifeCycle( 4.0f );
-    g_pParticleSystems[0]->SetSize( 30.0f );
+    g_pParticleSystems[0]->SetSize( 300.0f );
     g_pParticleSystems[0]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[0]->SetPosition( CVector3( -879.5f, 185.0f, 286.5f ) );
     g_pParticleSystems[0]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
@@ -282,7 +285,7 @@ void Window::initParticles()
     g_pParticleSystems[1]->SetNumToRelease( 5 );
     g_pParticleSystems[1]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[1]->SetLifeCycle( 4.0f );
-    g_pParticleSystems[1]->SetSize( 30.0f );
+    g_pParticleSystems[1]->SetSize( 300.0f );
     g_pParticleSystems[1]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[1]->SetPosition( CVector3( -810.0f, 185.0f, 286.5f ) );
     g_pParticleSystems[1]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
@@ -299,7 +302,7 @@ void Window::initParticles()
     g_pParticleSystems[2]->SetNumToRelease( 5 );
     g_pParticleSystems[2]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[2]->SetLifeCycle( 4.0f );
-    g_pParticleSystems[2]->SetSize( 30.0f );
+    g_pParticleSystems[2]->SetSize( 300.0f );
     g_pParticleSystems[2]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[2]->SetPosition( CVector3( -972.5f, 227.0f, 285.0f ) );
     g_pParticleSystems[2]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
@@ -345,7 +348,7 @@ void Window::initParticles()
     g_pParticleSystems[3]->SetNumToRelease( 10 );
     g_pParticleSystems[3]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[3]->SetLifeCycle( 3.0f );
-    g_pParticleSystems[3]->SetSize( 30.0f );
+    g_pParticleSystems[3]->SetSize( 300.0f );
     g_pParticleSystems[3]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[3]->SetPosition( CVector3( 0.0f, 0.0f, 0.0f ) );
     g_pParticleSystems[3]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
@@ -370,7 +373,7 @@ void Window::initParticles()
     g_pParticleSystems[4]->SetNumToRelease( 10 );
     g_pParticleSystems[4]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[4]->SetLifeCycle( 5.0f );
-    g_pParticleSystems[4]->SetSize( 30.0f );
+    g_pParticleSystems[4]->SetSize( 300.0f );
     g_pParticleSystems[4]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[4]->SetPosition( CVector3( 0.0f, 0.0f, 0.0f ) );
     g_pParticleSystems[4]->SetVelocity( CVector3( 0.0f, 0.0f, 0.0f ) );
@@ -394,7 +397,7 @@ void Window::initParticles()
     g_pParticleSystems[5]->SetNumToRelease( 5 );
     g_pParticleSystems[5]->SetReleaseInterval( 0.05f );
     g_pParticleSystems[5]->SetLifeCycle( 5.0f );
-    g_pParticleSystems[5]->SetSize( 30.0f );
+    g_pParticleSystems[5]->SetSize( 300.0f );
     g_pParticleSystems[5]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
     g_pParticleSystems[5]->SetPosition( CVector3( 0.0f, 0.0f, 0.0f ) );
     g_pParticleSystems[5]->SetVelocity( CVector3( 0.0f, 0.0f, 0.0f ) );
@@ -427,13 +430,13 @@ void Window::initParticles()
 
 
 
-void Window::drawObj(int ID){
-	if(ID<noPint) return;
+void Window::drawObj(int ID,CVector3 *Pos){
+//	if(ID<noPint) return;
 	if(g_3DModel.pObject.size() <= ID) return;
 	if(ID>=initCol) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
 	
-	if(!g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) 
+	if((Pos==NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) || (Pos!=NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x+Pos->x,pObject->center.y+Pos->y,pObject->center.z+Pos->z, pObject->radio))) 
 		return;
 	
 	nrObjectDraw++;
@@ -745,7 +748,76 @@ void Window::paintGL()
 		vView.y += temp;
 		camera.PositionCamera(vNewPos.x,  vNewPos.y,  vNewPos.z, vView.x,	vView.y,	vView.z,	0, 1, 0);								
 	}
-	
+
+	#ifndef DIS_SHADER
+		applyShader(p2);
+		glUniform1i(getUniLoc(p2, "text"), 1);
+		glUniform1i(getUniLoc(p2, "texture"), 0);
+		glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
+		glActiveTexture(GL_TEXTURE0);
+	#endif
+
+	for(int i=hp->minX;i<=hp->maxX;i+=20)
+	for(int j=hp->minY;j<=hp->maxY;j+=20){
+		//CVector3 &v=g_3DModel.pObject[noPint].pVerts[i];
+		glPushMatrix();
+		CVector3 v;
+		v.x=i;
+		v.y=hp->mapa[i][j]-6;
+		v.z=j;
+		#ifndef DIS_SHADER
+		glUniform1i(getUniLoc(p2, "r1"),v.y);
+		glUniform1i(getUniLoc(p2, "r2"),hp->minX+v.x);
+		glUniform1i(getUniLoc(p2, "r22"),hp->maxX+v.x);
+		glUniform1i(getUniLoc(p2, "r3"),v.z);
+		#endif
+		//if(v.x<
+		glTranslatef(v.x,v.y,v.z);
+		drawObj(2,&v);
+		glPopMatrix();
+	}
+	#ifndef DIS_SHADER
+		unapplyShader();
+	#endif
+
+	//Panel On Screen
+	#ifndef DIS_SHADER
+		unapplyShader();
+	#endif
+
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	orthogonalStart();
+	int tU=0;
+	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
+
+		if(objetos[tU]){
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_COLOR, GL_ONE);
+			glDepthMask(false);
+			glPushMatrix();
+			//glColor4ub(0,0,0,255);
+			glBindTexture(GL_TEXTURE_2D, panel[tU]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+			glBegin(GL_QUADS);
+				glTexCoord2f(0,0);
+				glVertex2f(i,height()-5);
+				glTexCoord2f(0,1);
+				glVertex2f(i, height()-width()/15 -10);
+				glTexCoord2f(1,1);
+				glVertex2f(i+width()/15-5, height()-width()/15 -10);
+				glTexCoord2f(1,0);
+				glVertex2f(i+width()/15-5, height()-5);
+			glEnd();
+			glPopMatrix();
+			glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
+			glDisable(GL_BLEND);
+		}
+		tU++;	
+	}
+	orthogonalEnd();
 
 	glColor3f(1.0f,1.0f,1.0f);
 	//FPS counter
@@ -827,7 +899,11 @@ void Window::repaint()
 	for(int i = noPint; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();
+		if(i>=initGem && i<initGem+6){
+			if(!objetos[i-initGem]) drawObj(i);
+		}else{
 			drawObj(i);
+		}
 		glPopMatrix();
 	}
 
@@ -838,45 +914,7 @@ void Window::repaint()
 	#endif
 
 
-	//Panel On Screen
-	#ifndef DIS_SHADER
-		unapplyShader();
-	#endif
-
-	glDisable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
-	orthogonalStart();
-	int tU=0;
-	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
-
-		//if(objetos[tU]){
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_COLOR, GL_ONE);
-			glDepthMask(false);
-			glPushMatrix();
-			//glColor4ub(0,0,0,255);
-			glBindTexture(GL_TEXTURE_2D, panel[tU]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-			glBegin(GL_QUADS);
-				glTexCoord2f(0,0);
-				glVertex2f(i,height()-5);
-				glTexCoord2f(0,1);
-				glVertex2f(i, height()-width()/15 -10);
-				glTexCoord2f(1,1);
-				glVertex2f(i+width()/15-5, height()-width()/15 -10);
-				glTexCoord2f(1,0);
-				glVertex2f(i+width()/15-5, height()-5);
-			glEnd();
-		//}
-		tU++;	
-		glPopMatrix();
-		glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
-		glDisable(GL_BLEND);
-	}
-	orthogonalEnd();
-
+	
 }
 
 
@@ -921,6 +959,16 @@ void Window::keyPressEvent(QKeyEvent *event)
 		kU=true;suenaWav(1,1);
 	}
 	
+	if(event->key()==Qt::Key_Space){
+		for(int i=initGem;i<6+initGem;++i){
+			if(!objetos[i-initGem] && CVector3::Distance(g_3DModel.pObject[i].center,camera.center)<60){
+				objetos[i-initGem]=true;
+
+				suenaWav(4,0);
+			}
+		}
+	}
+	
 	
 	if(kL)	{ dk=1.8; dk2=-2.0f; }
 	else	{ dk=0.0f; dk2=0.0f; }//camera.StrafeCamera(1.8f);
@@ -946,7 +994,10 @@ void Window::keyPressEvent(QKeyEvent *event)
 				break;
 			}
 	}
-
+	if(event->key()==Qt::Key_R)
+		camera.PositionCamera(	37.65,54,-29.173,
+							38.31 , 54.21, -29.3,
+							0 , 1   , 0);
 	if(event->key()==Qt::Key_0)
 	{
 		if(this->isFullScreen())

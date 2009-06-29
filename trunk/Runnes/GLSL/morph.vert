@@ -1,5 +1,8 @@
 uniform float time;
 uniform float r1;
+uniform float r2;
+uniform float r22;
+uniform float r3;
 
 uniform int activeLight[5];
 uniform int fogA;
@@ -16,8 +19,9 @@ void main()
 	
 	float rnd = cos(time/5);
 	
-	vertex.x =   (0.25f * vertex.y * vertex.y * abs(rnd * rnd + vertex.z/5)) + vertex.x;  
-	
+	vertex.x =   (0.25f * ((vertex.y-r1)/3) * ((vertex.y-r1)/3) * abs(rnd * rnd + (vertex.z-r3)/5)) + vertex.x;  
+	//if(vertex.x<r2) vertex.x=r2;
+	//if(vertex.x>r22) vertex.x=r22;
 	vec3 vertexPos = vec3(gl_ModelViewMatrix * vertex);
 	
     V = -normalize(vertexPos);
