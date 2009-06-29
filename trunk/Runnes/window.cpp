@@ -43,8 +43,8 @@ dk=0.0f;
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
-	camera.PositionCamera(	-220 , 22, 6,
-							0 , 0.5f, 0,
+	camera.PositionCamera(	37.65,54,-29.173,
+							38.31 , 54.21, -29.3,
 							0 , 1   , 0);
 	
 	g_dLastTime=0.0;
@@ -125,10 +125,10 @@ void Window::initializeGL()
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoTechoCastillo.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoIni.obj");
 	noPint=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
 	pisoAje=g_3DModel.numOfObjects;
@@ -195,16 +195,18 @@ void Window::initializeGL()
 	#endif
 
 	printf("Calculate HeightMap... ");
-	hp=new HeightMap(&(g_3DModel.pObject[1]),50);
-	printf(" 1/5 -");
-	escalera1=new HeightMap(&(g_3DModel.pObject[2]),40);
-	printf(" 2/5 -");
-	escalera2=new HeightMap(&(g_3DModel.pObject[3]),40);
-	printf(" 3/5 -");
-	techoCas=new HeightMap(&(g_3DModel.pObject[0]),10);
-	printf(" 4/5 -");
+	printf(" 1/6 -");
+	hp=new HeightMap(&(g_3DModel.pObject[2]),50);
+	printf(" 2/6 -");
+	escalera1=new HeightMap(&(g_3DModel.pObject[3]),70);
+	printf(" 3/6 -");
+	escalera2=new HeightMap(&(g_3DModel.pObject[4]),70);
+	printf(" 4/6 -");
+	techoCas=new HeightMap(&(g_3DModel.pObject[1]),6);
+	printf(" 5/6 -");
 	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]),50);
-	printf(" 5/5 -");
+	printf(" 6/6 -");
+	pisoIni=new HeightMap(&(g_3DModel.pObject[0]),50);
 	printf(" End...\n");
 
 	initParticles();
@@ -502,6 +504,7 @@ void Window::drawObj(int ID){
 				if(!intOpenDoor){
 					intOpenDoor=true;
 					tFIDoor=float(GAMETIME)/1000.0f;
+					suenaWav(2,0);
 				}
 				if(angDoor<70){
 					angDoor+=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
@@ -512,6 +515,7 @@ void Window::drawObj(int ID){
 				if(!intCloseDoor){
 					intCloseDoor=true;
 					tFIDoor=float(GAMETIME)/1000.0f;
+					suenaWav(3,0);
 				}
 				if(angDoor>0){
 					angDoor-=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
@@ -652,7 +656,7 @@ void Window::paintGL()
 
 	repaint();
 
-	// DRAW PARTICLE'S VAGO
+	// DRAW PARTICLE'S VAGO  << Jajajaj elll vagoooo!!!
 
 	
 	g_dCurTime     = timeGetTime();// GAMETIME;
@@ -694,21 +698,23 @@ void Window::paintGL()
 	CVector3 vPos		= camera.center;
 	CVector3 vNewPos    = vPos;
 	float h;
-	float alturas[5];
+	float alturas[6];
 	alturas[0]=hp->Height(vPos.x,vPos.z);
 	alturas[1]=escalera1->Height(vPos.x,vPos.z);
 	alturas[2]=escalera2->Height(vPos.x,vPos.z);
 	alturas[3]=ejedrez->Height(vPos.x,vPos.z);
 	alturas[4]=techoCas->Height(vPos.x,vPos.z);
+	alturas[5]=pisoIni->Height(vPos.x,vPos.z);
 	float difAltu[5];
 	difAltu[0]=vPos.y-alturas[0];
 	difAltu[1]=vPos.y-alturas[1];
 	difAltu[2]=vPos.y-alturas[2];
 	difAltu[3]=vPos.y-alturas[3];
 	difAltu[4]=vPos.y-alturas[4];
+	difAltu[5]=vPos.y-alturas[5];
 	float hDif=fabs(difAltu[0]);
 	int Hi=0;
-	for(int i=1;i<5;++i){
+	for(int i=1;i<6;++i){
 		if(difAltu[i]<hDif && difAltu[i]>=0){
 			Hi=i;
 			hDif=difAltu[i];
