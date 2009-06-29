@@ -47,6 +47,7 @@ public:
 	HeightMap *escalera2;
 	HeightMap *techoCas;
 	HeightMap *ejedrez;	
+	HeightMap *pisoIni;	
 
 
 	CFrustum g_Frustum;								// esta es nuestra piramide truncada
