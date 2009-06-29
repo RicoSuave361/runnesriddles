@@ -204,15 +204,15 @@ g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Texture
 	#endif
 
 	printf("Calculate HeightMap... ");
-	hp=new HeightMap(&(g_3DModel.pObject[1]));
+	hp=new HeightMap(&(g_3DModel.pObject[1]),50);
 	printf(" 1/5 -");
-	escalera1=new HeightMap(&(g_3DModel.pObject[2]));
+	escalera1=new HeightMap(&(g_3DModel.pObject[2]),40);
 	printf(" 2/5 -");
-	escalera2=new HeightMap(&(g_3DModel.pObject[3]));
+	escalera2=new HeightMap(&(g_3DModel.pObject[3]),40);
 	printf(" 3/5 -");
-	techoCas=new HeightMap(&(g_3DModel.pObject[0]));
+	techoCas=new HeightMap(&(g_3DModel.pObject[0]),10);
 	printf(" 4/5 -");
-	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]));
+	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]),50);
 	printf(" 5/5 -");
 	printf(" End...\n");
 
