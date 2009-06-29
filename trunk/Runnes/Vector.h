@@ -32,6 +32,13 @@ public:
 		return CVector3(vVector.x + x, vVector.y + y, vVector.z + z);
 	}
 
+	CVector3& operator+=(const CVector3 &vVector)
+	{
+		x+=vVector.x; y+=vVector.y; z+=vVector.z;
+
+		return *this;
+	}
+
 	CVector3 operator-(const CVector3 &vVector)
 	{
 		return CVector3(x - vVector.x, y - vVector.y, z - vVector.z);
@@ -43,12 +50,36 @@ public:
 		return CVector3(x * num, y * num, z * num);
 	}
 
+	/*CVector3 operator * ( const float scalar, const CVector3 &other )
+	{
+		CVector3 vResult(0.0f, 0.0f, 0.0f);
+
+		vResult.x = other.x * scalar;
+		vResult.y = other.y * scalar;
+		vResult.z = other.z * scalar;
+
+		return vResult;
+	}*/
+
+	CVector3 operator * ( const CVector3 &other )
+	{
+		CVector3 vResult(0.0f, 0.0f, 0.0f);
+
+		vResult.x = x * other.x;
+		vResult.y = y * other.y;
+		vResult.z = z * other.z;
+
+		return vResult;
+	}
+
 	// Here we overload the / operator so we can divide by a scalar
 	CVector3 operator/(const float &num)
 	{
 		// Return the scale vector
 		return CVector3(x / num, y / num, z / num);
 	}
+
+	
 
 	static CVector3 Cross(const CVector3 &v1, const CVector3 &v2)
 	{
@@ -119,7 +150,7 @@ public:
 		return vNormal;										// Return our normal at our desired length
 	}
 
-	static float Distance(CVector3 vPoint1, CVector3 vPoint2)
+	static float Distance(const CVector3 &vPoint1, const CVector3 &vPoint2)
 	{
 		// This is the classic formula used in beginning algebra to return the
 		// distance between 2 points.  Since it's 3D, we just add the z dimension:

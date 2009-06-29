@@ -73,6 +73,7 @@ typedef unsigned char	byte;
 #pragma comment(lib, "lib/OpenAL32.lib")
 #pragma comment(lib, "lib/EFX-Util.lib")
 #pragma comment(lib, "lib/XInput.lib")
+#pragma comment(lib, "lib/glaux.lib")
 
 
 
