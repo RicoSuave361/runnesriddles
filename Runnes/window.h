@@ -2,7 +2,7 @@
 #define WINDOW_H
 
 #include "headers.h"
-#include "audio.h"
+#include "audir.h"
 #include "skybox.h"
 #include "HeightMap.h"
 #include "ParticleSystem.h"
@@ -20,7 +20,8 @@ public:
 	float g_RotateX;								// This is the current value at which the model is rotated
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 	bool objetos[6];								//objetos cargados en el panel on screen
-	GLuint panel[6];//texturas para el panel on screen
+	GLuint panel[6];//texturas para el panel on screen	
+	vector<int> CombinacionRunas;
 	float dk;
 	float dl;
 	float dk2;
@@ -28,11 +29,19 @@ public:
 	//Puerta y Cofre
 	bool intClose,intOpen,intCloseDoor,intOpenDoor;
 	float angCof,tFI,angDoor,tFIDoor;
-	int noPint,pisoAje;
+
+//Logica de Runas
+	bool runas[5];								
+	bool ActiveRunas;								
+	bool intCloseR[5],intOpenR[5];
+	float angCofR[5],tFIR[5];
+	int initRunes;
+	int soundStep;
+	int noPint,pisoAje,room;
     GLuint primitiveList;
 	int initCol;
 	int cofre,door;
-	vector<Audio*> sonidos;									//Audio Initialize
+	vector<Audir*> sonidos;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
 	CXBOXController playerController;
 

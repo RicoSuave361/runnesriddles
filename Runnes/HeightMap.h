@@ -11,6 +11,7 @@ public:
 	HeightMap();
 	int minX,minY;
 	int maxX,maxY;
+
 	int dX,dY;
 public:
 	~HeightMap(void);

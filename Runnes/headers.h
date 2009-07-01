@@ -61,6 +61,7 @@ typedef unsigned char	byte;
 #include "include/Framework/Vorbis/vorbisfile.h"
 #include "include/XInput.h"
 #include "include/CXBOXController.h"
+#include "include/audiere.h"
 //#include "include/3DMath.h"
 // Now, the XInput Library
 // NOTE: COMMENT THIS OUT IF YOU ARE NOT USING A COMPILER THAT SUPPORTS THIS METHOD OF LINKING LIBRARIES
@@ -74,6 +75,7 @@ typedef unsigned char	byte;
 #pragma comment(lib, "lib/EFX-Util.lib")
 #pragma comment(lib, "lib/XInput.lib")
 #pragma comment(lib, "lib/glaux.lib")
+#pragma comment(lib, "lib/audiere.lib")
 
 
 

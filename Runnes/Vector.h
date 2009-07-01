@@ -39,6 +39,13 @@ public:
 		return *this;
 	}
 
+	CVector3& operator-=(const CVector3 &vVector)
+	{
+		x-=vVector.x; y-=vVector.y; z-=vVector.z;
+
+		return *this;
+	}
+
 	CVector3 operator-(const CVector3 &vVector)
 	{
 		return CVector3(x - vVector.x, y - vVector.y, z - vVector.z);

@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Audir.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Camera.h"
 				>
 			</File>
@@ -326,6 +330,10 @@
 				</File>
 				<File
 					RelativePath=".\include\framework\aldlist.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\audiere.h"
 					>
 				</File>
 				<File
