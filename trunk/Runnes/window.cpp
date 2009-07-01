@@ -99,11 +99,14 @@ void Window::initializeGL()
 	panel[3]=bindTexture(QImage("Textures/gem4.jpg"), GL_TEXTURE_2D);
 	panel[4]=bindTexture(QImage("Textures/gem5.jpg"), GL_TEXTURE_2D);
 	panel[5]=bindTexture(QImage("Textures/key.jpg"),  GL_TEXTURE_2D);
+	botonesP=bindTexture(QImage("Textures/runnesButtons.jpg"),  GL_TEXTURE_2D);
+
 
 	//Models
 	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoTechoCastillo.obj");
 	g_LoadObj.ImportObj(&g_3DModel, "Models/pisoIni.obj");
 	g_LoadObj.ImportObj(&g_3DModel, "Models/foliage.obj",		bindTexture(QImage("Textures/foliageTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel2.obj");
 	noPint=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
@@ -119,7 +122,6 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 
@@ -135,6 +137,7 @@ void Window::initializeGL()
 
 	room=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 
 	initRunes=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
@@ -188,11 +191,11 @@ void Window::initializeGL()
 	printf(" 1/6 -");
 	hp=new HeightMap(&(g_3DModel.pObject[noPint]),150);
 	printf(" 2/6 -");
-	escalera1=new HeightMap(&(g_3DModel.pObject[noPint+1]),70);
+	escalera1=new HeightMap(&(g_3DModel.pObject[noPint+1]),170);
 	printf(" 3/6 -");
-	escalera2=new HeightMap(&(g_3DModel.pObject[noPint+2]),70);
+	escalera2=new HeightMap(&(g_3DModel.pObject[noPint+2]),170);
 	printf(" 4/6 -");
-	techoCas=new HeightMap(&(g_3DModel.pObject[0]),6);
+	techoCas=new HeightMap(&(g_3DModel.pObject[0]),30);
 	printf(" 5/6 -");
 	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]),50);
 	printf(" 6/6 -");
@@ -232,6 +235,7 @@ void Window::initializeGL()
 	sonidos.push_back(new Audir("Sounds/stone3.wav"));
 	sonidos.push_back(new Audir("Sounds/stone4.wav"));
 	sonidos.push_back(new Audir("Sounds/stone5.wav"));
+	sonidos.push_back(new Audir("Sounds/Monster_Breaths.wav",true));
 
 	suenaWav(0,0);
 }
@@ -443,7 +447,7 @@ void Window::drawObj(int ID,CVector3 *Pos){
 	if(ID>=initCol) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
 	
-	if((Pos==NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) || (Pos!=NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x+Pos->x,pObject->center.y+Pos->y,pObject->center.z+Pos->z, pObject->radio))) 
+	if(ID!=door && ((Pos==NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x,pObject->center.y,pObject->center.z, pObject->radio)) || (Pos!=NULL && !g_bIgnoreFrustum && !g_Frustum.SphereInFrustum(pObject->center.x+Pos->x,pObject->center.y+Pos->y,pObject->center.z+Pos->z, pObject->radio)))) 
 		return;
 	
 	nrObjectDraw++;
@@ -771,12 +775,12 @@ void Window::paintGL()
 		
 		blur_s[pas]=h;
 		pas=(pas+1)%BLUR_STEP;
-		if(Hi!=1 && Hi!=2){
+		//if(Hi!=1 && Hi!=2){
 			prom=0.0f;
 			for(int i=0;i<BLUR_STEP;++i) prom+=blur_s[i];
 			prom/=float(BLUR_STEP);
 			h=prom;
-		}
+		//}
 		vNewPos.y = h + 40;
 		float temp = vNewPos.y - vPos.y;
 		CVector3 vView = camera.eye;
@@ -825,6 +829,8 @@ void Window::paintGL()
 	glEnable(GL_TEXTURE_2D);
 	orthogonalStart();
 	int tU=0;
+
+
 	for(int i=width()/3;i<=(width()*2)/3;i+=width()/15){
 
 		if(objetos[tU]){
@@ -853,6 +859,28 @@ void Window::paintGL()
 		}
 		tU++;	
 	}
+	if(isColliding(camera.box,g_3DModel.pObject[room])){
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_COLOR, GL_ONE);
+		glDepthMask(false);
+		glPushMatrix();
+		glBindTexture(GL_TEXTURE_2D, botonesP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0,0);
+			glVertex2f(width()/2-327,height()-100);
+			glTexCoord2f(0,1);
+			glVertex2f(width()/2-327, height()-100-204);
+			glTexCoord2f(1,1);
+			glVertex2f(width()/2+327, height()-100-204);
+			glTexCoord2f(1,0);
+			glVertex2f(width()/2+327, height()-100);
+		glEnd();
+		glPopMatrix();
+		glDepthMask(true); // Put the Z-buffer back into it's normal "Z-read and Z-write" state
+		glDisable(GL_BLEND);
+	}
 	orthogonalEnd();
 
 	glColor3f(1.0f,1.0f,1.0f);
@@ -876,7 +904,7 @@ void Window::paintGL()
 	
 	
 
-	debugDisplay+=QString(" dist: ")+QString::number(CVector3::Distance(g_3DModel.pObject[cofre].center,camera.center))+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.y)+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.x)+QString(" ")+QString::number((double)g_3DModel.pObject[cofre].center.z);
+	debugDisplay+=QString(" dist: ")+QString::number(CVector3::Distance(g_3DModel.pObject[initRunes].center,camera.center));
 	renderText(10,10,debugDisplay);
 
 }
@@ -1032,6 +1060,15 @@ void Window::keyPressEvent(QKeyEvent *event)
 				camera.MoveCamera(dl2);
 				break;
 			}
+		if(isColliding(camera.box,g_3DModel.pObject[noPint-1]) || isColliding(camera.box,g_3DModel.pObject[noPint-2])){
+			if(!sonidos[25]->sound->isPlaying()) sonidos[25]->Play();
+			float volV=min(1.0f,(CVector3::Distance(g_3DModel.pObject[initRunes].center,camera.center)-70.0f)/400);
+			sonidos[25]->sound->setVolume(1.0f - volV);
+			sonidos[0]->sound->setVolume(volV);
+		}else {
+			sonidos[25]->sound->setVolume(0);
+			sonidos[0]->sound->setVolume(1.0f);
+		}
 	}
 
 	if(event->key()==Qt::Key_R)
