@@ -12,19 +12,16 @@
 
 Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 {
-	// Inicializar Widget
-	//setCursor(Qt::CrossCursor);							//Setea el cursor de mouse como una cruz
 	setCursor(Qt::BlankCursor);
 	setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	setGeometry(50,50,SCREEN_WIDTH, SCREEN_HEIGHT);
-angCof=0;
+	angCof=0;
 	memset(blur_s,0,sizeof(blur_s));
-pas=0;
-dk=0.0f;
-	 dl=0.0f;
-	 dk2=0.0f;
-	 dl2=0.0f;
-	// Auto llamadas cada 1ms al updateGL
+	pas=0;
+	dk=0.0f;
+	dl=0.0f;
+	dk2=0.0f;
+	dl2=0.0f;
 	m_timer = new QTimer(this);
 	m_timer->setInterval(1);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -48,7 +45,6 @@ dk=0.0f;
 							0 , 1   , 0);
 	
 	g_dLastTime=0.0;
-	
 	kL=false;
 	kD=false;
 	kR=false;
@@ -58,7 +54,11 @@ dk=0.0f;
 	door=-1;
 	angCof=0.0f;
 	angDoor=0.0f;
+	memset(angCofR,0,sizeof(angCofR));
+	memset(tFIR,0,sizeof(tFIR));
 	memset(objetos,false,sizeof(objetos));
+	memset(runas,false,sizeof(runas));
+	ActiveRunas=false;
 }
 
 Window::~Window()
@@ -74,11 +74,6 @@ void Window::resizeGL(int width, int height)
 }
 
 bool Window::isColliding(t3DObject A, t3DObject B){
-
-	/*If the max x position of A is less than the min x position of B they do not collide
-	* If the min x position of A is greater than the max x position of B they do not collide
-	* and the same goes for y and z
-	*/
 	for(int i=0;i<B.numOfFaces;i++){
 		CVector3 N=B.pNormalsFaces[i];
 		CVector3 q=A.center;
@@ -87,32 +82,14 @@ bool Window::isColliding(t3DObject A, t3DObject B){
 					
 		if(N.x*q.x + N.y*q.y + N.z*q.z - (N.x*p.x + N.y*p.y+N.z*p.z) <= 0 ) return false;
 	}
-	return true;/*
-
-	if( A.Max.x < B.Min.x ) 		return false;
-
-	if( A.Min.x > B.Max.x ) 		return false;
-
-	if( A.Max.y < B.Min.y ) 		return false;
-
-	if( A.Min.y > B.Max.y ) 		return false;
-
-	if( A.Max.z < B.Min.z ) 		return false;
-
-	if( A.Min.z > B.Max.z ) 		return false;
-
 	return true;
-*/
 }
 
 void Window::initializeGL()
 {
 	primitiveList  = glGenLists(1000);
-	//showFullScreen();
 	setVSync(1);
 	g_bIgnoreFrustum = false;
-
-
 	printf("Load Model...");
 
 	//Texturas del Panel On Screen
@@ -132,32 +109,40 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));
+
 	pisoAje=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
-
-	/*g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
-	
-	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));*/
+
+
+	g_LoadObj.ImportObj(&g_3DModel, "Models/chest.obj",		bindTexture(QImage("Textures/chestTexture.jpg"), GL_TEXTURE_2D));
+	g_3DModel.pObject[g_3DModel.numOfObjects-1].center-=CVector3(0,25,0);
 	cofre=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/chestTop.obj",	bindTexture(QImage("Textures/chestTopTexture.jpg"), GL_TEXTURE_2D));
+	g_3DModel.pObject[g_3DModel.numOfObjects-1].center-=CVector3(0,25,0);
 
 	door=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/door.obj",		bindTexture(QImage("Textures/doorTexture.jpg"), GL_TEXTURE_2D));
-	/*g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
+
+	room=g_3DModel.numOfObjects;
+	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
+
+	initRunes=g_3DModel.numOfObjects;
+	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune2.obj",		bindTexture(QImage("Textures/rune2Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune3.obj",		bindTexture(QImage("Textures/rune3Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune4.obj",		bindTexture(QImage("Textures/rune4Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune5.obj",		bindTexture(QImage("Textures/rune5Texture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));*/
+
 	initGem=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem1.obj",		bindTexture(QImage("Textures/gem1Texture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/gem2.obj",		bindTexture(QImage("Textures/gem2Texture.jpg"), GL_TEXTURE_2D));
@@ -167,6 +152,7 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/key.obj",		bindTexture(QImage("Textures/keyTexture.jpg"), GL_TEXTURE_2D));
 	initCol=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/colision.obj");
+	g_LoadObj.ImportObj(&g_3DModel, "Models/doorColision.obj");
 	printf(" End...\n");
 
 	glEnable(GL_COLOR_MATERIAL);					// Allow color	
@@ -206,11 +192,11 @@ void Window::initializeGL()
 	printf(" 3/6 -");
 	escalera2=new HeightMap(&(g_3DModel.pObject[noPint+2]),70);
 	printf(" 4/6 -");
-	techoCas=new HeightMap(&(g_3DModel.pObject[1]),6);
+	techoCas=new HeightMap(&(g_3DModel.pObject[0]),6);
 	printf(" 5/6 -");
 	ejedrez=new HeightMap(&(g_3DModel.pObject[pisoAje]),50);
 	printf(" 6/6 -");
-	pisoIni=new HeightMap(&(g_3DModel.pObject[0]),50);
+	pisoIni=new HeightMap(&(g_3DModel.pObject[1]),50);
 	printf(" End...\n");
 
 	initParticles();
@@ -220,12 +206,32 @@ void Window::initializeGL()
 	g_Viewport = 512;
 	CreateRenderTexture(g_Texture2, 512, 3, GL_RGB, 0);
 	float dist=0.0f;
-	
-	sonidos.push_back(new Audio(1,"ambienceMusic.wav"));
-	sonidos.push_back(new Audio(2,"footStepGrass1.wav"));
-	sonidos.push_back(new Audio(3,"doorOpen.wav"));
-	sonidos.push_back(new Audio(4,"doorLock.wav"));
-	sonidos.push_back(new Audio(5,"gemsDrag.wav"));
+	soundStep=4;
+	sonidos.push_back(new Audir("Sounds/ambienceMusic.wav",true));
+	sonidos.push_back(new Audir("Sounds/doorOpen.wav"));
+	sonidos.push_back(new Audir("Sounds/doorLock.wav"));
+	sonidos.push_back(new Audir("Sounds/gemsDrag.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass1.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass2.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass3.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass4.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass5.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass6.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass7.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepGrass8.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor1.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor2.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor3.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor4.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor5.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor6.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor7.wav"));
+	sonidos.push_back(new Audir("Sounds/footStepFloor8.wav"));
+	sonidos.push_back(new Audir("Sounds/stone1.wav"));
+	sonidos.push_back(new Audir("Sounds/stone2.wav"));
+	sonidos.push_back(new Audir("Sounds/stone3.wav"));
+	sonidos.push_back(new Audir("Sounds/stone4.wav"));
+	sonidos.push_back(new Audir("Sounds/stone5.wav"));
 
 	suenaWav(0,0);
 }
@@ -431,7 +437,8 @@ void Window::initParticles()
 
 
 void Window::drawObj(int ID,CVector3 *Pos){
-//	if(ID<noPint) return;
+	//if(ID<noPint) return;
+	if(!ActiveRunas &&  ID==initGem+4) return;
 	if(g_3DModel.pObject.size() <= ID) return;
 	if(ID>=initCol) return;
 	t3DObject *pObject = &g_3DModel.pObject[ID];
@@ -453,9 +460,9 @@ void Window::drawObj(int ID,CVector3 *Pos){
 					glEnable(GL_TEXTURE_2D);
 					glUniform1i(getUniLoc(normalMap, "colorMap"), 0);
 				}else{
-					glUniform1i(getUniLoc(p2, "text"), 1);
+					glUniform1i(getUniLoc(p, "text"), 1);
 					glActiveTexture(GL_TEXTURE0);
-					glUniform1i(getUniLoc(p2, "texture"), 0);
+					glUniform1i(getUniLoc(p, "texture"), 0);
 				}
 			#endif
 			glBindTexture(GL_TEXTURE_2D, pObject->materialID);
@@ -463,18 +470,46 @@ void Window::drawObj(int ID,CVector3 *Pos){
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}else{
 			#ifndef DIS_SHADER
-				glUniform1i(getUniLoc(p2, "text"), 0);
+				glUniform1i(getUniLoc(p, "text"), 0);
 			#endif
 			glDisable(GL_TEXTURE_2D);
 		}
 	} else {
 		#ifndef DIS_SHADER
-			glUniform1i(getUniLoc(p2, "text"), 0);
+			glUniform1i(getUniLoc(p, "text"), 0);
 		#endif
 		glDisable(GL_TEXTURE_2D);
 	}
+	if(ID>=initRunes && ID<initRunes+5){
+		int IdRune=ID-initRunes;
+		if(runas[IdRune]){
+			intCloseR[IdRune]=false;
+			if(!intOpenR[IdRune]){
+				intOpenR[IdRune]=true;
+				tFIR[IdRune]=float(GAMETIME)/1000.0f;
+			}
+			if(angCofR[IdRune]<90){
+				angCofR[IdRune]+=(float(GAMETIME)/1000.0f-tFIR[IdRune]) * 60.0f;
+				tFIR[IdRune]=float(GAMETIME)/1000.0f;
+			}
+		}else{
+			intOpenR[IdRune] = false;
+			if(!intCloseR[IdRune]){
+				intCloseR[IdRune]=true;
+				tFIR[IdRune]=float(GAMETIME)/1000.0f;
+			}
+			if(angCofR[IdRune]>0){
+				angCofR[IdRune]-=(float(GAMETIME)/1000.0f-tFIR[IdRune]) * 60.0f;
+				if(angCofR[IdRune]<0)angCofR[IdRune]=0;
+				tFIR[IdRune]=float(GAMETIME)/1000.0f;
+			}
+		}
+		glTranslatef(pObject->center.x,pObject->center.y,pObject->center.z);
+		glRotatef(angCofR[IdRune],0.0f,1.0f,0.0f);
+		glTranslatef(-pObject->center.x,-pObject->center.y,-pObject->center.z);
+	}
 	if(ID<initCol){
-		if(ID==cofre){
+		if(ID==cofre && objetos[0] && objetos[1] && objetos[2] && objetos[3] && objetos[4]){
 			if(CVector3::Distance(pObject->center,camera.center)<=70){
 				intClose=false;
 				if(!intOpen){
@@ -503,13 +538,13 @@ void Window::drawObj(int ID,CVector3 *Pos){
 			glRotatef(angCof,1.0f,0.0f,0.0f);
 			glTranslatef(-pObject->center.x,-(pObject->Min.y-25),-pObject->Max.z);
 		}
-		if(ID==door){
+		if(ID==door && objetos[5]){
 			if(CVector3::Distance(pObject->center,camera.center)<=100){
 				intCloseDoor=false;
 				if(!intOpenDoor){
 					intOpenDoor=true;
 					tFIDoor=float(GAMETIME)/1000.0f;
-					suenaWav(2,0);
+					suenaWav(1,0);
 				}
 				if(angDoor<70){
 					angDoor+=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
@@ -520,7 +555,7 @@ void Window::drawObj(int ID,CVector3 *Pos){
 				if(!intCloseDoor){
 					intCloseDoor=true;
 					tFIDoor=float(GAMETIME)/1000.0f;
-					suenaWav(3,0);
+					suenaWav(2,0);
 				}
 				if(angDoor>0){
 					angDoor-=(float(GAMETIME)/1000.0f-tFIDoor) * 50.0f;
@@ -584,8 +619,7 @@ void Window::drawObj(int ID,CVector3 *Pos){
 }
 void Window::paintGL()
 { 
-	suenaWav(0,167);
-//	unapplyShader();
+	
 	if(playerController.IsConnected())
 	{
 			//if(playerController.GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)
@@ -729,7 +763,8 @@ void Window::paintGL()
 		}
 	}
 	h=alturas[Hi];
-
+	if(Hi==5 || Hi==0) soundStep=4;
+	else soundStep=12;
 
 	if(vPos.y < h + 40 || vPos.y > h + 40)
 	{
@@ -756,30 +791,31 @@ void Window::paintGL()
 		glUniform1f(getUniLoc(p2, "time"), GAMETIME/1000.0f);
 		glActiveTexture(GL_TEXTURE0);
 	#endif
-
-	for(int i=hp->minX;i<=hp->maxX;i+=20)
-	for(int j=hp->minY;j<=hp->maxY;j+=20){
-		//CVector3 &v=g_3DModel.pObject[noPint].pVerts[i];
-		glPushMatrix();
-		CVector3 v;
-		v.x=i;
-		v.y=hp->mapa[i][j]-6;
-		v.z=j;
-		#ifndef DIS_SHADER
-		glUniform1i(getUniLoc(p2, "r1"),v.y);
-		glUniform1i(getUniLoc(p2, "r2"),hp->minX+v.x);
-		glUniform1i(getUniLoc(p2, "r22"),hp->maxX+v.x);
-		glUniform1i(getUniLoc(p2, "r3"),v.z);
-		#endif
-		//if(v.x<
-		glTranslatef(v.x,v.y,v.z);
-		drawObj(2,&v);
-		glPopMatrix();
+/*
+	for(int i=hp->minX;i<=hp->maxX;i+=20){
+		for(int j=hp->minY;j<=hp->maxY;j+=20){
+			if(i>g_3DModel.pObject[pisoAje].Min.x && i<g_3DModel.pObject[pisoAje].Max.x) continue;
+			//if(i>g_3DModel.pObject[pisoAje-1].Min.x && i<g_3DModel.pObject[pisoAje-1].Max.x) continue;
+			if(j>g_3DModel.pObject[pisoAje].Min.z && j<g_3DModel.pObject[pisoAje].Max.z) continue;
+			//if(j>g_3DModel.pObject[pisoAje-1].Min.z && j<g_3DModel.pObject[pisoAje-1].Max.z) continue;
+			glPushMatrix();
+			CVector3 v;
+			v.x=i;
+			v.y=hp->mapa[i][j]-6;
+			v.z=j;
+			#ifndef DIS_SHADER
+			glUniform1i(getUniLoc(p2, "r1"),v.y);
+			glUniform1i(getUniLoc(p2, "r2"),hp->minX+v.x);
+			glUniform1i(getUniLoc(p2, "r22"),hp->maxX+v.x);
+			glUniform1i(getUniLoc(p2, "r3"),v.z);
+			#endif
+	
+			glTranslatef(v.x,v.y,v.z);
+			drawObj(2,&v);
+			glPopMatrix();
+		}
 	}
-	#ifndef DIS_SHADER
-		unapplyShader();
-	#endif
-
+*/
 	//Panel On Screen
 	#ifndef DIS_SHADER
 		unapplyShader();
@@ -947,25 +983,26 @@ void Window::keyPressEvent(QKeyEvent *event)
 		close();
 	}
 	if(event->key()==Qt::Key_A || event->key()==Qt::Key_Left){
-		kL=true;suenaWav(1,1);
+		kL=true;suenaWav(soundStep,1);
 	}
 	if(event->key()==Qt::Key_S || event->key()==Qt::Key_Down){
-		kD=true;suenaWav(1,1);
+		kD=true;suenaWav(soundStep,1);
 	}
 	if(event->key()==Qt::Key_D || event->key()==Qt::Key_Right){
-		kR=true;suenaWav(1,1);
+		kR=true;suenaWav(soundStep,1);
 	}
 	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
-		kU=true;suenaWav(1,1);
+		kU=true;suenaWav(soundStep,1);
 	}
 	
 	if(event->key()==Qt::Key_Space){
-		for(int i=initGem;i<6+initGem;++i){
-			if(!objetos[i-initGem] && CVector3::Distance(g_3DModel.pObject[i].center,camera.center)<60){
-				objetos[i-initGem]=true;
 
-				suenaWav(4,0);
-			}
+		for(int i=initGem;i<6+initGem;++i){
+			if(i==initGem+4 && ActiveRunas || i!=initGem+4)
+				if(!objetos[i-initGem] && CVector3::Distance(g_3DModel.pObject[i].center,camera.center)<60){
+					objetos[i-initGem]=true;
+					suenaWav(3,0);
+				}
 		}
 	}
 	
@@ -987,29 +1024,88 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(dl!=0.0f || dk!=0.0f){
 		camera.StrafeCamera(dk);
 		camera.MoveCamera(dl);
-		for(int i=initCol;i<g_3DModel.numOfObjects; i++)
+		int finCol=g_3DModel.numOfObjects;
+		if(objetos[5]) finCol--;
+		for(int i=initCol;i<finCol; i++)
 			if(isColliding(camera.box,g_3DModel.pObject[i])){
 				camera.StrafeCamera(dk2);
 				camera.MoveCamera(dl2);
 				break;
 			}
 	}
+
 	if(event->key()==Qt::Key_R)
 		camera.PositionCamera(	37.65,54,-29.173,
 							38.31 , 54.21, -29.3,
 							0 , 1   , 0);
+
 	if(event->key()==Qt::Key_0)
 	{
 		if(this->isFullScreen())
 		{
 			showNormal();
 			setCursor(Qt::BlankCursor);
-			//setCursor(Qt::CrossCursor);
 		}
 		else
 		{
 			showFullScreen();
 			setCursor(Qt::BlankCursor);	
+		}
+	}
+
+	if(event->key()==Qt::Key_1)
+	{
+		if(!ActiveRunas && !runas[0] && isColliding(camera.box,g_3DModel.pObject[room])){
+			suenaWav(20,1);
+			CombinacionRunas.push_back(0);
+			runas[0]=true;
+
+		}
+	}
+	if(event->key()==Qt::Key_2)
+	{
+		if(!ActiveRunas && !runas[1] && isColliding(camera.box,g_3DModel.pObject[room])){
+			suenaWav(21,1);
+			CombinacionRunas.push_back(1);
+			runas[1]=true;
+		}
+	}
+	if(event->key()==Qt::Key_3)
+	{
+		if(!ActiveRunas && !runas[2] && isColliding(camera.box,g_3DModel.pObject[room])){
+			suenaWav(22,1);
+			CombinacionRunas.push_back(2);
+			runas[2]=true;
+		}
+	}
+	if(event->key()==Qt::Key_4)
+	{
+		if(!ActiveRunas && !runas[3] && isColliding(camera.box,g_3DModel.pObject[room])){
+			suenaWav(23,1);
+			CombinacionRunas.push_back(3);
+			runas[3]=true;
+		}
+	}
+	if(event->key()==Qt::Key_5)
+	{
+		if(!ActiveRunas && !runas[4] && isColliding(camera.box,g_3DModel.pObject[room])){
+			suenaWav(24,1);
+			CombinacionRunas.push_back(4);
+			runas[4]=true;
+		}
+	}
+	if(!ActiveRunas && CombinacionRunas.size()==5){
+	
+		if(
+	CombinacionRunas[0]!=1  || 
+	CombinacionRunas[1]!=0  || 
+	CombinacionRunas[2]!=4  || 
+	CombinacionRunas[3]!=3  || 
+	CombinacionRunas[4]!=2){
+			memset(runas,false,sizeof(runas));
+			CombinacionRunas.clear();
+		}else{
+			ActiveRunas=true;
 		}
 	}
 }
@@ -1159,10 +1255,13 @@ void Window::suenaWav(int NroSound, float TimeSound){
 	// Check if the time since we last checked is over (1 second / framesPerSecond)
 	if( elapsedTime > (TimeSound ) )
 	{
-
+		sonidos[NroSound]->lastTime = currentTime;
+		if(NroSound==4 || NroSound==12)
+		{
+			NroSound+=rand()%8;
+		}
 		// Reset the last time
-		sonidos[NroSound]->Play();
-		sonidos[NroSound]->lastTime = currentTime;	
+		sonidos[NroSound]->Play();	
 
 		// Return TRUE, to animate the next frame of animation
 	}
