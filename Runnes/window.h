@@ -20,7 +20,7 @@ public:
 	float g_RotateX;								// This is the current value at which the model is rotated
 	float g_RotationSpeed ;							// This is the speed that our model rotates.  (-speed rotates left)
 	bool objetos[6];								//objetos cargados en el panel on screen
-	GLuint panel[6];//texturas para el panel on screen	
+	GLuint panel[6],botonesP;//texturas para el panel on screen	
 	vector<int> CombinacionRunas;
 	float dk;
 	float dl;
@@ -43,6 +43,7 @@ public:
 	int cofre,door;
 	vector<Audir*> sonidos;									//Audio Initialize
 	SkyBox *sky;									//SkyBox Initialize
+	int countCaidas;
 	CXBOXController playerController;
 
 
