@@ -1,5 +1,8 @@
 #include "ParticleSystem.h"
 
+#define DEGTORAD(degree) ((degree) * (3.141592654f / 180.0f))
+#define RADTODEG(radian) ((radian) * (180.0f / 3.141592654f))
+
 PFNGLPOINTPARAMETERFARBPROC  glPointParameterfARB  = NULL;
 PFNGLPOINTPARAMETERFVARBPROC glPointParameterfvARB = NULL;
 
@@ -387,6 +390,53 @@ void CParticleSystem::RestartParticleSystem( void )
 		--m_dwActiveCount;
 	}
 }
+//-----------------------------------------------------------------------------
+// Name: buildAxisAlignedBBMatrix()
+// Desc: 
+//-----------------------------------------------------------------------------
+void CParticleSystem::buildAxisAlignedBBMatrix( float m[16], float x, float y, float z )
+{
+    float pi    = 3.141592654f;
+    float theta = -180 * atan2f(m[8], m[10]) / pi;
+    float d     = x*x + y*y + z*z;
+    float ct    = cosf(DEGTORAD(theta));
+    float st    = sinf(DEGTORAD(theta));
+
+    // Normalize
+    if( d > 0 )
+    {
+	    d = 1/d;
+	    x *= d;
+	    y *= d;
+	    z *= d;
+    }
+
+    // Clear out the view matrix passed in
+    m[ 0] = 1; m[ 1] = 0; m[ 2] = 0; m[ 3] = 0;
+    m[ 4] = 0; m[ 5] = 1; m[ 6] = 0; m[ 7] = 0;
+    m[ 8] = 0; m[ 9] = 0; m[10] = 1; m[11] = 0;
+    m[12] = 0; m[13] = 0; m[14] = 0; m[15] = 1;
+
+    //---------------------------------------------
+    // R = uu' + cos(theta)*(I-uu') + sin(theta)*S
+    //
+    // S =  0  -z   y    u' = (x, y, z)
+    //	    z   0  -x
+    //	   -y   x   0
+    //---------------------------------------------
+
+     m[0] = x*x + ct*(1-x*x) + st*0;
+     m[4] = x*y + ct*(0-x*y) + st*-z;
+     m[8] = x*z + ct*(0-x*z) + st*y;
+
+     m[1] = y*x + ct*(0-y*x) + st*z;
+     m[5] = y*y + ct*(1-y*y) + st*0;
+     m[9] = y*z + ct*(0-y*z) + st*-x;
+
+     m[2] = z*x + ct*(0-z*x) + st*-y;
+     m[6] = z*y + ct*(0-z*y) + st*x;
+     m[10]= z*z + ct*(1-z*z) + st*0;
+}
 
 //-----------------------------------------------------------------------------
 // Name: Render()
@@ -423,18 +473,46 @@ void CParticleSystem::Render( void )
 
     glEnable( GL_POINT_SPRITE_ARB );
 
-    glPointSize( m_fSize);
+    //glPointSize( m_fSize );
 
-	glColor3f( m_clrColor.x, m_clrColor.y, m_clrColor.z );
+	float mat[16];
+    glGetFloatv( GL_MODELVIEW_MATRIX, mat );
+	
+	float halfsize = m_fSize / 2.0f;
 
-	glBegin( GL_POINTS );
+	glBegin( GL_QUADS );
     {
 		// Render each particle...
 		while( pParticle )
 		{
-			glVertex3f( pParticle->m_vCurPos.x,
-					    pParticle->m_vCurPos.y,
-					    pParticle->m_vCurPos.z );
+			CVector3 vPoint0;
+			CVector3 vPoint1;
+			CVector3 vPoint2;
+			CVector3 vPoint3;
+
+			CVector3 vRight( mat[0], mat[4], mat[8] );
+			CVector3 vUp( mat[1], mat[5], mat[9] );
+			CVector3 vCenter( pParticle->m_vCurPos.x, pParticle->m_vCurPos.y, pParticle->m_vCurPos.z);
+
+			// Now, build a quad around the center point based on the vRight 
+			// and vUp vectors. This will guarantee that the quad will be 
+			// orthogonal to the view.
+			vPoint0 = vCenter + ((-vRight - vUp) * m_fSize);
+			vPoint1 = vCenter + (( vRight - vUp) * m_fSize);
+			vPoint2 = vCenter + (( vRight + vUp) * m_fSize);
+			vPoint3 = vCenter + ((-vRight + vUp) * m_fSize);
+
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex3f(vPoint0.x,vPoint0.y,vPoint0.z);
+
+			glTexCoord2f(1.0f, 0.0f);
+			glVertex3f(vPoint1.x, vPoint1.y,vPoint1.z);
+
+			glTexCoord2f(1.0f, 1.0f);
+			glVertex3f(vPoint2.x,vPoint2.y,vPoint2.z);
+
+			glTexCoord2f(0.0f, 1.0f);
+			glVertex3f(vPoint3.x,vPoint3.y,vPoint3.z);
 
 			pParticle = pParticle->m_pNext;
 		}
