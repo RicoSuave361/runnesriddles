@@ -101,6 +101,8 @@ public:
     void SetTexture( char *chTexFile );
     GLuint GetTextureID(void);
 
+	void buildAxisAlignedBBMatrix( float m[16], float x, float y, float z );
+
 	void RestartParticleSystem(void);
 
 private:

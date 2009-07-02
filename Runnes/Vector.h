@@ -50,6 +50,11 @@ public:
 	{
 		return CVector3(x - vVector.x, y - vVector.y, z - vVector.z);
 	}
+
+	CVector3 operator-()
+	{
+		return CVector3(-x, -y, -z);
+	}
 	
 	// Here we overload the * operator so we can multiply by scalars
 	CVector3 operator*(const float &num)
@@ -77,6 +82,14 @@ public:
 		vResult.z = z * other.z;
 
 		return vResult;
+	}
+
+	CVector3& operator = ( const CVector3 &other )
+	{
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		return *this;
 	}
 
 	// Here we overload the / operator so we can divide by a scalar
