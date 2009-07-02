@@ -40,12 +40,12 @@ Window::Window(QWidget *parent) : QGLWidget(parent),wglSwapIntervalEXT(0)
 	memset(g_Texture,0,sizeof(g_Texture));
 	g_RotateX=0.0f;
 	g_RotationSpeed=0.8f;
-	camera.PositionCamera(	-830.65,181,198.173,
-							38.31 , 54.21, -29.3,
-							0 , 1   , 0);
-	/*camera.PositionCamera(	37.65,54,-29.173,
+	/*camera.PositionCamera(	-830.65,181,198.173,
 							38.31 , 54.21, -29.3,
 							0 , 1   , 0);*/
+	camera.PositionCamera(	37.65,54,-29.173,
+							38.31 , 54.21, -29.3,
+							0 , 1   , 0);
 	
 	g_dLastTime=0.0;
 	kL=false;
@@ -124,19 +124,19 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/stairLTextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/stairRTextureNormal.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/castleTextureNormal.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/castleTextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));
 
 	pisoAje=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower1TextureNormal.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower2TextureNormal.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower3TextureNormal.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower4TextureNormal.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower1TextureNormal.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower2TextureNormal.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower3TextureNormal.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower4TextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/lampTextureNormal.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 
 
 
@@ -151,7 +151,7 @@ void Window::initializeGL()
 
 	room=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
-	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
+	//g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 
 	initRunes=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/rune1TextureNormal.jpg"), GL_TEXTURE_2D));
@@ -215,7 +215,8 @@ void Window::initializeGL()
 	printf(" End...\n");
 
 	initParticles();
-	sky=new SkyBox(this);
+	sky=new SkyBox(this,"Textures/SkyBox/Back.bmp","Textures/SkyBox/Front.bmp","Textures/SkyBox/Bottom.bmp","Textures/SkyBox/Top.bmp","Textures/SkyBox/Left.bmp","Textures/SkyBox/Right.bmp");
+	skyDead=new SkyBox(this,"Textures/SkyBox/skull_back.jpeg","Textures/SkyBox/skull_back.jpeg","Textures/SkyBox/skull_back.jpeg","Textures/SkyBox/skull_back.jpeg","Textures/SkyBox/skull_back.jpeg","Textures/SkyBox/skull_back.jpeg");
 
 	g_BlurRate = 100;
 	g_Viewport = 512;
@@ -248,12 +249,13 @@ void Window::initializeGL()
 	sonidos.push_back(new Audir("Sounds/stone4.wav"));
 	sonidos.push_back(new Audir("Sounds/stone5.wav"));
 	sonidos.push_back(new Audir("Sounds/Monster_Breaths.wav",true));
-
+	dead=false;
 	suenaWav(0,0);
+	initGame=float(GAMETIME)/1000.0f+20.0f;
 }
 void Window::initParticles()
 {
-	g_nParticleSystems=10;
+	g_nParticleSystems=16;
 
 	//
     // Fire
@@ -464,7 +466,32 @@ void Window::initParticles()
     g_pParticleSystems[9]->SetVelocityVar( 1.5f );
 
 	g_pParticleSystems[9]->Init();
-	
+
+	//
+	// Spark
+	//
+
+	for (int gema=0; gema<6; ++gema)
+	{
+		g_pParticleSystems[10+gema] = new CParticleSystem();
+
+		g_pParticleSystems[10+gema]->SetMaxParticles( 200 );
+		g_pParticleSystems[10+gema]->SetNumToRelease( 0 );
+		g_pParticleSystems[10+gema]->SetReleaseInterval( 0.05f );
+		g_pParticleSystems[10+gema]->SetLifeCycle( 4.0f );
+		g_pParticleSystems[10+gema]->SetSize( 2.0f );
+		g_pParticleSystems[10+gema]->SetColor( CVector3( 1.0f, 0.0f, 0.0f ));
+		g_pParticleSystems[10+gema]->SetPosition( g_3DModel.pObject[initGem+gema].center );
+		g_pParticleSystems[10+gema]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetVelocityVar( 1.5f );
+		g_pParticleSystems[10+gema]->SetMaxLength(50.0f);
+		g_pParticleSystems[10+gema]->SetMinLength(1.0f);
+		g_pParticleSystems[10+gema]->SetRadius(3.0f);
+
+		g_pParticleSystems[10+gema]->Init2();
+	}
 }
 
 
@@ -487,8 +514,6 @@ void Window::drawObj(int ID,CVector3 *Pos){
 			glEnable(GL_TEXTURE_2D);
 			#ifndef DIS_SHADER
 				if(pObject->normalID!=-1){
-					for(int i=0; i<5; i++)
-						glUniform1i(getUniLoc(normalMap, QString(QString("activeLight[")+QString::number(i)+QString("]")).toAscii()), 0);
 					glActiveTexture(GL_TEXTURE1);
 					glUniform1i(getUniLoc(normalMap, "normalMap"), 1);
 					glBindTexture(GL_TEXTURE_2D, pObject->normalID);
@@ -715,7 +740,26 @@ void Window::paintGL()
 	glDisable(GL_LIGHTING);
 	
 	// Camara
-	sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+	if(dead){
+		skyDead->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+		camera.center=CVector3(37.65,54,-29.173);
+		if(deadTime<float(GAMETIME)/1000.0f){
+			memset(angCofR,0,sizeof(angCofR));
+			memset(tFIR,0,sizeof(tFIR));
+			memset(objetos,false,sizeof(objetos));
+			memset(runas,false,sizeof(runas));
+			ActiveRunas=false;
+			dead=false;
+			montionBlur=false;
+			camera.PositionCamera(	37.65,54,-29.173,
+							38.31 , 54.21, -29.3,
+							0 , 1   , 0);
+			initGame=float(GAMETIME)/1000.0f+20.0f;
+		}
+	}else{
+		sky->CreateSkyBox(0, 0, 0, 4096, 4096, 4096);
+	}
+	
 
 
 	if(montionBlur){
@@ -752,14 +796,20 @@ void Window::paintGL()
 	for (int p=0; p<g_nParticleSystems; ++p)
 	{
 		glPushMatrix();
-		g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
-
 		//
 		// Render particle system
 		//
+		if (p>=10)
+		{
+			g_pParticleSystems[p]->Update2( (float)g_fElpasedTime );
 
-		glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[p]->GetTextureID() );
-		g_pParticleSystems[p]->Render();
+			g_pParticleSystems[p]->Render2();
+		} else {
+			g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
+
+			glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[p]->GetTextureID() );
+			g_pParticleSystems[p]->Render();
+		}
 		glPopMatrix();
 
 	}
@@ -806,7 +856,11 @@ void Window::paintGL()
 
 	if(vPos.y < h + 40 || vPos.y > h + 40)
 	{
-		
+		/*if(initGame<float(GAMETIME)/1000.0f && (fabs(vPos.y-h)<150 || h==-200) ){
+			dead=true;		
+			montionBlur=true;
+			deadTime=float(GAMETIME)/1000.0f + 10.0f;
+		}*/
 		blur_s[pas]=h;
 		pas=(pas+1)%BLUR_STEP;
 		//if(Hi!=1 && Hi!=2){
@@ -830,10 +884,11 @@ void Window::paintGL()
 		glActiveTexture(GL_TEXTURE0);
 	#endif
 
-	for(int i=hp->minX;i<=hp->maxX;i+=50){
-		for(int j=hp->minY;j<=hp->maxY;j+=50){
-			//if(i>g_3DModel.pObject[pisoAje].Min.x && i<g_3DModel.pObject[pisoAje].Max.x) continue;
-			//if(j>g_3DModel.pObject[pisoAje].Min.z && j<g_3DModel.pObject[pisoAje].Max.z) continue;
+	for(int i=hp->minX;i<=hp->maxX;i+=40){
+		for(int j=hp->minY;j<=hp->maxY;j+=40){
+			if(i>-454 && j>210) continue;
+			if(j>40 && i>-996 && i<-648) continue;
+			if(hp->mapaR[i][j]) continue;
 			glPushMatrix();
 			CVector3 v;
 			v.x=i;
@@ -967,7 +1022,7 @@ void Window::repaint()
 	glLightfv(GL_LIGHT0, GL_AMBIENT, genF(1.0f, 1.0f, 1.0f, 1.0f));
 	glLightfv(GL_LIGHT0, GL_POSITION, genF(-856.0f+float(rand()%20)/9.0f ,182.0f+float(rand()%20)/9.0f  ,207.0f+float(rand()%20)/9.0f , 1.0f));
 	glLightfv(GL_LIGHT0, GL_SPECULAR, genF(1.0f, 1.0f, 1.0f, 1.0f));
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, genF(6.0f, 3.0f, 1.0f, 1.0f));
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, genF(0.6f, 0.2f, 0.4f, 1.0f));
 
 	glLightfv(GL_LIGHT1, GL_AMBIENT, genF(1.0f, 1.0f, 1.0f, 1.0f));
 	glLightfv(GL_LIGHT1, GL_POSITION, genF(49.0f, 1.50f, 38.0f, 1.0f));
@@ -999,6 +1054,7 @@ void Window::repaint()
 	
 
 	//Draw OBJ
+	//if(!dead)
 	for(int i = noPint; i < g_3DModel.numOfObjects; i++)
 	{
 		glPushMatrix();

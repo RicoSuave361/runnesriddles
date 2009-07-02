@@ -6,6 +6,7 @@ class HeightMap
 {
 public:
 	map< int , map < int , float > > mapa;
+	map< int , map < int , float > > mapaR;
 	HeightMap(t3DObject *plane,int err);
 	float Height(float X,float Y);
 	HeightMap();

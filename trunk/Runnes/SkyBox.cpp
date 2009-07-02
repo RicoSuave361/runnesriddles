@@ -1,15 +1,15 @@
 #include "SkyBox.h"
-SkyBox::SkyBox(QGLWidget *p) : parent(p)
+SkyBox::SkyBox(QGLWidget *p,const char* c1,const char* c2,const char* c3,const char* c4,const char* c5,const char* c6) : parent(p)
 {
 	
 	memset(g_TextureSkyBox,0,sizeof(g_TextureSkyBox));
 	//Skybox
-	CreateSkyBoxTexture("Textures/SkyBox/Back.bmp",		BACK_ID	 );
-	CreateSkyBoxTexture("Textures/SkyBox/Front.bmp",	FRONT_ID );
-	CreateSkyBoxTexture("Textures/SkyBox/Bottom.bmp",	BOTTOM_ID);
-	CreateSkyBoxTexture("Textures/SkyBox/Top.bmp",		TOP_ID	 );
-	CreateSkyBoxTexture("Textures/SkyBox/Left.bmp",		LEFT_ID	 );
-	CreateSkyBoxTexture("Textures/SkyBox/Right.bmp",	RIGHT_ID );
+	CreateSkyBoxTexture(c1,		BACK_ID	 );
+	CreateSkyBoxTexture(c2,	FRONT_ID );
+	CreateSkyBoxTexture(c3,	BOTTOM_ID);
+	CreateSkyBoxTexture(c4,		TOP_ID	 );
+	CreateSkyBoxTexture(c5,		LEFT_ID	 );
+	CreateSkyBoxTexture(c6,	RIGHT_ID );
 }
 
 SkyBox::~SkyBox(void)

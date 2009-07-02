@@ -23,6 +23,7 @@ HeightMap::HeightMap(t3DObject *plane,int err)
 			}
 			if(dist>err*err) h=-200;
 			mapa[i][j]=h; 
+			mapaR[i][j]=rand()%2; 
 		}
 	}
 }

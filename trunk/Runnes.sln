@@ -2,8 +2,14 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Runnes", "Runnes\Runnes.vcproj", "{8CAEB31C-7CEE-4DBA-9470-27EDF489CCD4}"
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 EndProject
 Global
+	GlobalSection(Qt) = preSolution
+		Integration = True
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
