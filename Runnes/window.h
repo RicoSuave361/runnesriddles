@@ -30,7 +30,7 @@ public:
 	bool intClose,intOpen,intCloseDoor,intOpenDoor;
 	float angCof,tFI,angDoor,tFIDoor;
 
-	//Logica de Runas
+//Logica de Runas
 	bool runas[5];								
 	bool ActiveRunas;								
 	bool intCloseR[5],intOpenR[5];
@@ -42,10 +42,10 @@ public:
 	int initCol;
 	int cofre,door;
 	vector<Audir*> sonidos;									//Audio Initialize
-	SkyBox *sky;									//SkyBox Initialize
+	SkyBox *sky,*skyDead;									//SkyBox Initialize
 	int countCaidas;
 	CXBOXController playerController;
-
+bool dead;
 
 
 	Window(QWidget *parent);						//Window Handler
@@ -71,18 +71,17 @@ public:
 	void resizeGL(int width, int height);			//Window resize
 	
 	// PARTICLE'S VAGO
-	CParticleSystem *g_pParticleSystems[12];
+	CParticleSystem *g_pParticleSystems[15];
 	void initParticles();
 	double g_dCurTime;
 	float g_fElpasedTime;
 	double g_dLastTime;
 	int g_nParticleSystems;
 	
-
 	bool kL,kD,kR,kU;
 	int nrObjectDraw;
 	void drawObj(int ID,CVector3 *Pos=NULL);
-	float dead,dt;
+	float dt,deadTime;
 	//VSync handler
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
 	void setVSync(int interval=1)
@@ -223,10 +222,9 @@ protected:
 	float viewX, viewY;
 	CCamera camera;
 	float hant;
-	
 	float blur_s[BLUR_STEP];
 	int pas,initGem;
-	float prom;
+	float prom,initGame;
 	GLuint v,f,f2,p,p2,normalMap;
 	//motion blur
 	void OrthoMode(int left, int top, int right, int bottom);
@@ -257,5 +255,6 @@ GLuint      g_normalMapTexture;
 	void orthogonalStart (void);
 	void orthogonalEnd (void);
 };
+
 
 #endif // WINDOW_H

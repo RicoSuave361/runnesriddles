@@ -4,7 +4,7 @@
 class SkyBox
 {
 public:
-	SkyBox(QGLWidget *p);
+	SkyBox(QGLWidget *p,const char* c1,const char* c2,const char* c3,const char* c4,const char* c5,const char* c6);
 public:
 	~SkyBox(void);
 	QGLWidget *parent;

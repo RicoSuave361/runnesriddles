@@ -36,7 +36,9 @@ struct Plane
 struct Particle
 {
     CVector3  m_vCurPos;    // Current position of particle
+	CVector3  m_vCurPos2;    
     CVector3  m_vCurVel;    // Current velocity of particle
+	CVector3  m_direction;
     float     m_fInitTime;  // Time of creation of particle
 
     Particle *m_pNext;      // Next particle in list
@@ -93,18 +95,35 @@ public:
 
     void SetCollisionPlane( CVector3 vPlaneNormal, CVector3 vPoint, 
                             float fBounceFactor = 1.0f, int nCollisionResult = CR_BOUNCE );
+	
+	void SetMaxLength( float fLength ) { m_maxlength = fLength; }
+	float GetMaxLength( void ) { return m_maxlength; }
+
+	void SetMinLength( float fLength ) { m_minlength = fLength; }
+	float GetMinLength( void ) { return m_minlength; }
+
+	void SetRadius( float fRadius) { m_radius = fRadius; }
+	float GetRadius( void ) { return m_radius; }
 
     int Init( void );
     int Update( float fElapsedTime );
     void Render( void );
+
+	int Init2( void );
+    int Update2( float fElapsedTime );
+    void Render2( void );
+
+	float getRandomMinMax( float fMin, float fMax );
+	CVector3 getRandomVector( void );
 
     void SetTexture( char *chTexFile );
     GLuint GetTextureID(void);
 
 	void RestartParticleSystem(void);
 
-private:
-
+protected:
+	float m_maxlength,m_minlength;
+	float m_radius;
     Particle   *m_pActiveList;
     Particle   *m_pFreeList;
     Plane      *m_pPlanes;

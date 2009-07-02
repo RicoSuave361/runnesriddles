@@ -55,7 +55,7 @@ GLuint CParticleSystem::GetTextureID()
 // Name: getRandomMinMax()
 // Desc: Gets a random number between min/max boundaries
 //-----------------------------------------------------------------------------
-float getRandomMinMax( float fMin, float fMax )
+float CParticleSystem::getRandomMinMax( float fMin, float fMax )
 {
     float fRandNum = (float)rand () / RAND_MAX;
     return fMin + (fMax - fMin) * fRandNum;
@@ -66,7 +66,7 @@ float getRandomMinMax( float fMin, float fMax )
 // Desc: Generates a random vector where X,Y, and Z components are between
 //       -1.0 and 1.0
 //-----------------------------------------------------------------------------
-CVector3 getRandomVector( void )
+CVector3 CParticleSystem::getRandomVector( void )
 {
 	CVector3 vVector;
 
@@ -391,7 +391,188 @@ void CParticleSystem::RestartParticleSystem( void )
 		--m_dwActiveCount;
 	}
 }
+void CParticleSystem::Render2( void )
+{
+	Particle  *pParticle = m_pActiveList;
 
+    //
+	// Set up the OpenGL state machine for using point sprites...
+	//
+
+    // This is how will our point sprite's size will be modified by 
+    // distance from the viewer.
+    float quadratic[] =  { 1.0f, 0.0f, 0.01f };
+    glPointParameterfvARB( GL_POINT_DISTANCE_ATTENUATION_ARB, quadratic );
+
+    // The alpha of a point is calculated to allow the fading of points 
+    // instead of shrinking them past a defined threshold size. The threshold 
+    // is defined by GL_POINT_FADE_THRESHOLD_SIZE_ARB and is not clamped to 
+    // the minimum and maximum point sizes.
+    glPointParameterfARB( GL_POINT_FADE_THRESHOLD_SIZE_ARB, 60.0f );
+
+    glPointParameterfARB( GL_POINT_SIZE_MIN_ARB, 1.0f );
+    glPointParameterfARB( GL_POINT_SIZE_MAX_ARB, m_fMaxPointSize);
+
+    // Specify point sprite texture coordinate replacement mode for each texture unit
+    glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
+
+	//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    //
+	// Render point sprites...
+	//
+
+    glEnable( GL_POINT_SPRITE_ARB );
+
+    //glPointSize( m_fSize );
+	
+	glLineWidth(50.0f);
+	glColor3f(m_clrColor.x,m_clrColor.y,m_clrColor.z);
+	//float halfsize = m_fSize / 2.0f;
+
+	glBegin( GL_LINES );
+    {
+		// Render each particle...
+		while( pParticle )
+		{
+			
+			glVertex3f(pParticle->m_vCurPos.x,pParticle->m_vCurPos.y,pParticle->m_vCurPos.z);
+
+			glVertex3f(pParticle->m_vCurPos2.x,pParticle->m_vCurPos2.y,pParticle->m_vCurPos2.z);
+
+			pParticle = pParticle->m_pNext;
+		}
+    }
+	
+	glColor3f(1.0f,1.0f,1.0f);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glEnd();
+
+	glDisable( GL_POINT_SPRITE_ARB );
+}
+int CParticleSystem::Update2( float fElapsedTime )
+{
+	Particle  *pParticle;
+    Particle **ppParticle;
+    
+    CVector3 vOldPosition;
+
+    m_fCurrentTime += fElapsedTime;     // Update our particle system timer...
+
+    ppParticle = &m_pActiveList; // Start at the head of the active list
+
+    while( *ppParticle )
+	{
+		pParticle = *ppParticle; // Set a pointer to the head
+
+		float fTimePassed  = m_fCurrentTime - pParticle->m_fInitTime;
+		
+
+		
+		if (fTimePassed >= m_fLifeCycle) 
+		{
+			pParticle->m_fInitTime = m_fCurrentTime;
+
+			float theta = DEGTORAD(rand()%180);
+			float fi = DEGTORAD(rand()%360);
+
+			CVector3 dir(m_radius * sinf(theta) * cosf(fi),
+				m_radius * sinf(theta) * sinf(fi),
+				m_radius * cosf(theta));
+
+			dir.Normalize();
+			pParticle->m_direction=dir;
+
+			pParticle->m_vCurPos=CVector3(m_radius * sinf(theta) * cosf(fi),
+				m_radius * sinf(theta) * sinf(fi),
+				m_radius * cosf(theta)) + m_vPosition;
+
+			float t=getRandomMinMax(m_minlength,m_maxlength);
+			
+			pParticle->m_vCurPos2= pParticle->m_vCurPos + dir * t;
+		} else 
+		{
+			float u=m_fCurrentTime;
+			float t=sinf(u*3.0f);
+			pParticle->m_vCurPos += pParticle->m_direction * t;
+			pParticle->m_vCurPos2 += pParticle->m_direction * t;
+		}
+		
+		
+		ppParticle = &pParticle->m_pNext;
+	}
+	return 1;
+}
+int CParticleSystem::Init2( void )
+{
+	//
+	// If the required extensions are present, get the addresses of thier 
+	// functions that we wish to use...
+	//
+
+    char *ext = (char*)glGetString( GL_EXTENSIONS );
+
+    if( strstr( ext, "GL_ARB_point_parameters" ) == NULL )
+    {
+        printf("GL_ARB_point_parameters extension was not found\n");
+            
+        return 0;
+    }
+    else
+    {
+        glPointParameterfARB  = (PFNGLPOINTPARAMETERFARBPROC)wglGetProcAddress("glPointParameterfARB");
+        glPointParameterfvARB = (PFNGLPOINTPARAMETERFVARBPROC)wglGetProcAddress("glPointParameterfvARB");
+
+        if( !glPointParameterfARB || !glPointParameterfvARB )
+        {
+            printf("One or more GL_ARB_point_parameters functions were not found");
+            return 0;
+        }
+    }
+
+	//x = r sen theta cos fi
+	//y = r sen theta sen fi
+	//z = r cos theta 
+
+	// tetha 0 a OGL_PI
+	// fi 0 a 2*OGL_PI
+	m_pActiveList=NULL;
+	Particle *w;
+	for (int i = 0; i<m_dwMaxParticles; ++i)
+	{
+		Particle *p;
+		float theta = rand()%180;
+		float fi = rand()%360;
+
+		p=new Particle();
+		CVector3 dir(m_radius * sinf(theta) * cosf(fi),
+			m_radius * sinf(theta) * sinf(fi),
+			m_radius * cosf(theta));
+
+		dir.Normalize();
+		p->m_direction=dir;
+
+		p->m_vCurPos=CVector3(m_radius * sinf(theta) * cosf(fi),
+			m_radius * sinf(theta) * sinf(fi),
+			m_radius * cosf(theta)) + m_vPosition;
+		
+		float t=getRandomMinMax(m_minlength,m_maxlength);
+		p->m_fInitTime=0;
+		p->m_vCurPos2= p->m_vCurPos + dir * t;
+		if (m_pActiveList==NULL)
+		{
+			m_pActiveList=p; w=m_pActiveList;
+			p->m_pNext=NULL;
+		} else {
+			w->m_pNext=p;
+			p->m_pNext=NULL;
+			w=p;
+		}
+	}	
+	
+	return 1;
+}
 //-----------------------------------------------------------------------------
 // Name: Render()
 // Desc: 
@@ -421,7 +602,7 @@ void CParticleSystem::Render( void )
     // Specify point sprite texture coordinate replacement mode for each texture unit
     glTexEnvf( GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE );
 
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     //
 	// Render point sprites...
 	//
@@ -474,6 +655,8 @@ void CParticleSystem::Render( void )
 		}
     }
 	glEnd();
+	glColor3f(1.0f,1.0f,1.0f);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	glDisable( GL_POINT_SPRITE_ARB );
 }
