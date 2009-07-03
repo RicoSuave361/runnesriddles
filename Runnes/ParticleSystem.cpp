@@ -393,6 +393,7 @@ void CParticleSystem::RestartParticleSystem( void )
 }
 void CParticleSystem::Render2( void )
 {
+	glDisable(GL_TEXTURE_2D);
 	Particle  *pParticle = m_pActiveList;
 
     //
@@ -425,7 +426,7 @@ void CParticleSystem::Render2( void )
 
     //glPointSize( m_fSize );
 	
-	glLineWidth(50.0f);
+	glLineWidth(3.0f);
 	glColor3f(m_clrColor.x,m_clrColor.y,m_clrColor.z);
 	//float halfsize = m_fSize / 2.0f;
 
@@ -450,6 +451,7 @@ void CParticleSystem::Render2( void )
 	glEnd();
 
 	glDisable( GL_POINT_SPRITE_ARB );
+	glEnable(GL_TEXTURE_2D);
 }
 int CParticleSystem::Update2( float fElapsedTime )
 {
@@ -494,7 +496,7 @@ int CParticleSystem::Update2( float fElapsedTime )
 		} else 
 		{
 			float u=m_fCurrentTime;
-			float t=sinf(u*3.0f);
+			float t=sinf(u);
 			pParticle->m_vCurPos += pParticle->m_direction * t;
 			pParticle->m_vCurPos2 += pParticle->m_direction * t;
 		}
