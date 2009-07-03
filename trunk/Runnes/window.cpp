@@ -124,19 +124,19 @@ void Window::initializeGL()
 	g_LoadObj.ImportObj(&g_3DModel, "Models/plane.obj",		bindTexture(QImage("Textures/planeTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairL.obj",		bindTexture(QImage("Textures/stairLTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/stairLTextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/stairR.obj",		bindTexture(QImage("Textures/stairRTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/stairRTextureNormal.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/castleTextureNormal.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/castle.obj",	bindTexture(QImage("Textures/castleTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/castleTextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/planeStart.obj",bindTexture(QImage("Textures/planeStartTexture.jpg"), GL_TEXTURE_2D));
 
 	pisoAje=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/checker.obj",	bindTexture(QImage("Textures/checkerTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/trees.obj",		bindTexture(QImage("Textures/treesTexture.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/table.obj",		bindTexture(QImage("Textures/tableTexture.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower1TextureNormal.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower2TextureNormal.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower3TextureNormal.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower4TextureNormal.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower1.obj",	bindTexture(QImage("Textures/tower1Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower1TextureNormal.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower2.obj",	bindTexture(QImage("Textures/tower2Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower2TextureNormal.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower4.obj",	bindTexture(QImage("Textures/tower3Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower3TextureNormal.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tower3.obj",	bindTexture(QImage("Textures/tower4Texture.jpg"), GL_TEXTURE_2D),	bindTexture(QImage("Textures/tower4TextureNormal.jpg"), GL_TEXTURE_2D));
 	g_LoadObj.ImportObj(&g_3DModel, "Models/lamp.obj",		bindTexture(QImage("Textures/lampTexture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/lampTextureNormal.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/indoorFloor.obj",		bindTexture(QImage("Textures/indoorFloorTexture.jpg"), GL_TEXTURE_2D));
 
 
 
@@ -151,7 +151,7 @@ void Window::initializeGL()
 
 	room=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/room.obj",		bindTexture(QImage("Textures/roomTexture.jpg"), GL_TEXTURE_2D));
-	//g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
+	g_LoadObj.ImportObj(&g_3DModel, "Models/tunnel.obj",	bindTexture(QImage("Textures/tunnelTexture.jpg"), GL_TEXTURE_2D));
 
 	initRunes=g_3DModel.numOfObjects;
 	g_LoadObj.ImportObj(&g_3DModel, "Models/rune1.obj",		bindTexture(QImage("Textures/rune1Texture.jpg"), GL_TEXTURE_2D),		bindTexture(QImage("Textures/rune1TextureNormal.jpg"), GL_TEXTURE_2D));
@@ -474,23 +474,36 @@ void Window::initParticles()
 	for (int gema=0; gema<6; ++gema)
 	{
 		g_pParticleSystems[10+gema] = new CParticleSystem();
-
-		g_pParticleSystems[10+gema]->SetMaxParticles( 200 );
-		g_pParticleSystems[10+gema]->SetNumToRelease( 0 );
+		g_pParticleSystems[10+gema]->SetTexture( "Textures/particle.bmp" );
+		g_pParticleSystems[10+gema]->SetMaxParticles( 9 );
+		g_pParticleSystems[10+gema]->SetNumToRelease( 1 );
 		g_pParticleSystems[10+gema]->SetReleaseInterval( 0.05f );
-		g_pParticleSystems[10+gema]->SetLifeCycle( 4.0f );
+		g_pParticleSystems[10+gema]->SetLifeCycle( 1.0f );
 		g_pParticleSystems[10+gema]->SetSize( 2.0f );
-		g_pParticleSystems[10+gema]->SetColor( CVector3( 1.0f, 0.0f, 0.0f ));
+		g_pParticleSystems[10+gema]->SetColor( CVector3( 0.1f, 0.1f, 0.9f ));
 		g_pParticleSystems[10+gema]->SetPosition( g_3DModel.pObject[initGem+gema].center );
 		g_pParticleSystems[10+gema]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
 		g_pParticleSystems[10+gema]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
 		g_pParticleSystems[10+gema]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
 		g_pParticleSystems[10+gema]->SetVelocityVar( 1.5f );
-		g_pParticleSystems[10+gema]->SetMaxLength(50.0f);
-		g_pParticleSystems[10+gema]->SetMinLength(1.0f);
-		g_pParticleSystems[10+gema]->SetRadius(3.0f);
 
-		g_pParticleSystems[10+gema]->Init2();
+		g_pParticleSystems[10+gema]->Init();
+		/*g_pParticleSystems[10+gema]->SetMaxParticles( 45 );
+		g_pParticleSystems[10+gema]->SetNumToRelease( 0 );
+		g_pParticleSystems[10+gema]->SetReleaseInterval( 0.05f );
+		g_pParticleSystems[10+gema]->SetLifeCycle( 4.0f );
+		g_pParticleSystems[10+gema]->SetSize( 2.0f );
+		g_pParticleSystems[10+gema]->SetColor( CVector3( 1.0f, 1.0f, 1.0f ));
+		g_pParticleSystems[10+gema]->SetPosition( g_3DModel.pObject[initGem+gema].center );
+		g_pParticleSystems[10+gema]->SetVelocity( CVector3( 0.0f, 5.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetGravity( CVector3( 0.0f, 0.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetWind( CVector3( 0.0f, 0.0f, 0.0f ) );
+		g_pParticleSystems[10+gema]->SetVelocityVar( 1.5f );
+		g_pParticleSystems[10+gema]->SetMaxLength(2.0f);
+		g_pParticleSystems[10+gema]->SetMinLength(1.0f);
+		g_pParticleSystems[10+gema]->SetRadius(0.25f);
+
+		g_pParticleSystems[10+gema]->Init2();*/
 	}
 }
 
@@ -799,11 +812,23 @@ void Window::paintGL()
 		//
 		// Render particle system
 		//
+
 		if (p>=10)
 		{
-			g_pParticleSystems[p]->Update2( (float)g_fElpasedTime );
+			if (p==14) {
+				if (!objetos[p-10] && ActiveRunas) {
+					g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
 
-			g_pParticleSystems[p]->Render2();
+					glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[p]->GetTextureID() );
+					g_pParticleSystems[p]->Render();
+				}
+			}else if(!objetos[p-10]){
+
+				g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
+
+				glBindTexture( GL_TEXTURE_2D, g_pParticleSystems[p]->GetTextureID() );
+				g_pParticleSystems[p]->Render();
+			}
 		} else {
 			g_pParticleSystems[p]->Update( (float)g_fElpasedTime );
 
@@ -854,6 +879,8 @@ void Window::paintGL()
 	if(Hi==5 || Hi==0) soundStep=4;
 	else soundStep=12;
 
+	if(Hi==4) montionBlur=true;
+	else  montionBlur=false;
 	if(vPos.y < h + 40 || vPos.y > h + 40)
 	{
 		/*if(initGame<float(GAMETIME)/1000.0f && (fabs(vPos.y-h)<150 || h==-200) ){
@@ -1122,6 +1149,7 @@ void Window::keyPressEvent(QKeyEvent *event)
 	if(event->key()==Qt::Key_W || event->key()==Qt::Key_Up){
 		kU=true;suenaWav(soundStep,1);
 	}
+
 	
 	if(event->key()==Qt::Key_Space){
 
@@ -1171,10 +1199,18 @@ void Window::keyPressEvent(QKeyEvent *event)
 		}
 	}
 
-	if(event->key()==Qt::Key_R)
+	if(event->key()==Qt::Key_R){
+		memset(angCofR,0,sizeof(angCofR));
+		memset(tFIR,0,sizeof(tFIR));
+		memset(objetos,false,sizeof(objetos));
+		memset(runas,false,sizeof(runas));
+		ActiveRunas=false;
+		dead=false;
+		montionBlur=false;
 		camera.PositionCamera(	37.65,54,-29.173,
-							38.31 , 54.21, -29.3,
-							0 , 1   , 0);
+						38.31 , 54.21, -29.3,
+						0 , 1   , 0);
+	}
 
 	if(event->key()==Qt::Key_0)
 	{
